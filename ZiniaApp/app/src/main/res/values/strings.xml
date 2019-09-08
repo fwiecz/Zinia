@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Zinia</string>
+    <string name="nightmode_title">Nightmode</string>
+    <string name="devices_activity_label">Devices</string>
 </resources>
