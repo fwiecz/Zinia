@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="nightmode_title">Nachtmodus</string>
     <string name="app_name">Zinia</string>
+    <string name="nightmode_title">Nachtmodus</string>
     <string name="devices_activity_label">Geräte</string>
+    <string name="new_device_dialog_title">Neues Gerät</string>
+    <string name="add_new_device_label">Neues Gerät hinzufügen</string>
+    <string name="add_label">Hinzufügen</string>
+    <string name="cancel_label">Abbrechen</string>
+    <string name="device_ip_label">IP Adresse des Gerätes</string>
+    <string name="device_name_label">Name (optional)</string>
+    <string name="tab_text_1">Suche</string>
+    <string name="tab_text_2">Manuell</string>
+    <string name="title_activity_add_new_device">AddNewDeviceActivity</string>
 </resources>

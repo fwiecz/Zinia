@@ -5,4 +5,7 @@
     <color name="colorAccent">#2D70FF</color>
     <color name="colorStatusBar">#000000</color>
     <color name="colorBackground">#E6E6E6</color>
+    <color name="colorTextPrimary">#000000</color>
+    <color name="colorTextSecondary">#323232</color>
+    <color name="colorTextTertiary">#646464</color>
 </resources>

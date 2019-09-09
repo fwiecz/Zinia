@@ -2,4 +2,13 @@
     <string name="app_name">Zinia</string>
     <string name="nightmode_title">Nightmode</string>
     <string name="devices_activity_label">Devices</string>
+    <string name="new_device_dialog_title">New Device</string>
+    <string name="add_new_device_label">Add New Device</string>
+    <string name="add_label">Add</string>
+    <string name="cancel_label">Cancel</string>
+    <string name="device_ip_label">IP address of the device</string>
+    <string name="device_name_label">Name (optional)</string>
+    <string name="title_activity_add_new_device">AddNewDeviceActivity</string>
+    <string name="tab_text_1">Search</string>
+    <string name="tab_text_2">Manual</string>
 </resources>

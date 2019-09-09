@@ -13,10 +13,19 @@
             android:name=".MainActivity"
             android:label="@string/devices_activity_label">
             <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".AddNewDeviceActivity"
+            android:label="@string/add_new_device_label"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.hpled.zinia.MainActivity" />
         </activity>
     </application>
 

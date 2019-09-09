@@ -11,11 +11,8 @@ import androidx.lifecycle.AndroidViewModel
  */
 class AppPropertiesViewModel(app: Application) : AndroidViewModel(app) {
     private val context = getApplication<Application>().applicationContext
-    private val SHARED_PREFS_NAME = "APP_PROPERTIES"
     private val sharedPrefs = context.getSharedPreferences(SHARED_PREFS_NAME, 0)
     private val edit = sharedPrefs.edit()
-
-    private val NIGHTMODE_KEY = "NIGHTMODE"
 
     /**
      * Returns whether the app should be displayed in nightmode or not.
@@ -38,5 +35,10 @@ class AppPropertiesViewModel(app: Application) : AndroidViewModel(app) {
         (context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager).apply {
             nightMode = if(enabled)UiModeManager.MODE_NIGHT_YES else UiModeManager.MODE_NIGHT_NO
         }
+    }
+
+    companion object {
+        private const val SHARED_PREFS_NAME = "APP_PROPERTIES"
+        private const val NIGHTMODE_KEY = "NIGHTMODE"
     }
 }
