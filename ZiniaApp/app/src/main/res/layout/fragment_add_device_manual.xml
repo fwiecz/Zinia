@@ -18,9 +18,10 @@
             android:layout_weight="1"
             android:text="@string/device_ip_label" />
 
-        <ProgressBar
-            style="@style/ProgressBarSmall"
-            android:layout_width="40dp" />
+        <de.hpled.zinia.StatusIndicatorView
+            android:id="@+id/newDeviceIpStatus"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
 
     </LinearLayout>
 
@@ -47,10 +48,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/device_name_label" />
-
-        <ProgressBar
-            style="@style/ProgressBarSmall"
-            android:layout_width="40dp" />
 
     </LinearLayout>
 

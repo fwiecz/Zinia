@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="30dp" android:layout_height="30dp">
+
+    <ProgressBar android:id="@+id/statusIndicatorProgress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <ImageView android:id="@+id/statusIndicatorSuccess"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/material_check_circle"
+        android:tint="@color/colorStateSuccess"/>
+
+    <ImageView android:id="@+id/statusIndicatorError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/material_error_circle"
+        android:tint="@color/colorStateError"/>
+
+    <ImageView android:id="@+id/statusIndicatorUnknown"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/material_circle"
+        android:tint="@color/colorStateUnknown"/>
+
+</FrameLayout>

@@ -7,4 +7,7 @@
     <color name="colorTextPrimary">#FFFFFF</color>
     <color name="colorTextSecondary">#BEBEBE</color>
     <color name="colorTextTertiary">#808080</color>
+    <color name="colorStateSuccess">#83C741</color>
+    <color name="colorStateError">#D64242</color>
+    <color name="colorStateUnknown">#646464</color>
 </resources>

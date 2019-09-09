@@ -9,4 +9,7 @@
     <color name="colorTextSecondary">#646464</color>
     <color name="colorTextTertiary">#AFAFAF</color>
     <color name="colorDividerView">#808080</color>
+    <color name="colorStateSuccess">#45C417</color>
+    <color name="colorStateError">#D52D2D</color>
+    <color name="colorStateUnknown">#AAAAAA</color>
 </resources>
