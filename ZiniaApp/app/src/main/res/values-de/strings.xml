@@ -7,9 +7,12 @@
     <string name="add_new_device_label">Neues Gerät hinzufügen</string>
     <string name="add_label">Hinzufügen</string>
     <string name="cancel_label">Abbrechen</string>
-    <string name="device_ip_label">IP Adresse des Gerätes</string>
-    <string name="device_name_label">Name (optional)</string>
-    <string name="tab_text_1">Suche</string>
-    <string name="tab_text_2">Manuell</string>
+    <string name="device_ip_label">Gib die IP Adresse des Gerätes ein</string>
+    <string name="device_name_label">Gib dem Gerät einen Namen</string>
+    <string name="new_device_tab_text_1">Suche</string>
+    <string name="new_device_tab_text_2">Manuell</string>
     <string name="title_activity_add_new_device">AddNewDeviceActivity</string>
+    <string name="ip_address_hint">z.B. 192.168.188.XX</string>
+    <string name="new_device_name_hint">z.B. Schreibtisch Beleuchtung</string>
+    <string name="save_device_button_label">Gerät speichern</string>
 </resources>

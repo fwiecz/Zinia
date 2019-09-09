@@ -14,8 +14,8 @@ class NewDeviceMethodsPagerAdapter(private val context: Context, fm: FragmentMan
     FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     private val TAB_TITLES = arrayOf(
-        R.string.tab_text_1,
-        R.string.tab_text_2
+        R.string.new_device_tab_text_1,
+        R.string.new_device_tab_text_2
     )
 
     override fun getItem(position: Int): Fragment {

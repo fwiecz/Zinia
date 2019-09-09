@@ -6,9 +6,12 @@
     <string name="add_new_device_label">Add New Device</string>
     <string name="add_label">Add</string>
     <string name="cancel_label">Cancel</string>
-    <string name="device_ip_label">IP address of the device</string>
-    <string name="device_name_label">Name (optional)</string>
+    <string name="device_ip_label">Enter the IP Address of the device</string>
+    <string name="device_name_label">Give it a name</string>
     <string name="title_activity_add_new_device">AddNewDeviceActivity</string>
-    <string name="tab_text_1">Search</string>
-    <string name="tab_text_2">Manual</string>
+    <string name="new_device_tab_text_1">Search</string>
+    <string name="new_device_tab_text_2">Manual</string>
+    <string name="ip_address_hint">eg. 192.168.178.XX</string>
+    <string name="new_device_name_hint">eg. Desktop Lights</string>
+    <string name="save_device_button_label">Save Device</string>
 </resources>
