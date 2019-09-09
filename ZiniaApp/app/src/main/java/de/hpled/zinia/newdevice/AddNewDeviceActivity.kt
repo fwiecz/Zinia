@@ -1,10 +1,10 @@
-package de.hpled.zinia
+package de.hpled.zinia.newdevice
 
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
-import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
-import de.hpled.zinia.newdevice.NewDeviceMethodsPagerAdapter
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
+import de.hpled.zinia.R
 
 class AddNewDeviceActivity : AppCompatActivity() {
 

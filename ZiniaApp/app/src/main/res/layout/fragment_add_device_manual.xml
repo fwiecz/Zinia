@@ -18,7 +18,7 @@
             android:layout_weight="1"
             android:text="@string/device_ip_label" />
 
-        <de.hpled.zinia.StatusIndicatorView
+        <de.hpled.zinia.views.StatusIndicatorView
             android:id="@+id/newDeviceIpStatus"
             android:layout_width="30dp"
             android:layout_height="30dp"/>
@@ -30,6 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/ip_address_hint"
+        android:digits="@string/ip_allowed_digits"
         android:inputType="textPersonName" />
 
     <View

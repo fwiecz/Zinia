@@ -1,12 +1,12 @@
-package de.hpled.zinia
+package de.hpled.zinia.views
 
 import android.content.Context
-import android.os.Handler
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
+import de.hpled.zinia.R
 
 /**
  * Represents a status of something with a little circle. Four states are available:

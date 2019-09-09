@@ -14,4 +14,5 @@
     <string name="ip_address_hint">eg. 192.168.178.XX</string>
     <string name="new_device_name_hint">eg. Desktop Lights</string>
     <string name="save_device_button_label">Save Device</string>
+    <string name="ip_allowed_digits" translatable="false">0123456789.</string>
 </resources>
