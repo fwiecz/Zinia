@@ -37,20 +37,11 @@
         android:layout_width="match_parent"
         android:layout_height="12dp" />
 
-    <LinearLayout
+    <TextView
+        style="@style/DefaultTextViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            style="@style/DefaultTextViewStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/device_name_label" />
-
-    </LinearLayout>
+        android:text="@string/device_name_label" />
 
     <EditText
         android:id="@+id/newDeviceNameEditText"
@@ -58,6 +49,24 @@
         android:layout_height="wrap_content"
         android:hint="@string/new_device_name_hint"
         android:inputType="textPersonName" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="12dp" />
+
+    <TextView
+        style="@style/DefaultTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/new_device_num_leds_label" />
+
+    <EditText
+        android:id="@+id/newDeviceLedsEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/new_device_num_leds_hint"
+        android:inputType="number" />
 
     <View
         android:layout_width="match_parent"

@@ -15,4 +15,6 @@
     <string name="new_device_name_hint">eg. Desktop Lights</string>
     <string name="save_device_button_label">Save Device</string>
     <string name="ip_allowed_digits" translatable="false">0123456789.</string>
+    <string name="new_device_num_leds_label">How many LEDs has the device?</string>
+    <string name="new_device_num_leds_hint" translatable="false">1-9999</string>
 </resources>

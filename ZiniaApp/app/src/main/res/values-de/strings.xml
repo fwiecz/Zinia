@@ -15,4 +15,5 @@
     <string name="ip_address_hint">z.B. 192.168.188.XX</string>
     <string name="new_device_name_hint">z.B. Schreibtisch Beleuchtung</string>
     <string name="save_device_button_label">Gerät speichern</string>
+    <string name="new_device_num_leds_label">Wie viele LEDs hat das Gerät?</string>
 </resources>
