@@ -17,4 +17,7 @@
     <string name="ip_allowed_digits" translatable="false">0123456789.</string>
     <string name="new_device_num_leds_label">How many LEDs has the device?</string>
     <string name="new_device_num_leds_hint" translatable="false">1-9999</string>
+    <string name="delete_device_title">Delete Device</string>
+    <string name="delete_device_text">Are you sure you want to delete %1$s?</string>
+    <string name="delete_label">Delete</string>
 </resources>

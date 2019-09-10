@@ -24,7 +24,7 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
     private val database = Room.databaseBuilder(context, ApplicationDB::class.java, "app-database").build()
     private val deviceDao = database.deviceDao()
     private val handler = Handler()
-    val devices by lazy { deviceDao.findAllLiveData() }
+    val devices = deviceDao.findAllLiveData()
 
     /**
      * Stores the device in the database given by the intent.
@@ -41,6 +41,11 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
     }
+
+    /**
+     * Asynchronously Deletes the given device from the database.
+     */
+    fun deleteDevice(device: Device) = AsyncTask.execute { deviceDao.deleteAll(device) }
 
     companion object {
         private val newDeviceIntentFeatures = listOf(

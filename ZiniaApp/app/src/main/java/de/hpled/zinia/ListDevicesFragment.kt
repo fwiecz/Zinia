@@ -1,6 +1,6 @@
 package de.hpled.zinia
 
-import android.bluetooth.BluetoothClass
+import android.app.AlertDialog
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,13 +10,14 @@ import android.view.ViewGroup
 import android.widget.GridView
 import androidx.lifecycle.Observer
 import de.hpled.zinia.entities.Device
+import de.hpled.zinia.views.DeviceView
 import de.hpled.zinia.views.DeviceViewAdapter
 import java.lang.IllegalStateException
 
 
-class ListDevicesFragment : Fragment(), DevicesListChangedListener {
+class ListDevicesFragment : Fragment() {
 
-    val viewModel by lazy { ViewModelProviders.of(this).get(ListDevicesViewModel::class.java) }
+    val database by lazy { ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java) }
 
     val devicesAdapter by lazy {
         DeviceViewAdapter(context ?:
@@ -28,16 +29,34 @@ class ListDevicesFragment : Fragment(), DevicesListChangedListener {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.list_devices_fragment, container, false)
-        root.findViewById<GridView>(R.id.listDevicesGridView).adapter = devicesAdapter
+        root.findViewById<GridView>(R.id.listDevicesGridView).apply {
+            adapter = devicesAdapter
+            setOnItemLongClickListener { parent, view, position, id ->
+                initDeleteDialog(view as DeviceView)
+                true
+            }
+        }
+        database.devices.observe(this, Observer { devicesAdapter.devices = it })
         return root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel.devices.observe(this, Observer { devicesAdapter.devices = it })
+    private fun initDeleteDialog(view: DeviceView) {
+        AlertDialog.Builder(context, R.style.DefaultAlertDialogStyle).apply {
+            setTitle(context.getString(R.string.delete_device_title))
+            setMessage(context.getString(R.string.delete_device_text, view.device.name))
+            setPositiveButton(R.string.delete_label, {dialog, which ->
+                database.deleteDevice(view.device)
+            })
+            setNegativeButton(R.string.cancel_label, {dialog, which ->  })
+            create()
+            show()
+        }
     }
 
-    override fun onDevicesChanged(devices: List<Device>) {
-        viewModel.devices.value = devices
+    /**
+     * Updates the devices list by force.
+     */
+    fun updateDevices(list: List<Device>) {
+        devicesAdapter.devices = list
     }
 }

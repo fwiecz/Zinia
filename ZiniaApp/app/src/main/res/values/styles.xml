@@ -53,4 +53,12 @@
         <item name="android:textColor">@color/colorTextPrimary</item>
     </style>
 
+    <style name="DefaultAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="buttonStyle">@style/DarkButtonBarStyle</item>
+    </style>
+
+    <style name="DefaultButtonBarStyle">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
 </resources>

@@ -29,9 +29,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         appProperties.switchNightmode(appProperties.getNightmode())
-        appDatabaseViewModel.devices.observe(this, Observer {
-            listDevicesFragment.onDevicesChanged(it)
-        })
+        appDatabaseViewModel.devices.observe(this, Observer { listDevicesFragment.updateDevices(it)})
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
