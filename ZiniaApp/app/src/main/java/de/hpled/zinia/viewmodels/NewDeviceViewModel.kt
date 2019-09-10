@@ -1,9 +1,8 @@
-package de.hpled.zinia.newdevice
+package de.hpled.zinia.viewmodels
 
 import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.gson.Gson
 import de.hpled.zinia.services.DeviceDiscoverService
 import de.hpled.zinia.views.StatusIndicatorView.State
 import java.net.URL

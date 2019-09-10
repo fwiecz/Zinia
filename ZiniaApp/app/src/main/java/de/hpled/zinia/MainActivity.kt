@@ -7,9 +7,9 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import de.hpled.zinia.entities.Device
-import de.hpled.zinia.entities.DeviceType
+import de.hpled.zinia.fragments.ListDevicesFragment
 import de.hpled.zinia.newdevice.AddNewDeviceActivity
+import de.hpled.zinia.viewmodels.AppPropertiesViewModel
 
 class MainActivity : AppCompatActivity() {
 

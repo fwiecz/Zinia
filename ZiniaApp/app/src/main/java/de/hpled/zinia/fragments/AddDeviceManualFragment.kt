@@ -1,4 +1,4 @@
-package de.hpled.zinia.newdevice
+package de.hpled.zinia.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +12,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import de.hpled.zinia.R
 import de.hpled.zinia.entities.DeviceType
+import de.hpled.zinia.newdevice.NewDeviceListener
+import de.hpled.zinia.viewmodels.NewDeviceViewModel
 import de.hpled.zinia.views.StatusIndicatorView
 
 

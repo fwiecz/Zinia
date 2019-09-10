@@ -1,4 +1,4 @@
-package de.hpled.zinia
+package de.hpled.zinia.fragments
 
 import android.app.AlertDialog
 import androidx.lifecycle.ViewModelProviders
@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.GridView
 import androidx.lifecycle.Observer
+import de.hpled.zinia.ApplicationDbViewModel
+import de.hpled.zinia.R
 import de.hpled.zinia.entities.Device
 import de.hpled.zinia.views.DeviceView
 import de.hpled.zinia.views.DeviceViewAdapter
@@ -44,10 +46,10 @@ class ListDevicesFragment : Fragment() {
         AlertDialog.Builder(context, R.style.DefaultAlertDialogStyle).apply {
             setTitle(context.getString(R.string.delete_device_title))
             setMessage(context.getString(R.string.delete_device_text, view.device.name))
-            setPositiveButton(R.string.delete_label, {dialog, which ->
+            setPositiveButton(R.string.delete_label, { dialog, which ->
                 database.deleteDevice(view.device)
             })
-            setNegativeButton(R.string.cancel_label, {dialog, which ->  })
+            setNegativeButton(R.string.cancel_label, { dialog, which ->  })
             create()
             show()
         }

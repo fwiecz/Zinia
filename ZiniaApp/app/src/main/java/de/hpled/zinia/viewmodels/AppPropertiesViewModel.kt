@@ -1,4 +1,4 @@
-package de.hpled.zinia
+package de.hpled.zinia.viewmodels
 
 import android.app.Application
 import android.app.UiModeManager

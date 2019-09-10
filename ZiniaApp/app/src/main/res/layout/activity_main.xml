@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <fragment android:id="@+id/listDevicesFragment"
-        class="de.hpled.zinia.ListDevicesFragment"
+        class="de.hpled.zinia.fragments.ListDevicesFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

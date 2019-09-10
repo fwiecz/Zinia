@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import de.hpled.zinia.R
+import de.hpled.zinia.fragments.AddDeviceManualFragment
+import de.hpled.zinia.fragments.SearchDevicesFragment
 
 class NewDeviceMethodsPagerAdapter(private val context: Context, fm: FragmentManager) :
     FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
