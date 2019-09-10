@@ -14,8 +14,9 @@ import java.util.*
 
 class NewDeviceViewModel : ViewModel() {
 
+    val buttonIsClickable = MutableLiveData<Boolean>(false)
     val manualIpStatus = MutableLiveData<State>(State.UNKNOWN)
-    private val ipRegex = Regex("[\\d]+[.][\\d]+[.][\\d]+[.][\\d]+")
+    val ipRegex = Regex("[\\d]+[.][\\d]+[.][\\d]+[.][\\d]+")
     private var timer = Timer()
     private val gson = Gson()
     private val handler = Handler()

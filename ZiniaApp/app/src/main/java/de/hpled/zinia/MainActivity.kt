@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import de.hpled.zinia.entities.Device
 import de.hpled.zinia.entities.DeviceType
@@ -20,7 +21,6 @@ class MainActivity : AppCompatActivity() {
         ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java)
     }
 
-    private val database : ApplicationDB by lazy { appDatabaseViewModel.database }
     private val listDevicesFragment by lazy {
         supportFragmentManager.findFragmentById(R.id.listDevicesFragment) as ListDevicesFragment
     }
@@ -29,13 +29,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         appProperties.switchNightmode(appProperties.getNightmode())
-
-        // DEBUG
-        listDevicesFragment.onDevicesChanged(listOf(
-            Device.new("127.0.0.1", "Cupboard", 1, DeviceType.SINGLE_LED),
-            Device.new("192.168.178.51", "Desktop", 12, DeviceType.LED_CHAIN),
-            Device.new("XXX.XXX.XXX.XX", "TV Board", 20, DeviceType.LED_CHAIN)
-        ))
+        appDatabaseViewModel.devices.observe(this, Observer {
+            listDevicesFragment.onDevicesChanged(it)
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -66,9 +62,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode) {
-            NEW_DEVICE_REQUEST_CODE -> {
-
-            }
+            NEW_DEVICE_REQUEST_CODE -> { data?.run { appDatabaseViewModel.saveNewDevice(this) } }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }

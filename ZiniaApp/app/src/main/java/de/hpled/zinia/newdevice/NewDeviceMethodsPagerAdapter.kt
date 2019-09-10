@@ -9,6 +9,9 @@ import de.hpled.zinia.R
 class NewDeviceMethodsPagerAdapter(private val context: Context, fm: FragmentManager) :
     FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
+    val searchDevicesFragment by lazy { SearchDevicesFragment() }
+    val addDeviceManualFragment by lazy { AddDeviceManualFragment() }
+
     private val TAB_TITLES = arrayOf(
         R.string.new_device_tab_text_1,
         R.string.new_device_tab_text_2
@@ -16,8 +19,8 @@ class NewDeviceMethodsPagerAdapter(private val context: Context, fm: FragmentMan
 
     override fun getItem(position: Int): Fragment {
         return when(position) {
-            0 -> SearchDevicesFragment()
-            else -> AddDeviceManualFragment()
+            0 -> searchDevicesFragment
+            else -> addDeviceManualFragment
         }
     }
 

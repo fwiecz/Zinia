@@ -1,11 +1,14 @@
 package de.hpled.zinia.entities
 
 import androidx.annotation.NonNull
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 
 enum class DeviceType {
     SINGLE_LED,
-    LED_CHAIN
+    LED_CHAIN,
+    UNKNOWN
 }
 
 class DeviceTypeConverter {
@@ -36,7 +39,9 @@ data class Device (
 
 ) {
     companion object {
-        fun new(ip: String, name: String, numLeds: Int, type: DeviceType) : Device {
+        @JvmStatic
+        fun newInstance(
+            ip: String, name: String, numLeds: Int, type: DeviceType) : Device {
             return Device(0, ip, name, numLeds, type)
         }
     }
@@ -46,6 +51,9 @@ data class Device (
 interface DeviceDao {
     @Query("SELECT * FROM devices")
     fun findAll() : List<Device>
+
+    @Query("SELECT * FROM devices")
+    fun findAllLiveData() : LiveData<List<Device>>
 
     @Query("SELECT * FROM devices WHERE id = (:deviceId) LIMIT 1")
     fun findById(deviceId: Long) : Device

@@ -34,6 +34,7 @@
     <TextView
         android:id="@+id/device_view_name_label"
         style="@style/TitleTextViewStyle"
+        android:maxLines="2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"/>
@@ -41,6 +42,7 @@
     <TextView
         android:id="@+id/device_view_ip_label"
         style="@style/DefaultTextViewStyle"
+        android:maxLines="1"
         android:textSize="15sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -33,7 +33,7 @@ class DeviceTest {
     @Throws(Exception::class)
     fun createRemoveDevice() {
         assertTrue( dao.findAll().isEmpty() )
-        val device = Device.new("192.168.188.51", "TestDevice", 20, DeviceType.LED_CHAIN)
+        val device = Device.newInstance("192.168.188.51", "TestDevice", 20, DeviceType.LED_CHAIN)
         Log.d("TEST", device.toString())
         val id = dao.insert(device)
         assertTrue(dao.findAll().isNotEmpty())
