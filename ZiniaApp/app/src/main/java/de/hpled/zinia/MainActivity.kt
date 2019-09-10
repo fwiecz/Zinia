@@ -1,6 +1,8 @@
 package de.hpled.zinia
 
 import android.content.Intent
+import android.os.AsyncTask
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -13,6 +15,12 @@ class MainActivity : AppCompatActivity() {
     private val appProperties : AppPropertiesViewModel by lazy {
         ViewModelProviders.of(this).get(AppPropertiesViewModel::class.java)
     }
+
+    private val appDatabaseViewModel : ApplicationDbViewModel by lazy {
+        ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java)
+    }
+
+    private val database : ApplicationDB by lazy { appDatabaseViewModel.database }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
