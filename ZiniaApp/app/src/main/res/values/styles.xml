@@ -37,6 +37,17 @@
         <item name="android:backgroundTint">@color/colorTextSecondary</item>
     </style>
 
+    <style name="TitleTextViewStyle" parent="DefaultTextViewStyle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorTextPrimary</item>
+    </style>
+
+    <style name="SmallTextViewStyle" parent="DefaultTextViewStyle">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/colorTextTertiary</item>
+    </style>
+
     <style name="DefaultButtonStyle" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/card_background</item>
         <item name="android:textColor">@color/colorTextPrimary</item>

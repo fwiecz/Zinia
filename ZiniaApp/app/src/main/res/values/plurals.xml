@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="num_leds_label">
+        <item quantity="one">"%d LED"</item>
+        <item quantity="other">"%d LEDs"</item>
+    </plurals>
+</resources>

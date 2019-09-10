@@ -1,13 +1,13 @@
 package de.hpled.zinia
 
 import android.content.Intent
-import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
+import de.hpled.zinia.entities.Device
+import de.hpled.zinia.entities.DeviceType
 import de.hpled.zinia.newdevice.AddNewDeviceActivity
 
 class MainActivity : AppCompatActivity() {
@@ -21,11 +21,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val database : ApplicationDB by lazy { appDatabaseViewModel.database }
+    private val listDevicesFragment by lazy {
+        supportFragmentManager.findFragmentById(R.id.listDevicesFragment) as ListDevicesFragment
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         appProperties.switchNightmode(appProperties.getNightmode())
+
+        // DEBUG
+        listDevicesFragment.onDevicesChanged(listOf(
+            Device.new("127.0.0.1", "Cupboard", 1, DeviceType.SINGLE_LED),
+            Device.new("192.168.178.51", "Desktop", 12, DeviceType.LED_CHAIN),
+            Device.new("XXX.XXX.XXX.XX", "TV Board", 20, DeviceType.LED_CHAIN)
+        ))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
