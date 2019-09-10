@@ -1,14 +1,11 @@
 package de.hpled.zinia.newdevice
 
-import android.os.AsyncTask
 import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
+import de.hpled.zinia.services.DeviceDiscoverService
 import de.hpled.zinia.views.StatusIndicatorView.State
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.lang.Exception
 import java.net.URL
 import java.util.*
 
@@ -18,7 +15,6 @@ class NewDeviceViewModel : ViewModel() {
     val manualIpStatus = MutableLiveData<State>(State.UNKNOWN)
     val ipRegex = Regex("[\\d]+[.][\\d]+[.][\\d]+[.][\\d]+")
     private var timer = Timer()
-    private val gson = Gson()
     private val handler = Handler()
 
     fun checkForManualIP(ipAddress: String) {
@@ -34,23 +30,14 @@ class NewDeviceViewModel : ViewModel() {
     private fun asyncHttpRequest(ip: String) {
         val url = URL("http://$ip/prefs")
         handler.post { manualIpStatus.value = State.LOADING }
-        AsyncTask.execute {
-            val connection = url.openConnection().apply {
-                connectTimeout = connectionTimeOute
-                readTimeout = connectionTimeOute
-                doOutput = true
-            }
-            try {
-                connection.connect()
-                val reader = BufferedReader(InputStreamReader(connection.getInputStream()))
-                val response = gson.fromJson<Map<String, String>>(reader.readText(), Map::class.java)
+
+        DeviceDiscoverService.request(url,
+            success = {
                 handler.post { manualIpStatus.value = State.SUCCESS }
-                // TODO handle response
-            } catch (e: Exception) {
-                e.printStackTrace()
+            },
+            error = {
                 handler.post { manualIpStatus.value = State.ERROR }
-            }
-        }
+            })
     }
 
     companion object {
