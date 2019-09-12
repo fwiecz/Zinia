@@ -13,14 +13,14 @@ import androidx.lifecycle.ViewModelProviders
 import de.hpled.zinia.R
 import de.hpled.zinia.entities.DeviceType
 import de.hpled.zinia.newdevice.NewDeviceListener
-import de.hpled.zinia.viewmodels.NewDeviceViewModel
+import de.hpled.zinia.viewmodels.AddDeviceManualViewModel
 import de.hpled.zinia.views.StatusIndicatorView
 
 
 class AddDeviceManualFragment : Fragment() {
 
-    private val viewModel : NewDeviceViewModel by lazy {
-        ViewModelProviders.of(this).get(NewDeviceViewModel::class.java)
+    private val viewModel : AddDeviceManualViewModel by lazy {
+        ViewModelProviders.of(this).get(AddDeviceManualViewModel::class.java)
     }
 
     private lateinit var root : View
@@ -35,6 +35,11 @@ class AddDeviceManualFragment : Fragment() {
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         root = inflater.inflate(R.layout.fragment_add_device_manual, container, false)
+        return root
+    }
+
+    override fun onStart() {
+        super.onStart()
         viewModel.manualIpStatus.observe(this, Observer { ipStatus.status = it })
         viewModel.buttonIsClickable.observe(this, Observer {
             saveButton.isEnabled = it
@@ -47,7 +52,6 @@ class AddDeviceManualFragment : Fragment() {
         nameEdit.addTextChangedListener { checkIfFieldsAreValid() }
         numLedsEdit.addTextChangedListener { checkIfFieldsAreValid() }
         saveButton.setOnClickListener { saveDevice() }
-        return root
     }
 
     private fun checkIfFieldsAreValid() {

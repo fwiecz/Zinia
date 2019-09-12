@@ -5,10 +5,13 @@ import android.os.Handler
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.BaseAdapter
+import android.widget.LinearLayout
+import android.widget.TextView
 import de.hpled.zinia.R
+import de.hpled.zinia.dto.DeviceStatusDTO
 import de.hpled.zinia.entities.Device
-import de.hpled.zinia.services.DeviceDiscoverService
+import de.hpled.zinia.services.HttpRequestService
 import java.net.URL
 
 class DeviceView(c: Context, attr: AttributeSet?) : LinearLayout(c, attr) {
@@ -37,15 +40,17 @@ class DeviceView(c: Context, attr: AttributeSet?) : LinearLayout(c, attr) {
     }
 
     fun checkConnection() {
-        val url = URL("http://${device.ipAddress}/prefs")
+        val url = URL("http://${device.ipAddress}/")
         status.status = StatusIndicatorView.State.LOADING
-        DeviceDiscoverService.request(url,
+        HttpRequestService.request<DeviceStatusDTO>(url,
             success = {
                 mHandler.post { status.status = StatusIndicatorView.State.SUCCESS }
             },
             error = {
                 mHandler.post { status.status = StatusIndicatorView.State.ERROR }
-            })
+            },
+            responseType = DeviceStatusDTO::class.java
+        )
     }
 }
 

@@ -10,7 +10,7 @@ import de.hpled.zinia.R
 
 /**
  * Represents a status of something with a little circle. Four states are available:
- * unknown, loading, success and error.
+ * unknown, loading, onSuccess and onError.
  */
 class StatusIndicatorView(c: Context, attr: AttributeSet?) : FrameLayout(c, attr) {
 

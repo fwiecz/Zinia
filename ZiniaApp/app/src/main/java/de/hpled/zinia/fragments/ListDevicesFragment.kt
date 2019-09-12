@@ -1,37 +1,46 @@
 package de.hpled.zinia.fragments
 
 import android.app.AlertDialog
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.GridView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import de.hpled.zinia.ApplicationDbViewModel
 import de.hpled.zinia.R
 import de.hpled.zinia.entities.Device
 import de.hpled.zinia.views.DeviceView
 import de.hpled.zinia.views.DeviceViewAdapter
-import java.lang.IllegalStateException
 
 
 class ListDevicesFragment : Fragment() {
 
-    val database by lazy { ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java) }
-
-    val devicesAdapter by lazy {
-        DeviceViewAdapter(context ?:
-        throw IllegalStateException("ListDevicesFragment has no context initialized"))
+    private val database by lazy {
+        ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java)
+    }
+    private lateinit var root: FrameLayout
+    private val gridView by lazy { root.findViewById<GridView>(R.id.listDevicesGridView) }
+    private val devicesAdapter by lazy {
+        DeviceViewAdapter(
+            context ?: throw IllegalStateException("ListDevicesFragment has no context initialized")
+        )
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.list_devices_fragment, container, false)
-        root.findViewById<GridView>(R.id.listDevicesGridView).apply {
+        root = inflater.inflate(R.layout.list_devices_fragment, container, false) as FrameLayout
+        return root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        gridView.apply {
             adapter = devicesAdapter
             setOnItemLongClickListener { parent, view, position, id ->
                 initDeleteDialog(view as DeviceView)
@@ -39,7 +48,6 @@ class ListDevicesFragment : Fragment() {
             }
         }
         database.devices.observe(this, Observer { devicesAdapter.devices = it })
-        return root
     }
 
     private fun initDeleteDialog(view: DeviceView) {
@@ -49,7 +57,7 @@ class ListDevicesFragment : Fragment() {
             setPositiveButton(R.string.delete_label, { dialog, which ->
                 database.deleteDevice(view.device)
             })
-            setNegativeButton(R.string.cancel_label, { dialog, which ->  })
+            setNegativeButton(R.string.cancel_label, { dialog, which -> })
             create()
             show()
         }

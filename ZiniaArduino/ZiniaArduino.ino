@@ -32,8 +32,8 @@ const char* applicationJson = "application/json";
 // Whether the leds should be on or not
 int isOn = 1;
 
-// Positions: numLights: 14-17, isOn: 27
-char* statusMsg = "{\"numLights\":\"    \",\"isOn\": }";
+// Positions: numLights: 12-15, isOn: 25
+char* statusMsg = "{\"numLeds\":\"    \",\"isOn\": }";
 
 void setup() {
   pinMode(LED_DATA, OUTPUT);
@@ -66,11 +66,11 @@ void setup() {
 
 // The Status Message containing software/hardware information.
 void sendStatus() {
-  statusMsg[14] = ascii((NUM_LEDS / 1000) % 10);
-  statusMsg[15] = ascii((NUM_LEDS / 100) % 10);
-  statusMsg[16] = ascii((NUM_LEDS / 10) % 10);
-  statusMsg[17] = ascii(NUM_LEDS % 10);
-  statusMsg[27] = ascii(isOn);
+  statusMsg[12] = ascii((NUM_LEDS / 1000) % 10);
+  statusMsg[13] = ascii((NUM_LEDS / 100) % 10);
+  statusMsg[14] = ascii((NUM_LEDS / 10) % 10);
+  statusMsg[15] = ascii(NUM_LEDS % 10);
+  statusMsg[25] = ascii(isOn);
   server.send(200, applicationJson, statusMsg);
 }
 

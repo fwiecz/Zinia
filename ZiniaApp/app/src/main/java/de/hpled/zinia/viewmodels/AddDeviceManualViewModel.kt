@@ -1,21 +1,29 @@
 package de.hpled.zinia.viewmodels
 
+import android.app.Application
+import android.os.AsyncTask
 import android.os.Handler
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import de.hpled.zinia.services.DeviceDiscoverService
+import de.hpled.zinia.dto.DeviceStatusDTO
+import de.hpled.zinia.services.HttpRequestService
+import de.hpled.zinia.services.IpAddressService
 import de.hpled.zinia.views.StatusIndicatorView.State
 import java.net.URL
 import java.util.*
 
-class NewDeviceViewModel : ViewModel() {
-
+class AddDeviceManualViewModel : ViewModel() {
     val buttonIsClickable = MutableLiveData<Boolean>(false)
     val manualIpStatus = MutableLiveData<State>(State.UNKNOWN)
     val ipRegex = Regex("[\\d]+[.][\\d]+[.][\\d]+[.][\\d]+")
     private var timer = Timer()
     private val handler = Handler()
 
+    /**
+     * After the entered IP address was changed, [keyTypedCheckDelay] ms needs to pass without any
+     * changes before the IP address will be checked.
+     */
     fun checkForManualIP(ipAddress: String) {
         if(ipAddress.matches(ipRegex)) {
             timer.cancel()
@@ -27,21 +35,23 @@ class NewDeviceViewModel : ViewModel() {
     }
 
     private fun asyncHttpRequest(ip: String) {
-        val url = URL("http://$ip/prefs")
+        val url = URL("http://$ip/")
         handler.post { manualIpStatus.value = State.LOADING }
 
-        DeviceDiscoverService.request(url,
+        HttpRequestService.request<DeviceStatusDTO>(url,
             success = {
                 handler.post { manualIpStatus.value = State.SUCCESS }
             },
             error = {
                 handler.post { manualIpStatus.value = State.ERROR }
-            })
+            },
+            responseType = DeviceStatusDTO::class.java,
+            timeout = connectionTimeOut
+        )
     }
 
     companion object {
         private const val keyTypedCheckDelay = 1200L
-        private const val connectionTimeOute = 2000
+        private const val connectionTimeOut = 2000
     }
-
 }
