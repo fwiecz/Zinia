@@ -23,6 +23,7 @@ class AddNewDeviceActivity : AppCompatActivity(), NewDeviceListener{
         tabs.setupWithViewPager(viewPager)
 
         sectionsPagerAdapter.addDeviceManualFragment.newDeviceListener += this
+        sectionsPagerAdapter.searchDevicesFragment.newDeviceListener += this
     }
 
     override fun onNewDevice(ip: String, name: String, numLeds: Int, type: DeviceType) {
