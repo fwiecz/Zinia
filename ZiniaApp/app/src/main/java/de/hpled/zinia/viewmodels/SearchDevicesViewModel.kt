@@ -9,6 +9,11 @@ import de.hpled.zinia.dto.DeviceStatusDTO
 import de.hpled.zinia.services.HttpRequestService
 import de.hpled.zinia.services.IpAddressService
 import java.net.URL
+import java.util.concurrent.BlockingQueue
+import java.util.concurrent.ScheduledThreadPoolExecutor
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
+import kotlin.math.min
 
 class SearchDevicesViewModel(app: Application) : AndroidViewModel(app) {
     private val handler = Handler()
@@ -17,6 +22,7 @@ class SearchDevicesViewModel(app: Application) : AndroidViewModel(app) {
     private var finishedSearchingCounter = 0
     private lateinit var ownIpAddress: String
     private lateinit var ipPrefix: String
+    private val executor by lazy { ScheduledThreadPoolExecutor(ipSearchesTotal) }
     val isSearching = MutableLiveData<Boolean>(false)
     val onDeviceDiscoveredListener = mutableListOf<OnDeviceDiscoveredListener>()
 
@@ -28,16 +34,17 @@ class SearchDevicesViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun countSearch() {
-        finishedSearchingCounter ++
-        if(finishedSearchingCounter >= ipSearchesTotal) {
+        finishedSearchingCounter++
+        if (finishedSearchingCounter >= ipSearchesTotal) {
             handler.post { isSearching.value = false }
         }
     }
 
-    private fun asyncSearchForOneDevice(ipEnding: Int) {
+    private fun runnableSearchForOneDevice(ipEnding: Int): Runnable {
         val ip = ipPrefix + ipEnding
         val url = URL("http://$ip/")
-        HttpRequestService.request<DeviceStatusDTO>(url,
+        return HttpRequestService.requestToRunnable<DeviceStatusDTO>(
+            url,
             success = { response ->
                 countSearch()
                 handler.post {
@@ -47,7 +54,8 @@ class SearchDevicesViewModel(app: Application) : AndroidViewModel(app) {
             error = {
                 countSearch()
             },
-            responseType = DeviceStatusDTO::class.java
+            responseType = DeviceStatusDTO::class.java,
+            timeout = connectionTimeout
         )
     }
 
@@ -56,13 +64,21 @@ class SearchDevicesViewModel(app: Application) : AndroidViewModel(app) {
      * [OnDeviceDiscoveredListener] will be triggered.
      */
     fun searchForDevices() {
-        if(isSearching.value == false) {
+        if (isSearching.value == false) {
             isSearching.value = true
             finishedSearchingCounter = 0
-            (ipSearchRange.first .. ipSearchRange.second).forEachIndexed { index, ipEnd ->
-                asyncSearchForOneDevice(ipEnd)
+            (ipSearchRange.first..ipSearchRange.second).forEachIndexed { index, ipEnd ->
+                executor.schedule(
+                    runnableSearchForOneDevice(ipEnd),
+                    index * 20L,
+                    TimeUnit.MILLISECONDS
+                )
             }
         }
+    }
+
+    companion object {
+        private const val connectionTimeout = 2000
     }
 
     interface OnDeviceDiscoveredListener {

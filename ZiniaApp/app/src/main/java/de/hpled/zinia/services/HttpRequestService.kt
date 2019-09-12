@@ -21,14 +21,18 @@ class HttpRequestService {
         private val gson = Gson()
         private const val TAG = "HttpRequestService"
 
+        /**
+         * Creates a simple http request.
+         * @return The request as Runnable
+         */
         @JvmStatic
-        fun <T> request(
+        fun <T>requestToRunnable(
             url: URL,
             responseListener: OnResponseListener<T>,
             responseType: Type = Any::class.java,
             timeout: Int = 2000
-        ) {
-            AsyncTask.execute {
+        ) : Runnable {
+            return Runnable {
                 val connection = url.openConnection().apply {
                     connectTimeout = timeout
                     readTimeout = timeout
@@ -46,6 +50,46 @@ class HttpRequestService {
             }
         }
 
+        /**
+         * Creates a simple request and runs it on a background Thread via [AsyncTask.execute].
+         */
+        @JvmStatic
+        fun <T> request(
+            url: URL,
+            responseListener: OnResponseListener<T>,
+            responseType: Type = Any::class.java,
+            timeout: Int = 2000
+        ) {
+            AsyncTask.execute {
+                requestToRunnable(url, responseListener, responseType, timeout).run()
+            }
+        }
+
+        /**
+         * Creates a simple http request.
+         * @return The request as Runnable
+         */
+        @JvmStatic
+        fun <T> requestToRunnable(
+            url: URL,
+            success: (T) -> Unit,
+            error: () -> Unit,
+            responseType: Type = Any::class.java,
+            timeout: Int = 2000
+        ) : Runnable {
+            return requestToRunnable(url, object : OnResponseListener<T> {
+                override fun onSuccess(response: T) {
+                    success(response)
+                }
+                override fun onError() {
+                    error()
+                }
+            }, responseType, timeout)
+        }
+
+        /**
+         * Creates a simple request and runs it on a background Thread via [AsyncTask.execute].
+         */
         @JvmStatic
         fun <T> request(
             url: URL,
