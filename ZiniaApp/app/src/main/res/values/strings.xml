@@ -20,4 +20,5 @@
     <string name="delete_device_title">Delete Device</string>
     <string name="delete_device_text">Are you sure you want to delete %1$s?</string>
     <string name="delete_label">Delete</string>
+    <string name="ip_address_label" translatable="false">IP: %1$s</string>
 </resources>

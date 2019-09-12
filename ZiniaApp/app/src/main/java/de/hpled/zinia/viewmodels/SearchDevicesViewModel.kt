@@ -25,6 +25,7 @@ class SearchDevicesViewModel(app: Application) : AndroidViewModel(app) {
     private val executor by lazy { ScheduledThreadPoolExecutor(ipSearchesTotal) }
     val isSearching = MutableLiveData<Boolean>(false)
     val onDeviceDiscoveredListener = mutableListOf<OnDeviceDiscoveredListener>()
+    val discoveredDevices = MutableLiveData<List<DeviceStatusDTO>>(listOf())
 
     init {
         AsyncTask.execute {
@@ -67,6 +68,7 @@ class SearchDevicesViewModel(app: Application) : AndroidViewModel(app) {
         if (isSearching.value == false) {
             isSearching.value = true
             finishedSearchingCounter = 0
+            discoveredDevices.value = listOf()
             (ipSearchRange.first..ipSearchRange.second).forEachIndexed { index, ipEnd ->
                 executor.schedule(
                     runnableSearchForOneDevice(ipEnd),

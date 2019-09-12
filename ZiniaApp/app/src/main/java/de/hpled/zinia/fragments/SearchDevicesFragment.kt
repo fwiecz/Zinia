@@ -14,6 +14,8 @@ import de.hpled.zinia.R
 import de.hpled.zinia.dto.DeviceStatusDTO
 import de.hpled.zinia.viewmodels.AddDeviceManualViewModel
 import de.hpled.zinia.viewmodels.SearchDevicesViewModel
+import de.hpled.zinia.views.DeviceDtoViewAdapter
+import java.lang.IllegalStateException
 
 /**
  * The Fragment that shows devices in same local network
@@ -26,6 +28,10 @@ class SearchDevicesFragment : Fragment(), SearchDevicesViewModel.OnDeviceDiscove
     private lateinit var root: FrameLayout
     private val swipeRefresh by lazy { root.findViewById<SwipeRefreshLayout>(R.id.discoverDevicesSwipeRefresh) }
     private val listView by lazy { root.findViewById<ListView>(R.id.discoverDevicesListView) }
+    private val adapter by lazy {
+        DeviceDtoViewAdapter(context ?:
+        throw IllegalStateException("SearchDevicesFragments context has not been initialized."))
+    }
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -39,11 +45,14 @@ class SearchDevicesFragment : Fragment(), SearchDevicesViewModel.OnDeviceDiscove
         swipeRefresh.setOnRefreshListener { viewmodel.searchForDevices() }
         viewmodel.onDeviceDiscoveredListener += this
         viewmodel.isSearching.observe(this, Observer { swipeRefresh.isRefreshing = it })
+        viewmodel.discoveredDevices.observe(this, Observer { adapter.deviceDtoList = it })
+        listView.adapter = adapter
     }
 
     override fun onDeviceDiscovered(dto: DeviceStatusDTO, ip: String) {
-        println("FOUND DEVICE $ip: $dto")
-        // TODO display device
+        dto.ip = ip
+        val ls = (viewmodel.discoveredDevices.value as List<DeviceStatusDTO>) + dto
+        viewmodel.discoveredDevices.value = ls
     }
 
     override fun onStop() {
