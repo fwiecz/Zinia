@@ -8,4 +8,11 @@
     android:background="@color/colorBackground"
     tools:context=".DeviceActivity">
 
+    <fragment
+        android:id="@+id/colololo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        class="de.hpled.zinia.fragments.ColorPickerFragment"/>
+
 </LinearLayout>

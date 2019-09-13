@@ -21,8 +21,8 @@ class DeviceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_device)
-        device = intent.getSerializableExtra(INTENT_DEVICE) as Device
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        device = intent.getSerializableExtra(INTENT_DEVICE) as Device
         supportActionBar?.title = device.name
     }
 
@@ -42,9 +42,9 @@ class DeviceActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId) {
-            R.id.deviceDeleteOption -> { onDeleteDevice() }
+            R.id.deviceDeleteOption -> onDeleteDevice()
         }
-        return true
+        return super.onOptionsItemSelected(item)
     }
 
     private fun onDeleteDevice() {

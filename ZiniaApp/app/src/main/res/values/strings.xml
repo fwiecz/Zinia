@@ -26,4 +26,7 @@
     <string name="no_devices_found_text">Couldn\'t find any devices.</string>
     <string name="navigation_devices_label">Devices</string>
     <string name="navigation_moods_label">Moods</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
