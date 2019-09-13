@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/deviceOnOffSwitchMenuItem"
+        android:title=""
+        app:showAsAction="always"
+        android:actionLayout="@layout/layout_device_on_off_switch"/>
+
+</menu>
