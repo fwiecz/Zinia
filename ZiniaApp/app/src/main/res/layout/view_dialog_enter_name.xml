@@ -11,5 +11,6 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
+        style="@style/DefaultEditTextStyleLight"
         android:hint="@string/new_device_name_hint"/>
 </LinearLayout>
