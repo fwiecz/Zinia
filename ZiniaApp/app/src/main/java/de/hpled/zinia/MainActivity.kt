@@ -7,6 +7,11 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import de.hpled.zinia.fragments.ListDevicesFragment
 import de.hpled.zinia.newdevice.AddNewDeviceActivity
 import de.hpled.zinia.viewmodels.AppPropertiesViewModel
@@ -17,19 +22,17 @@ class MainActivity : AppCompatActivity() {
         ViewModelProviders.of(this).get(AppPropertiesViewModel::class.java)
     }
 
-    private val appDatabaseViewModel : ApplicationDbViewModel by lazy {
-        ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java)
-    }
+    private val navigationFragment by lazy { findNavController(R.id.nav_host_fragment)}
 
-    private val listDevicesFragment by lazy {
-        supportFragmentManager.findFragmentById(R.id.listDevicesFragment) as ListDevicesFragment
-    }
+    private val bottomNavigation by lazy { findViewById<BottomNavigationView>(R.id.homeBottomNavigation) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         appProperties.switchNightmode(appProperties.getNightmode())
-        appDatabaseViewModel.devices.observe(this, Observer { listDevicesFragment.updateDevices(it)})
+        val appBarConfiguration = AppBarConfiguration(appBarConfSet)
+        setupActionBarWithNavController(navigationFragment, appBarConfiguration)
+        bottomNavigation.setupWithNavController(navigationFragment)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -49,23 +52,14 @@ class MainActivity : AppCompatActivity() {
                     item.isChecked = !item.isChecked
                     appProperties.setNightmode(item.isChecked)
                 }
-                R.id.main_options_menu_new_device -> {
-                    val intent = Intent(applicationContext, AddNewDeviceActivity::class.java)
-                    startActivityForResult(intent, NEW_DEVICE_REQUEST_CODE)
-                }
             }
         }
         return true
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
-            NEW_DEVICE_REQUEST_CODE -> { data?.run { appDatabaseViewModel.saveNewDevice(this) } }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
     companion object {
-        private const val NEW_DEVICE_REQUEST_CODE = 0
+        private val appBarConfSet = setOf(
+            R.id.navigation_devices, R.id.navigation_dashboard
+        )
     }
 }

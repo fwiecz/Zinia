@@ -4,7 +4,4 @@
         android:id="@+id/main_options_menu_nightmode"
         android:checkable="true"
         android:title="@string/nightmode_title" />
-    <item
-        android:id="@+id/main_options_menu_new_device"
-        android:title="@string/add_new_device_label" />
 </menu>

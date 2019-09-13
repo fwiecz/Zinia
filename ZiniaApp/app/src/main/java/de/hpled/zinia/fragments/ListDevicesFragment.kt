@@ -1,6 +1,7 @@
 package de.hpled.zinia.fragments
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -14,9 +15,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hpled.zinia.ApplicationDbViewModel
 import de.hpled.zinia.R
 import de.hpled.zinia.entities.Device
+import de.hpled.zinia.newdevice.AddNewDeviceActivity
 import de.hpled.zinia.views.DeviceView
 import de.hpled.zinia.views.DeviceViewAdapter
 import java.util.concurrent.ScheduledThreadPoolExecutor
@@ -36,6 +39,9 @@ class ListDevicesFragment : Fragment() {
     }
     private val swipeRefresh by lazy {
         root.findViewById<SwipeRefreshLayout>(R.id.listDevicesSwipeRefresh)
+    }
+    private val addDeviceButton by lazy {
+        root.findViewById<FloatingActionButton>(R.id.addNewDeviceButton)
     }
     private val executor = ScheduledThreadPoolExecutor(5)
 
@@ -59,6 +65,10 @@ class ListDevicesFragment : Fragment() {
         database.devices.observe(this, Observer { devicesAdapter.devices = it })
         gridView.setOnHierarchyChangeListener(onAttachStateChangeLister)
         swipeRefresh.setOnRefreshListener { testConnectionForAllDevices() }
+        addDeviceButton.setOnClickListener {
+            val intent = Intent(context, AddNewDeviceActivity::class.java)
+            startActivityForResult(intent, NEW_DEVICE_REQUEST_CODE)
+        }
     }
 
     private val onAttachStateChangeLister = object : ViewGroup.OnHierarchyChangeListener {
@@ -93,10 +103,20 @@ class ListDevicesFragment : Fragment() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(requestCode) {
+            NEW_DEVICE_REQUEST_CODE -> { data?.run { database.saveNewDevice(this) } }
+        }
+    }
+
     /**
      * Updates the devices list by force.
      */
     fun updateDevices(list: List<Device>) {
         devicesAdapter.devices = list
+    }
+
+    companion object {
+        private const val NEW_DEVICE_REQUEST_CODE = 0
     }
 }
