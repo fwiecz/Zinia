@@ -6,11 +6,13 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import de.hpled.zinia.R
 import de.hpled.zinia.dto.DeviceStatusDTO
 import de.hpled.zinia.entities.Device
+import de.hpled.zinia.entities.DeviceType
 import de.hpled.zinia.services.HttpRequestService
 import java.net.URL
 
@@ -23,6 +25,7 @@ class DeviceView(c: Context, attr: AttributeSet?) : LinearLayout(c, attr) {
     private val nameLabel by lazy { findViewById<TextView>(R.id.device_view_name_label) }
     private val numLedLabel by lazy { findViewById<TextView>(R.id.device_view_num_leds_label) }
     private val status by lazy { findViewById<StatusIndicatorView>(R.id.device_view_status_indicator) }
+    private val icon by lazy { findViewById<ImageView>(R.id.device_view_icon) }
     private val mHandler = Handler()
 
     init {
@@ -36,6 +39,7 @@ class DeviceView(c: Context, attr: AttributeSet?) : LinearLayout(c, attr) {
         val leds = device.numLeds
         numLedLabel.text = context.resources.getQuantityString(R.plurals.num_leds_label, leds, leds)
         status.status = StatusIndicatorView.State.UNKNOWN
+        icon.setImageDrawable(getIcon(device.type))
     }
 
     fun checkConnectionRunnable() : Runnable {
@@ -50,6 +54,12 @@ class DeviceView(c: Context, attr: AttributeSet?) : LinearLayout(c, attr) {
             },
             responseType = DeviceStatusDTO::class.java
         )
+    }
+
+    private fun getIcon(type: DeviceType) = when(type) {
+        DeviceType.LED_CHAIN -> context.getDrawable(R.drawable.led_strip_icon)
+        DeviceType.SINGLE_LED -> context.getDrawable(R.drawable.single_led_icon)
+        else -> null
     }
 }
 
