@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hpled.zinia.ApplicationDbViewModel
+import de.hpled.zinia.DeviceActivity
 import de.hpled.zinia.R
 import de.hpled.zinia.entities.Device
 import de.hpled.zinia.newdevice.AddNewDeviceActivity
@@ -61,6 +62,9 @@ class ListDevicesFragment : Fragment() {
                 initDeleteDialog(view as DeviceView)
                 true
             }
+            setOnItemClickListener { parent, view, position, id ->
+                startDeviceActivity((view as? DeviceView)?.device)
+            }
         }
         database.devices.observe(this, Observer { devicesAdapter.devices = it })
         gridView.setOnHierarchyChangeListener(onAttachStateChangeLister)
@@ -100,6 +104,14 @@ class ListDevicesFragment : Fragment() {
             setNegativeButton(R.string.cancel_label, { dialog, which -> })
             create()
             show()
+        }
+    }
+
+    private fun startDeviceActivity(device: Device?) {
+        if(device != null) {
+            val intent = Intent(context, DeviceActivity::class.java)
+            intent.putExtra(DeviceActivity.INTENT_DEVICE, device)
+            startActivity(intent)
         }
     }
 

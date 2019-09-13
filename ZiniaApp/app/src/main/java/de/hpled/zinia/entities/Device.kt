@@ -4,6 +4,7 @@ import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.*
+import java.io.Serializable
 
 enum class DeviceType {
     SINGLE_LED,
@@ -37,7 +38,7 @@ data class Device (
     @ColumnInfo(name = "type")
     val type: DeviceType
 
-) {
+) : Serializable {
     companion object {
         @JvmStatic
         fun newInstance(
