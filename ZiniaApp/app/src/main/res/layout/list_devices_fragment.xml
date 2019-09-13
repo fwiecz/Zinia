@@ -5,12 +5,19 @@
     android:layout_height="match_parent"
     tools:context=".fragments.ListDevicesFragment">
 
-    <GridView
-        android:id="@+id/listDevicesGridView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/listDevicesSwipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:columnWidth="150dp"
-        android:numColumns="auto_fit"
-        android:layout_margin="5dp"/>
+        android:layout_height="match_parent">
+
+        <GridView
+            android:id="@+id/listDevicesGridView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnWidth="150dp"
+            android:numColumns="auto_fit"
+            android:layout_margin="5dp"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </FrameLayout>

@@ -36,13 +36,12 @@ class DeviceView(c: Context, attr: AttributeSet?) : LinearLayout(c, attr) {
         val leds = device.numLeds
         numLedLabel.text = context.resources.getQuantityString(R.plurals.num_leds_label, leds, leds)
         status.status = StatusIndicatorView.State.UNKNOWN
-        checkConnection()
     }
 
-    fun checkConnection() {
+    fun checkConnectionRunnable() : Runnable {
         val url = URL("http://${device.ipAddress}/")
         status.status = StatusIndicatorView.State.LOADING
-        HttpRequestService.request<DeviceStatusDTO>(url,
+        return HttpRequestService.requestToRunnable<DeviceStatusDTO>(url,
             success = {
                 mHandler.post { status.status = StatusIndicatorView.State.SUCCESS }
             },
