@@ -2,6 +2,7 @@
 #include <WiFiClient.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include "src/LedManager/LedManager.h"
 
 // How many LEDs are connected?
 #define NUM_LEDS 16
@@ -25,12 +26,18 @@ Adafruit_NeoPixel pixel = Adafruit_NeoPixel(NUM_LEDS, LED_DATA, NEO_GRB + NEO_KH
 // The server object is responsible for handling incoming http requests.
 ESP8266WebServer server(80);
 
+// The LedManager takes care of color buffers and interpolation and so on.
+LedManager manager = LedManager(NUM_LEDS);
+
 const char* empty = "";
 const char* textPlain = "text/plain";
 const char* applicationJson = "application/json";
 
 // Whether the leds should be on or not
 int isOn = 1;
+
+// How fast colors should change
+float colorSpeed = 0.01f;
 
 // Positions: numLights: 12-15, isOn: 25
 char* statusMsg = "{\"numLeds\":\"    \",\"isOn\": }";
@@ -100,6 +107,13 @@ int ascii(int num) {
   return num + 48;
 }
 
+void updatePixels() {
+  for(int i=0; i<NUM_LEDS; i++) {
+    pixel.setPixelColor(i, manager.getRed(i), manager.getGreen(i), manager.getBlue(i));
+  }
+  pixel.show();
+}
+
 void loop() {
   if(WiFi.status() != WL_CONNECTED) { // If no connection, turn the info led on
     digitalWrite(INFO_LED, LOW);
@@ -109,4 +123,8 @@ void loop() {
     digitalWrite(INFO_LED, HIGH);
     server.handleClient();
   }
+
+  bool newRowRequired = manager.update(colorSpeed);
+  updatePixels();
+
 }
