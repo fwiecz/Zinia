@@ -8,9 +8,22 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <fragment android:id="@+id/listDevicesFragment"
-        class="de.hpled.zinia.fragments.ListDevicesFragment"
+    <fragment
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/home_navigation" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/homeBottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:itemIconTint="@color/colorTextSecondary"
+        app:itemTextColor="@color/colorTextSecondary"
+        app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>
