@@ -2,6 +2,7 @@ package de.hpled.zinia.fragments
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -95,15 +96,10 @@ class ListDevicesFragment : Fragment() {
     }
 
     private fun initDeleteDialog(view: DeviceView) {
-        AlertDialog.Builder(context, R.style.DefaultAlertDialogStyle).apply {
-            setTitle(context.getString(R.string.delete_device_title))
-            setMessage(context.getString(R.string.delete_device_text, view.device.name))
-            setPositiveButton(R.string.delete_label, { dialog, which ->
-                database.deleteDevice(view.device)
-            })
-            setNegativeButton(R.string.cancel_label, { dialog, which -> })
-            create()
-            show()
+        fragmentManager?.run {
+            DeleteDialogFragment(view.device, {
+                database.deleteDevice(it)
+            }).show(this, null)
         }
     }
 
@@ -121,11 +117,13 @@ class ListDevicesFragment : Fragment() {
         }
     }
 
-    /**
-     * Updates the devices list by force.
-     */
-    fun updateDevices(list: List<Device>) {
-        devicesAdapter.devices = list
+    override fun onResume() {
+        super.onResume()
+        // Force a device list update whenever the fragment is showing.
+        AsyncTask.execute {
+            val devs = database.findAll()
+            handler.post { devicesAdapter.devices = devs}
+        }
     }
 
     companion object {

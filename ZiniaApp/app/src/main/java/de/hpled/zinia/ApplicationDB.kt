@@ -47,6 +47,11 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun deleteDevice(device: Device) = AsyncTask.execute { deviceDao.deleteAll(device) }
 
+    /**
+     * Returns a list of all devices. Cannot run on main thread.
+     */
+    fun findAll() = deviceDao.findAll()
+
     companion object {
         private val newDeviceIntentFeatures = listOf(
             AddNewDeviceActivity.INTENT_IP,

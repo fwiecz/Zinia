@@ -5,4 +5,8 @@
         android:title=""
         app:showAsAction="always"
         app:actionLayout="@layout/layout_device_on_off_switch"/>
+
+    <item android:id="@+id/deviceDeleteOption"
+        android:title="@string/delete_device_title"
+        android:icon="@drawable/material_delete"/>
 </menu>
