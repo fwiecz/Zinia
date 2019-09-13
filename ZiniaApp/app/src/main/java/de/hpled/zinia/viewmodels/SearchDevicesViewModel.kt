@@ -21,28 +21,36 @@ class SearchDevicesViewModel(app: Application) : AndroidViewModel(app) {
     private val ipSearchesTotal = (ipSearchRange.second - ipSearchRange.first) + 1
     private var finishedSearchingCounter = 0
     private lateinit var ownIpAddress: String
-    private lateinit var ipPrefix: String
     private val executor by lazy { ScheduledThreadPoolExecutor(ipSearchesTotal) }
+    val ipPrefix = MutableLiveData<String>()
     val isSearching = MutableLiveData<Boolean>(false)
     val onDeviceDiscoveredListener = mutableListOf<OnDeviceDiscoveredListener>()
     val discoveredDevices = MutableLiveData<List<DeviceStatusDTO>>(listOf())
+    val noDevicesFound = MutableLiveData(false)
 
     init {
         AsyncTask.execute {
             ownIpAddress = IpAddressService.getOwnIp(getApplication())
-            ipPrefix = ownIpAddress.dropLastWhile { it.isDigit() }
+            handler.post {
+                ipPrefix.value = ownIpAddress.dropLastWhile { it.isDigit() }
+            }
         }
     }
 
     private fun countSearch() {
         finishedSearchingCounter++
         if (finishedSearchingCounter >= ipSearchesTotal) {
-            handler.post { isSearching.value = false }
+            handler.post {
+                isSearching.value = false
+                if(discoveredDevices.value?.isEmpty() == true) {
+                    noDevicesFound.value = true
+                }
+            }
         }
     }
 
     private fun runnableSearchForOneDevice(ipEnding: Int): Runnable {
-        val ip = ipPrefix + ipEnding
+        val ip = ipPrefix.value + ipEnding
         val url = URL("http://$ip/")
         return HttpRequestService.requestToRunnable<DeviceStatusDTO>(
             url,
@@ -69,6 +77,7 @@ class SearchDevicesViewModel(app: Application) : AndroidViewModel(app) {
             isSearching.value = true
             finishedSearchingCounter = 0
             discoveredDevices.value = listOf()
+            noDevicesFound.value = false
             (ipSearchRange.first..ipSearchRange.second).forEachIndexed { index, ipEnd ->
                 executor.schedule(
                     runnableSearchForOneDevice(ipEnd),

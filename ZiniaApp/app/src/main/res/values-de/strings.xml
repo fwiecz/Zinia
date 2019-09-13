@@ -21,4 +21,5 @@
     <string name="delete_label">Löschen</string>
     <string name="enter_name_label">Namen Eingeben</string>
     <string name="please_enter_name_error">Bitte gib einen Namen ein.</string>
+    <string name="no_devices_found_text">Keine Geräte gefunden.</string>
 </resources>

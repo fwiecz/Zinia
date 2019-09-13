@@ -2,6 +2,7 @@ package de.hpled.zinia.fragments
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +34,7 @@ class SearchDevicesFragment : Fragment(),
     private lateinit var root: FrameLayout
     private val swipeRefresh by lazy { root.findViewById<SwipeRefreshLayout>(R.id.discoverDevicesSwipeRefresh) }
     private val listView by lazy { root.findViewById<ListView>(R.id.discoverDevicesListView) }
+    private val noDevices by lazy { root.findViewById<LinearLayout>(R.id.noDevicesFoundView) }
     private val adapter by lazy {
         DeviceDtoViewAdapter(this, context ?:
         throw IllegalStateException("SearchDevicesFragments context has not been initialized."))
@@ -50,8 +52,12 @@ class SearchDevicesFragment : Fragment(),
         super.onStart()
         swipeRefresh.setOnRefreshListener { viewmodel.searchForDevices() }
         viewmodel.onDeviceDiscoveredListener += this
+        viewmodel.ipPrefix.observe(this, Observer { viewmodel.searchForDevices() })
         viewmodel.isSearching.observe(this, Observer { swipeRefresh.isRefreshing = it })
         viewmodel.discoveredDevices.observe(this, Observer { adapter.deviceDtoList = it })
+        viewmodel.noDevicesFound.observe(this, Observer {
+            noDevices.visibility = if(it)View.VISIBLE else View.INVISIBLE
+        })
         listView.adapter = adapter
     }
 
