@@ -7,15 +7,23 @@ import android.view.MenuItem
 import android.widget.Switch
 import androidx.lifecycle.ViewModelProviders
 import de.hpled.zinia.entities.Device
+import de.hpled.zinia.fragments.ColorPickerFragment
 import de.hpled.zinia.fragments.DeleteDialogFragment
+import de.hpled.zinia.viewmodels.DeviceViewModel
 import java.lang.IllegalStateException
 
-class DeviceActivity : AppCompatActivity() {
+class DeviceActivity : AppCompatActivity(), ColorPickerFragment.OnColorChangedListener {
 
     private lateinit var device: Device
     private lateinit var onOffSwitch: Switch
     private val database by lazy {
         ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java)
+    }
+    private val colorPicker by lazy {
+        supportFragmentManager.findFragmentById(R.id.colorPickFragment) as ColorPickerFragment
+    }
+    private val viewmodel by lazy {
+        ViewModelProviders.of(this).get(DeviceViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +32,7 @@ class DeviceActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         device = intent.getSerializableExtra(INTENT_DEVICE) as Device
         supportActionBar?.title = device.name
+        colorPicker.onColorChangedListener += this
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -41,7 +50,7 @@ class DeviceActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId) {
+        when (item?.itemId) {
             R.id.deviceDeleteOption -> onDeleteDevice()
         }
         return super.onOptionsItemSelected(item)
@@ -52,6 +61,16 @@ class DeviceActivity : AppCompatActivity() {
             database.deleteDevice(it)
             finish()
         }).show(supportFragmentManager, null)
+    }
+
+    override fun onColorChanged(color: Int, final: Boolean) {
+        viewmodel.targetColor = color
+        if (final) {
+            viewmodel.stopExecutor()
+            viewmodel.sendSingleColor(device.ipAddress, color).run()
+        } else if (!viewmodel.isExecuting) {
+            viewmodel.startExecutor(device.ipAddress)
+        }
     }
 
     companion object {
