@@ -5,7 +5,7 @@
 #include "src/LedManager/LedManager.h"
 
 // How many LEDs are connected?
-#define NUM_LEDS 16
+#define NUM_LEDS 3
 
 // The data output pin for the LEDs 
 #define LED_DATA 5 // 5 is D1 on WeMos D1 mini
@@ -15,6 +15,9 @@
 
 // The LED used to display technical information
 #define INFO_LED 2 // Built-in LED on WeMos D1 mini
+
+// When the LEDs are set to a single color, this speed is used instead of [colorSpeed].
+const float singleColorSpeed = 0.001;
 
 // The SSID (name) and password for your Wifi
 const char* ssid = "";
@@ -27,13 +30,15 @@ Adafruit_NeoPixel pixel = Adafruit_NeoPixel(NUM_LEDS, LED_DATA, NEO_GRB + NEO_KH
 ESP8266WebServer server(80);
 
 // The LedManager takes care of color buffers and interpolation and so on.
-LedManager manager = LedManager(NUM_LEDS);
+LedManager manager = LedManager(NUM_LEDS, singleColorSpeed);
 
 const char* empty = "";
 const char* textPlain = "text/plain";
 const char* applicationJson = "application/json";
+const char* emptyJson = "{}";
 
-// Whether the leds should be on or not
+// Whether the server should take action to further reuqests.
+// Requests will still be answered with status 200 (OK).
 int isOn = 1;
 
 // How fast colors should change
@@ -85,19 +90,36 @@ void sendStatus() {
 void initializeServer() {
   server.on("/", sendStatus);
   server.on("/setSingleColor", setSingleColor);
+  server.on("/setOn", setOn);
+  server.on("/setOff", setOff);
   server.onNotFound( [](){
     server.send(404, textPlain, F("Page not found"));
   });
   server.begin();
 }
 
+// Sets isOn to 0 and turns the leds off (all channels to 0)
+void setOff() {
+  isOn = 0;
+  manager.setSingleColor(0, 0, 0);
+  server.send(200, applicationJson, emptyJson);
+}
+
+// Sets isOn to 1, but 
+void setOn() {
+  isOn = 1;
+  server.send(200, applicationJson, emptyJson);
+}
+
 // Interpolates to the given color. [colorSpeed] has no effect here.
 void setSingleColor() {
-  short r = server.arg(F("r")).toInt();
-  short g = server.arg(F("g")).toInt();
-  short b = server.arg(F("b")).toInt();
-  manager.setSingleColor(r, g, b);
-  server.send(200, applicationJson, "{}");
+  if(isOn) {
+    short r = server.arg(F("r")).toInt();
+    short g = server.arg(F("g")).toInt();
+    short b = server.arg(F("b")).toInt();
+    manager.setSingleColor(r, g, b);
+  }
+  server.send(200, applicationJson, emptyJson);
 }
 
 void wpsSetUp() {

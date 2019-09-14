@@ -1,10 +1,11 @@
 #include "LedManager.h"
 
-LedManager::LedManager(int numLeds)
+LedManager::LedManager(int numLeds, float singleColorSpeed)
 {
     _numLeds = numLeds;
     _from = new short*[numLeds];
     _to = new short*[numLeds];
+    _singleColorSpeed = singleColorSpeed;
     for(int i=0; i<numLeds; i++) {
         _from[i] = new short[3];
         _to[i] = new short[3];
@@ -60,7 +61,7 @@ bool LedManager::compute(float step) {
 void LedManager::update(float step) {
 
     // colors should always change in same speed
-    step = _mode == MODE_SINGLE_COLOR ? _changeColorSpeed : step;
+    step = _mode == MODE_SINGLE_COLOR ? _singleColorSpeed : step;
 
     bool newRowRequired = compute(step);
 

@@ -12,10 +12,10 @@ class LedManager
         short** _to;   // based on the _timStep variable.
         float _timeStep;
         int _mode;
-        const float _changeColorSpeed = 0.001;
+        float _singleColorSpeed;
         bool compute(float step);
     public:
-        LedManager(int numLeds);
+        LedManager(int numLeds, float singleColorSpeed);
         short getRed(int pos);
         short getGreen(int pos);
         short getBlue(int pos);
