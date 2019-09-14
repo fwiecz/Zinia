@@ -15,18 +15,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 
 import de.hpled.zinia.R
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
 import kotlin.math.acos
+import kotlin.math.min
 
 /**
  * The User can intuitively pick a targetColor.
  */
 class ColorPickerFragment : Fragment() {
 
-    private lateinit var root: ConstraintLayout
+    private lateinit var root: RelativeLayout
     private val frame by lazy { root.findViewById<FrameLayout>(R.id.colorWheelFrame) }
     private val thumb by lazy { root.findViewById<View>(R.id.colorWheelThumb) }
     private val handler = Handler()
@@ -39,7 +41,7 @@ class ColorPickerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        root = inflater.inflate(R.layout.fragment_color_picker, container, false) as ConstraintLayout
+        root = inflater.inflate(R.layout.fragment_color_picker, container, false) as RelativeLayout
         return root
     }
 
@@ -49,7 +51,7 @@ class ColorPickerFragment : Fragment() {
         thumb.visibility = View.INVISIBLE
         handler.post {
             center = Vector2D(frame.width / 2.0, frame.height / 2.0)
-            radius = frame.width / 2.0
+            radius = min(frame.width / 2.0, frame.height / 2.0)
         }
     }
 
