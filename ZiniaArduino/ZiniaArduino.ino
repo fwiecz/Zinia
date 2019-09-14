@@ -40,7 +40,7 @@ int isOn = 1;
 float colorSpeed = 0.01f;
 
 // Positions: numLights: 12-15, isOn: 25
-char* statusMsg = "{\"numLeds\":\"    \",\"isOn\": }";
+char statusMsg[] = "{\"numLeds\":\"    \",\"isOn\": }";
 
 void setup() {
   pinMode(LED_DATA, OUTPUT);
@@ -84,10 +84,20 @@ void sendStatus() {
 // Initializes REST calls
 void initializeServer() {
   server.on("/", sendStatus);
+  server.on("/setSingleColor", setSingleColor);
   server.onNotFound( [](){
     server.send(404, textPlain, F("Page not found"));
   });
   server.begin();
+}
+
+// Interpolates to the given color. [colorSpeed] has no effect here.
+void setSingleColor() {
+  short r = server.arg(F("r")).toInt();
+  short g = server.arg(F("g")).toInt();
+  short b = server.arg(F("b")).toInt();
+  manager.setSingleColor(r, g, b);
+  server.send(200, applicationJson, "{}");
 }
 
 void wpsSetUp() {
@@ -124,7 +134,6 @@ void loop() {
     server.handleClient();
   }
 
-  bool newRowRequired = manager.update(colorSpeed);
+  manager.update(colorSpeed);
   updatePixels();
-
 }

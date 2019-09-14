@@ -45,7 +45,7 @@ class DeviceActivity : AppCompatActivity(), ColorPickerFragment.OnColorChangedLi
             it?.actionView?.findViewById(R.id.deviceOnOffSwitch)
                 ?: throw IllegalStateException("Cannot find Switch")
         }
-        onOffSwitch.setOnClickListener { println("switch") }
+        onOffSwitch.setOnClickListener {  }
         return menu != null
     }
 
@@ -67,7 +67,7 @@ class DeviceActivity : AppCompatActivity(), ColorPickerFragment.OnColorChangedLi
         viewmodel.targetColor = color
         if (final) {
             viewmodel.stopExecutor()
-            viewmodel.sendSingleColor(device.ipAddress, color).run()
+            viewmodel.executeSingleColor(device.ipAddress, color)
         } else if (!viewmodel.isExecuting) {
             viewmodel.startExecutor(device.ipAddress)
         }
