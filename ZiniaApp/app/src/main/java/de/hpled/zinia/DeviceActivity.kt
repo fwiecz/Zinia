@@ -2,18 +2,22 @@ package de.hpled.zinia
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Switch
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import de.hpled.zinia.dto.DeviceStatusDTO
 import de.hpled.zinia.entities.Device
 import de.hpled.zinia.fragments.ColorPickerFragment
 import de.hpled.zinia.fragments.DeleteDialogFragment
+import de.hpled.zinia.services.HttpRequestService
 import de.hpled.zinia.viewmodels.DeviceViewModel
 import java.lang.IllegalStateException
+import java.net.URL
 
 class DeviceActivity : AppCompatActivity(), ColorPickerFragment.OnColorChangedListener {
-
     private lateinit var device: Device
     private lateinit var onOffSwitch: Switch
     private val database by lazy {
@@ -45,7 +49,17 @@ class DeviceActivity : AppCompatActivity(), ColorPickerFragment.OnColorChangedLi
             it?.actionView?.findViewById(R.id.deviceOnOffSwitch)
                 ?: throw IllegalStateException("Cannot find Switch")
         }
-        onOffSwitch.setOnClickListener {  }
+        onOffSwitch.setOnClickListener {
+            if(onOffSwitch.isChecked) {
+                viewmodel.turnDeviceOn(device)
+            } else {
+                viewmodel.turnDeviceOff(device)
+            }
+        }
+        viewmodel.deviceIsOn.observe(this, Observer {
+            onOffSwitch.isChecked = it
+        })
+        viewmodel.getDeviceStatus(device)
         return menu != null
     }
 
@@ -57,10 +71,10 @@ class DeviceActivity : AppCompatActivity(), ColorPickerFragment.OnColorChangedLi
     }
 
     private fun onDeleteDevice() {
-        DeleteDialogFragment(device, {
+        DeleteDialogFragment(device) {
             database.deleteDevice(it)
             finish()
-        }).show(supportFragmentManager, null)
+        }.show(supportFragmentManager, null)
     }
 
     override fun onColorChanged(color: Int, final: Boolean) {
