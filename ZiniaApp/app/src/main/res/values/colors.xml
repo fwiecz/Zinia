@@ -12,4 +12,5 @@
     <color name="colorStateSuccess">#45C417</color>
     <color name="colorStateError">#D52D2D</color>
     <color name="colorStateUnknown">#AAAAAA</color>
+    <color name="colorMenuIcon">#646464</color>
 </resources>

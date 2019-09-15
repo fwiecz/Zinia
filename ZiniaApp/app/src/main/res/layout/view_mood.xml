@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@drawable/card_background"
+    android:paddingLeft="15dp"
+    android:layout_margin="5dp"
+    android:gravity="center"
+    android:elevation="1dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/moodViewTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        style="@style/TitleTextViewStyle"/>
+
+    <ImageButton
+        android:id="@+id/moodViewMenuButton"
+        style="@style/DefaultOverflowMenuImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+</LinearLayout>

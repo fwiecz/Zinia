@@ -24,4 +24,5 @@
     <string name="no_devices_found_text">Keine Geräte gefunden.</string>
     <string name="navigation_devices_label">Geräte</string>
     <string name="navigation_moods_label">Moods</string>
+    <string name="edit_label">Bearbeiten</string>
 </resources>

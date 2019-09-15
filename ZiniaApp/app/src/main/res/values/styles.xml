@@ -72,4 +72,8 @@
         <item name="android:layout_gravity">bottom|right</item>
     </style>
 
+    <style name="DefaultOverflowMenuImageButton" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">@color/colorTextSecondary</item>
+    </style>
+
 </resources>
