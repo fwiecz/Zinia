@@ -9,22 +9,23 @@ import androidx.lifecycle.MutableLiveData
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import de.hpled.zinia.entities.Device
-import de.hpled.zinia.entities.DeviceDao
-import de.hpled.zinia.entities.DeviceType
+import de.hpled.zinia.entities.*
 import de.hpled.zinia.newdevice.AddNewDeviceActivity
 
-@Database(entities = arrayOf(Device::class), version = 1)
+@Database(entities = arrayOf(Device::class, Mood::class, MoodTask::class), version = 2)
 abstract class ApplicationDB : RoomDatabase() {
     abstract fun deviceDao() : DeviceDao
+    abstract fun moodDao() : MoodDao
+    abstract fun moodTaskDao() : MoodTaskDao
 }
 
 class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
     private val context = getApplication<Application>().applicationContext
     private val database = Room.databaseBuilder(context, ApplicationDB::class.java, "app-database").build()
-    private val deviceDao = database.deviceDao()
-    private val handler = Handler()
+    val deviceDao = database.deviceDao()
     val devices = deviceDao.findAllLiveData()
+    val moodDao = database.moodDao()
+    val moodTaskDao = database.moodTaskDao()
 
     /**
      * Stores the device in the database given by the intent.
