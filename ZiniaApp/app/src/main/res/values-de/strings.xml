@@ -29,4 +29,6 @@
     <string name="name_label">Name</string>
     <string name="mood_disable_unused_devices">Unbenutzte Geräte ausschalten</string>
     <string name="done_label">Fertig</string>
+    <string name="change_label">Ändern</string>
+    <string name="add_device_label">Gerät hinzufügen</string>
 </resources>

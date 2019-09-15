@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:background="@drawable/card_background"
+    android:layout_margin="5dp"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:id="@+id/moodTaskViewItemLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/moodTaskViewTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TitleTextViewStyle"
+            android:textAlignment="center"
+            android:maxLines="1"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_margin="5dp">
+
+            <ImageView
+                android:id="@+id/moodTaskViewColor"
+                android:src="@drawable/circle_large"
+                android:layout_width="wrap_content"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center"
+                android:padding="5dp"
+                android:background="@drawable/circle_large"
+                android:layout_height="match_parent">
+            </ImageView>
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/moodTaskViewChangeButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:text="@string/change_label" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/moodTaskViewButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:src="@drawable/material_add"
+            android:tint="@color/colorTextSecondary"/>
+
+        <TextView
+            style="@style/DefaultTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_device_label"/>
+
+    </LinearLayout>
+
+
+</FrameLayout>

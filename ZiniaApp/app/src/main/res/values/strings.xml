@@ -31,4 +31,6 @@
     <string name="name_label">Name</string>
     <string name="mood_disable_unused_devices">Turn off unused devices</string>
     <string name="done_label">Done</string>
+    <string name="change_label">Change</string>
+    <string name="add_device_label">Add Device</string>
 </resources>

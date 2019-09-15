@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/colorBackground"
-    android:padding="10dp"
+    android:elevation="1dp"
+    android:padding="5dp"
     tools:context=".MoodEditorActivity">
 
     <LinearLayout
@@ -14,6 +16,7 @@
         android:background="@drawable/card_background"
         android:elevation="1dp"
         android:padding="10dp"
+        android:layout_margin="5dp"
         android:orientation="vertical">
         
         <EditText
@@ -34,6 +37,13 @@
             android:thumbTint="@color/switch_color_list"/>
     </LinearLayout>
 
+    <GridView
+        android:id="@+id/moodEditorGridView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:numColumns="auto_fit"
+        android:columnWidth="160dp">
+    </GridView>
 
-
-</ScrollView>
+</LinearLayout>
