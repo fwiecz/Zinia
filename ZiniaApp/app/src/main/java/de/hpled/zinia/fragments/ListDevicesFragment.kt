@@ -1,6 +1,5 @@
 package de.hpled.zinia.fragments
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
@@ -11,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.GridView
 import androidx.core.view.children
-import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -51,7 +49,7 @@ class ListDevicesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        root = inflater.inflate(R.layout.list_devices_fragment, container, false) as FrameLayout
+        root = inflater.inflate(R.layout.fragment_list_devices, container, false) as FrameLayout
         return root
     }
 

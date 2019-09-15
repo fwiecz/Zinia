@@ -4,11 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/moodsAddButton"
+        style="@style/DefaultFloatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/navigation_moods_label"
-        android:layout_gravity="center"
-        style="@style/DefaultTextViewStyle"/>
+        android:src="@drawable/material_add" />
+
+    <GridView
+        android:id="@+id/moodsGridView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="auto_fit"
+        android:columnWidth="250dp" />
 
 </FrameLayout>

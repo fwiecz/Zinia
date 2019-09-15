@@ -65,4 +65,11 @@
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
+    <style name="DefaultFloatingButton" parent="Widget.Design.FloatingActionButton">
+        <item name="android:tint">@android:color/white</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginBottom">20dp</item>
+        <item name="android:layout_gravity">bottom|right</item>
+    </style>
+
 </resources>

@@ -7,12 +7,10 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addNewDeviceButton"
+        style="@style/DefaultFloatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="20dp"
-        android:src="@drawable/material_add"
-        android:tint="@android:color/white"/>
+        android:src="@drawable/material_add"/>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/listDevicesSwipeRefresh"
