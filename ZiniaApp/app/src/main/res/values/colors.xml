@@ -13,4 +13,5 @@
     <color name="colorStateError">#D52D2D</color>
     <color name="colorStateUnknown">#AAAAAA</color>
     <color name="colorMenuIcon">#646464</color>
+    <color name="colorSwitchUnchecked">#EBEBEB</color>
 </resources>

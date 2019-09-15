@@ -55,6 +55,8 @@
     <style name="DefaultButtonStyle" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/card_background</item>
         <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">2dp</item>
     </style>
 
     <style name="DefaultAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -74,6 +76,19 @@
 
     <style name="DefaultOverflowMenuImageButton" parent="@style/Widget.AppCompat.ActionButton.Overflow">
         <item name="android:tint">@color/colorTextSecondary</item>
+    </style>
+
+    <style name="DefaultDividerStyle">
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:background">@color/colorTextTertiary</item>
+    </style>
+
+    <style name="DefaultSwitchStyle">
+        <item name="android:textColor">@color/colorTextSecondary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:thumbTint">@color/switch_color_list</item>
+        <item name="android:elevation">1dp</item>
     </style>
 
 </resources>

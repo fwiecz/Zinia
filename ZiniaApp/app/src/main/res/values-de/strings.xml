@@ -25,4 +25,8 @@
     <string name="navigation_devices_label">Geräte</string>
     <string name="navigation_moods_label">Moods</string>
     <string name="edit_label">Bearbeiten</string>
+    <string name="mood_editor_activity_label">Mood Editor</string>
+    <string name="name_label">Name</string>
+    <string name="mood_disable_unused_devices">Unbenutzte Geräte ausschalten</string>
+    <string name="done_label">Fertig</string>
 </resources>
