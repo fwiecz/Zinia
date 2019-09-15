@@ -14,14 +14,16 @@ import de.hpled.zinia.newdevice.AddNewDeviceActivity
 
 @Database(entities = arrayOf(Device::class, Mood::class, MoodTask::class), version = 2)
 abstract class ApplicationDB : RoomDatabase() {
-    abstract fun deviceDao() : DeviceDao
-    abstract fun moodDao() : MoodDao
-    abstract fun moodTaskDao() : MoodTaskDao
+    abstract fun deviceDao(): DeviceDao
+    abstract fun moodDao(): MoodDao
+    abstract fun moodTaskDao(): MoodTaskDao
 }
 
 class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
     private val context = getApplication<Application>().applicationContext
-    private val database = Room.databaseBuilder(context, ApplicationDB::class.java, "app-database").build()
+    private val database = Room.databaseBuilder(context, ApplicationDB::class.java, "app-database")
+        .addMigrations(Migrations.FROM_1_TO_2)
+        .build()
     val deviceDao = database.deviceDao()
     val devices = deviceDao.findAllLiveData()
     val moodDao = database.moodDao()
@@ -31,7 +33,7 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
      * Stores the device in the database given by the intent.
      */
     fun saveNewDevice(intent: Intent) {
-        if(newDeviceIntentFeatures.all { intent.hasExtra(it) }) {
+        if (newDeviceIntentFeatures.all { intent.hasExtra(it) }) {
             val ip = intent.getStringExtra(AddNewDeviceActivity.INTENT_IP)
             val name = intent.getStringExtra(AddNewDeviceActivity.INTENT_NAME)
             val numLeds = intent.getIntExtra(AddNewDeviceActivity.INTENT_NUM_LEDS, 0)
@@ -58,6 +60,7 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
             AddNewDeviceActivity.INTENT_IP,
             AddNewDeviceActivity.INTENT_NAME,
             AddNewDeviceActivity.INTENT_NUM_LEDS,
-            AddNewDeviceActivity.INTENT_TYPE)
+            AddNewDeviceActivity.INTENT_TYPE
+        )
     }
 }
