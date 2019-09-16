@@ -14,4 +14,5 @@
     <color name="colorStateUnknown">#AAAAAA</color>
     <color name="colorMenuIcon">#646464</color>
     <color name="colorSwitchUnchecked">#EBEBEB</color>
+    <color name="colorMoodTaskCircleBackground">#D8D8D8</color>
 </resources>

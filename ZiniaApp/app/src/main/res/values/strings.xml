@@ -33,4 +33,5 @@
     <string name="done_label">Done</string>
     <string name="change_label">Change</string>
     <string name="add_device_label">Add Device</string>
+    <string name="on_press_back_close_app">Press Back again to exit the Application.</string>
 </resources>

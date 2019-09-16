@@ -3,8 +3,10 @@ package de.hpled.zinia
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
@@ -18,13 +20,16 @@ import de.hpled.zinia.viewmodels.AppPropertiesViewModel
 
 class MainActivity : AppCompatActivity() {
 
-    private val appProperties : AppPropertiesViewModel by lazy {
+    private val appProperties: AppPropertiesViewModel by lazy {
         ViewModelProviders.of(this).get(AppPropertiesViewModel::class.java)
     }
 
-    private val navigationFragment by lazy { findNavController(R.id.nav_host_fragment)}
+    private val navigationFragment by lazy { findNavController(R.id.nav_host_fragment) }
 
     private val bottomNavigation by lazy { findViewById<BottomNavigationView>(R.id.homeBottomNavigation) }
+
+    private var quitApplication: Boolean = false
+    private val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +51,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if(item != null) {
-            when(item.itemId) {
+        if (item != null) {
+            when (item.itemId) {
                 R.id.main_options_menu_nightmode -> {
                     item.isChecked = !item.isChecked
                     appProperties.setNightmode(item.isChecked)
@@ -57,9 +62,24 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onBackPressed() {
+        if (quitApplication) {
+            finish()
+        } else {
+            Toast.makeText(
+                applicationContext,
+                getString(R.string.on_press_back_close_app),
+                Toast.LENGTH_LONG
+            ).show()
+            quitApplication = true
+            handler.postDelayed({quitApplication = false}, PRESS_BACK_TIMEOUT)
+        }
+    }
+
     companion object {
         private val appBarConfSet = setOf(
             R.id.navigation_devices, R.id.navigation_dashboard
         )
+        private const val PRESS_BACK_TIMEOUT = 2000L
     }
 }
