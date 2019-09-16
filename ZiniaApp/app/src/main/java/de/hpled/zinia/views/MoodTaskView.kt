@@ -21,6 +21,12 @@ class MoodTaskView(c: Context, attr: AttributeSet? = null) : LinearLayout(c, att
     val colorView by lazy { findViewById<ImageView>(R.id.moodTaskViewColor) }
     val changeBtn by lazy { findViewById<Button>(R.id.moodTaskViewChangeButton) }
 
+    var active = true
+        set(value) {
+            field = value
+            alpha = if(value)1f else 0.5f
+        }
+
     init {
         View.inflate(context, R.layout.view_mood_task, this)
     }
