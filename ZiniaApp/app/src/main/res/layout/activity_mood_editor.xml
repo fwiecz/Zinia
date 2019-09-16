@@ -20,6 +20,7 @@
         android:orientation="vertical">
         
         <EditText
+            android:id="@+id/moodEditorName"
             style="@style/TitleTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
