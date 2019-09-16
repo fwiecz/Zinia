@@ -1,6 +1,7 @@
 package de.hpled.zinia.views
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import de.hpled.zinia.R
+import de.hpled.zinia.Resources
 import de.hpled.zinia.dto.DeviceStatusDTO
 import de.hpled.zinia.entities.Device
 import de.hpled.zinia.entities.DeviceType
@@ -56,10 +58,9 @@ class DeviceView(c: Context, attr: AttributeSet?) : LinearLayout(c, attr) {
         )
     }
 
-    private fun getIcon(type: DeviceType) = when(type) {
-        DeviceType.LED_CHAIN -> context.getDrawable(R.drawable.led_strip_icon)
-        DeviceType.SINGLE_LED -> context.getDrawable(R.drawable.single_led_icon)
-        else -> null
+    private fun getIcon(type: DeviceType) : Drawable? {
+        val id = Resources.getDeviceIconId(type)
+        return if(id != null)context.getDrawable(id) else null
     }
 }
 

@@ -54,7 +54,7 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
     /**
      * Returns a list of all devices. Cannot run on main thread.
      */
-    fun findAll() = deviceDao.findAll()
+    fun findAllDevices() = deviceDao.findAll()
 
     companion object {
         private val newDeviceIntentFeatures = listOf(

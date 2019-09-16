@@ -39,6 +39,10 @@ class MoodTaskView(c: Context, attr: AttributeSet? = null) : LinearLayout(c, att
 
 class MoodTaskViewAdapter(private val context: Context) : BaseAdapter() {
     var moodTaskList : List<MoodTask?> = listOf()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val moodTask = moodTaskList.get(position)

@@ -119,7 +119,7 @@ class ListDevicesFragment : Fragment() {
         super.onResume()
         // Force a device list update whenever the fragment is showing.
         AsyncTask.execute {
-            val devs = database.findAll()
+            val devs = database.findAllDevices()
             handler.post { devicesAdapter.devices = devs}
         }
     }
