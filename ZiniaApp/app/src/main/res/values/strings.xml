@@ -38,4 +38,7 @@
     <string name="mood_cannot_be_saved">Please enter a name and add at least one device.</string>
     <string name="pick_moodtask_dialog_title">Action for %1$s</string>
     <string name="pick_color_label">Choose Color</string>
+    <string name="remove_device_title">Remove Device</string>
+    <string name="remove_device_message">Are you sure you want to remove %1$s from this Mood?</string>
+    <string name="remove_label">Remove</string>
 </resources>

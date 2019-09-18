@@ -1,6 +1,7 @@
 package de.hpled.zinia
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
@@ -45,7 +46,7 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener, OnPickMood
         setContentView(R.layout.activity_mood_editor)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if(intent.hasExtra(INTENT_MOOD_ID)) {
+        if (intent.hasExtra(INTENT_MOOD_ID)) {
             moodId = intent.getLongExtra(INTENT_MOOD_ID, 0)
             AsyncTask.execute {
                 val mood = database.getMoodWithTasks(moodId)
@@ -63,6 +64,7 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener, OnPickMood
         super.onStart()
         gridView.adapter = moodTaskAdapter
         gridView.setOnItemClickListener(onItemClickListener)
+        gridView.setOnItemLongClickListener(onLongClickListener)
         AsyncTask.execute {
             devices = database.findAllDevices()
             handler.post {
@@ -85,6 +87,18 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener, OnPickMood
                 val dialog = DevicePickDialogFragment(devices - alreadyUsedDevices, this@MoodEditorActivity)
                 dialog.show(supportFragmentManager, null)
             }
+            else if(view as? MoodTaskView != null && view.moodTask != null) {
+                view.moodTask?.apply { pickMoodTask(this) }
+            }
+        }
+    }
+
+    private val onLongClickListener = object : AdapterView.OnItemLongClickListener {
+        override fun onItemLongClick(p: AdapterView<*>?, v: View?, pos: Int, id: Long): Boolean {
+            if(v != null && v is MoodTaskView) {
+                v.moodTask?.apply { deleteMoodTask(this) }
+            }
+            return true
         }
     }
 
@@ -113,6 +127,21 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener, OnPickMood
         pickMoodTask(moodTask)
     }
 
+
+    private fun deleteMoodTask(moodTask: MoodTask) {
+        AlertDialog.Builder(this, R.style.DefaultAlertDialogStyle).apply {
+            setTitle(getString(R.string.remove_device_title))
+            setMessage(getString(R.string.remove_device_message, moodTask.device?.name))
+            setNegativeButton(getString(R.string.cancel_label)) {dialog, which ->  }
+            setPositiveButton(getString(R.string.remove_label)) {dialog, which ->
+                viewmodel.moodTasks.value = viewmodel.moodTasks.value!! - moodTask
+                AsyncTask.execute{ database.moodTaskDao.deleteAll(moodTask) }
+            }
+            create()
+            show()
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.mood_editor_menu, menu)
         return super.onCreateOptionsMenu(menu)
@@ -130,7 +159,7 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener, OnPickMood
         val moodTasks = viewmodel.moodTasks.value
         if (moodCanBeSaved() && moodTasks != null) {
             AsyncTask.execute {
-                val ids = database.moodTaskDao.insertAll( *moodTasks.toTypedArray() ).toLongArray()
+                val ids = database.moodTaskDao.insertAll(*moodTasks.toTypedArray()).toLongArray()
                 val mood = Mood(moodId, name.text.toString().trim(), turnOffDevices.isChecked, ids)
                 database.moodDao.insert(mood)
                 setResult(Activity.RESULT_OK)

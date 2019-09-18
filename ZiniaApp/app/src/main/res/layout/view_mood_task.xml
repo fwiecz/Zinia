@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="120dp"
     android:background="@drawable/card_background"
     android:elevation="1dp"
     android:layout_margin="5dp"
@@ -39,36 +39,15 @@
             </ImageView>
         </FrameLayout>
 
-        <Button
-            android:id="@+id/moodTaskViewChangeButton"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorAccent"
-            android:text="@string/change_label" />
     </LinearLayout>
 
-    <LinearLayout
+    <TextView
         android:id="@+id/moodTaskViewButtonLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:src="@drawable/material_add"
-            android:tint="@color/colorTextSecondary"/>
-
-        <TextView
-            style="@style/DefaultTextViewStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_device_label"/>
-
-    </LinearLayout>
-
+        style="@style/DefaultTextViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawableTop="@drawable/material_add"
+        android:text="@string/add_device_label"/>
 
 </FrameLayout>

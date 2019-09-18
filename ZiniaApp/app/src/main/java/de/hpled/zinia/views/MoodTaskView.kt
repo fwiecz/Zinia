@@ -15,16 +15,15 @@ class MoodTaskView(c: Context, attr: AttributeSet? = null) : LinearLayout(c, att
     var moodTask: MoodTask? = null
         private set
 
-    val itemLayout by lazy { findViewById<LinearLayout>(R.id.moodTaskViewItemLayout) }
-    val buttonLayout by lazy { findViewById<LinearLayout>(R.id.moodTaskViewButtonLayout) }
-    val title by lazy { findViewById<TextView>(R.id.moodTaskViewTitle) }
-    val colorView by lazy { findViewById<ImageView>(R.id.moodTaskViewColor) }
-    val changeBtn by lazy { findViewById<Button>(R.id.moodTaskViewChangeButton) }
+    private val itemLayout by lazy { findViewById<LinearLayout>(R.id.moodTaskViewItemLayout) }
+    private val addButtonLayout by lazy { findViewById<TextView>(R.id.moodTaskViewButtonLayout) }
+    private val title by lazy { findViewById<TextView>(R.id.moodTaskViewTitle) }
+    private val colorView by lazy { findViewById<ImageView>(R.id.moodTaskViewColor) }
 
     var active = true
         set(value) {
             field = value
-            alpha = if(value)1f else 0.5f
+            alpha = if (value) 1f else 0.5f
         }
 
     init {
@@ -33,18 +32,20 @@ class MoodTaskView(c: Context, attr: AttributeSet? = null) : LinearLayout(c, att
 
     fun set(moodTask: MoodTask?) {
         this.moodTask = moodTask
-        itemLayout.visibility = if(moodTask == null)View.GONE else View.VISIBLE
-        buttonLayout.visibility = if(moodTask == null)View.VISIBLE else View.GONE
+        itemLayout.visibility = if (moodTask == null) View.GONE else View.VISIBLE
+        addButtonLayout.visibility = if (moodTask == null) View.VISIBLE else View.GONE
 
-        if(moodTask != null) {
+        if (moodTask != null) {
             title.text = moodTask.device?.name ?: "-Error-"
             colorView.drawable.setTint(moodTask.color ?: Color.BLACK)
+            colorView.background.setTint(context.resources.getColor(R.color.colorMoodTaskCircleBackground))
         }
     }
 }
 
-class MoodTaskViewAdapter(private val context: Context) : BaseAdapter() {
-    var moodTaskList : List<MoodTask?> = listOf()
+class MoodTaskViewAdapter(private val context: Context) :
+    BaseAdapter() {
+    var moodTaskList: List<MoodTask?> = listOf()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -52,10 +53,9 @@ class MoodTaskViewAdapter(private val context: Context) : BaseAdapter() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val moodTask = moodTaskList.get(position)
-        if(convertView != null && convertView is MoodTaskView) {
+        if (convertView != null && convertView is MoodTaskView) {
             return convertView.apply { set(moodTask) }
-        }
-        else {
+        } else {
             return MoodTaskView(context).apply { set(moodTask) }
         }
     }
