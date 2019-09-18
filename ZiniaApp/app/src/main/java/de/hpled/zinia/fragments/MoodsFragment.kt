@@ -14,12 +14,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hpled.zinia.ApplicationDbViewModel
 import de.hpled.zinia.MoodEditorActivity
 import de.hpled.zinia.R
+import de.hpled.zinia.entities.Device
 import de.hpled.zinia.entities.Mood
 import de.hpled.zinia.entities.MoodTask
 import de.hpled.zinia.services.ColorSendingService
+import de.hpled.zinia.services.HttpRequestService
 import de.hpled.zinia.views.MoodView
 import de.hpled.zinia.views.MoodViewAdapter
 import de.hpled.zinia.views.OnMoodListener
+import java.net.URL
 
 class MoodsFragment : Fragment(), OnMoodListener {
     private lateinit var root : FrameLayout
@@ -51,6 +54,7 @@ class MoodsFragment : Fragment(), OnMoodListener {
 
     private fun playMoodTasks(moodTasks: List<MoodTask>) {
         moodTasks.forEach {
+            turnDeviceOn(it.device!!)
             if(it.color != null) {
                 ColorSendingService.sendSingleColor(it.device!!.ipAddress, it.color!!).run()
             }
@@ -72,10 +76,27 @@ class MoodsFragment : Fragment(), OnMoodListener {
 
     override fun onClickMood(mood: Mood) {
         AsyncTask.execute {
-            database.getMoodWithTasks(mood.id).tasks?.apply {
+            val moodWithTasks = database.getMoodWithTasks(mood.id)
+            moodWithTasks.tasks?.apply {
                 playMoodTasks(this)
             }
+            if(moodWithTasks.turnOffUnusedDevices) {
+                val devices = database.findAllDevices()
+                val used = moodWithTasks.tasks?.mapNotNull { it.device } ?: listOf()
+                val unused = devices - used
+                unused.forEach { turnDeviceOff(it) }
+            }
         }
+    }
+
+    private fun turnDeviceOn(device: Device) {
+        val url = URL("http://${device.ipAddress}/setOn")
+        HttpRequestService.requestToRunnable<Any>(url, {}, {}, Any::class.java).run()
+    }
+
+    private fun turnDeviceOff(device: Device) {
+        val url = URL("http://${device.ipAddress}/setOff")
+        HttpRequestService.requestToRunnable<Any>(url, {}, {}, Any::class.java).run()
     }
 
     companion object {
