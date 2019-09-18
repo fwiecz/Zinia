@@ -34,4 +34,6 @@
     <string name="on_press_back_close_app">Drücke erneut auf Zurück um die App zu schließen.</string>
     <string name="choose_device_label">Gerät auswählen</string>
     <string name="mood_cannot_be_saved">Bitte gib einen Namen ein und füge mindestens ein Gerät hinzu</string>
+    <string name="pick_moodtask_dialog_title">Aktion für %1$s</string>
+    <string name="pick_color_label">Farbe</string>
 </resources>

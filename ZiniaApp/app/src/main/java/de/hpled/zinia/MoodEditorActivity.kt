@@ -1,5 +1,6 @@
 package de.hpled.zinia
 
+import android.app.Activity
 import android.graphics.Color
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
@@ -8,26 +9,27 @@ import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
-import android.widget.EditText
-import android.widget.GridView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.view.children
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import de.hpled.zinia.entities.Device
+import de.hpled.zinia.entities.Mood
 import de.hpled.zinia.entities.MoodTask
 import de.hpled.zinia.fragments.DevicePickDialogFragment
 import de.hpled.zinia.fragments.OnDevicePickListener
+import de.hpled.zinia.fragments.OnPickMoodTaskListener
+import de.hpled.zinia.fragments.PickMoodTaskDialogFragment
 import de.hpled.zinia.viewmodels.MoodEditorViewModel
 import de.hpled.zinia.views.MoodTaskView
 import de.hpled.zinia.views.MoodTaskViewAdapter
 
-class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener {
+class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener, OnPickMoodTaskListener {
     private val handler = Handler()
     private val name by lazy { findViewById<EditText>(R.id.moodEditorName) }
     private val gridView by lazy { findViewById<GridView>(R.id.moodEditorGridView) }
     private val moodTaskAdapter by lazy { MoodTaskViewAdapter(applicationContext) }
+    private val turnOffDevices by lazy { findViewById<Switch>(R.id.moodEditorSwitch) }
     private val database by lazy {
         ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java)
     }
@@ -76,9 +78,25 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener {
         return name.text.isNotEmpty() && viewmodel.moodTasks.value?.isNotEmpty()!!
     }
 
+    private fun pickMoodTask(moodTask: MoodTask) = PickMoodTaskDialogFragment().apply {
+        task = moodTask.copy().also { it.device = moodTask.device }
+        listener += this@MoodEditorActivity
+        show(supportFragmentManager, null)
+    }
+
+    override fun onPickMoodTask(task: MoodTask) {
+        val newlist = viewmodel.moodTasks.value?.let {
+            val old = it.find { it.deviceId == task.deviceId }
+            val oldIndex = it.indexOf(old)
+            (it - old).toMutableList().apply { add(oldIndex, task) }
+        }
+        viewmodel.moodTasks.value = newlist?.mapNotNull { it }
+    }
+
     override fun onDevicePicked(device: Device) {
         val moodTask = MoodTask(0, device.id, Color.WHITE).apply { this.device = device }
         viewmodel.moodTasks.value = (viewmodel.moodTasks.value ?: listOf()) + moodTask
+        pickMoodTask(moodTask)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -95,8 +113,15 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener {
     }
 
     private fun saveAndExit() {
-        if (moodCanBeSaved()) {
-            finish()
+        val moodTasks = viewmodel.moodTasks.value
+        if (moodCanBeSaved() && moodTasks != null) {
+            AsyncTask.execute {
+                val ids = database.moodTaskDao.insertAll( *moodTasks.toTypedArray() ).toLongArray()
+                val mood = Mood(0, name.text.toString().trim(), turnOffDevices.isChecked, ids)
+                database.moodDao.insert(mood)
+                setResult(Activity.RESULT_OK)
+                finish()
+            }
         } else {
             Toast.makeText(
                 applicationContext,

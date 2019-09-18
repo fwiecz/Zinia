@@ -91,4 +91,8 @@
         <item name="android:elevation">1dp</item>
     </style>
 
+    <style name="FullScreenAlertDialog" parent="Theme.AppCompat.Light.NoActionBar">
+
+    </style>
+
 </resources>

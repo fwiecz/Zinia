@@ -56,6 +56,24 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun findAllDevices() = deviceDao.findAll()
 
+    /**
+     * Returns the [MoodTask] with the [device] field already initialized.
+     */
+    fun getMoodTaskWithDevice(id: Long) : MoodTask {
+        val task = moodTaskDao.findById(id)
+        task.device = deviceDao.findById(task.deviceId)
+        return task
+    }
+
+    /**
+     * Returns the [Mood] but the [tasks] field has already been filled with objects.
+     */
+    fun getMoodWithTasks(id: Long) : Mood {
+        val mood = moodDao.findById(id)
+        mood.tasks = mood.taskIds.map { getMoodTaskWithDevice(it) }
+        return mood
+    }
+
     companion object {
         private val newDeviceIntentFeatures = listOf(
             AddNewDeviceActivity.INTENT_IP,

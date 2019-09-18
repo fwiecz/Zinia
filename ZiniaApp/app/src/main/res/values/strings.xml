@@ -36,4 +36,6 @@
     <string name="on_press_back_close_app">Press Back again to exit the Application.</string>
     <string name="choose_device_label">Choose Device</string>
     <string name="mood_cannot_be_saved">Please enter a name and add at least one device.</string>
+    <string name="pick_moodtask_dialog_title">Action for %1$s</string>
+    <string name="pick_color_label">Choose Color</string>
 </resources>

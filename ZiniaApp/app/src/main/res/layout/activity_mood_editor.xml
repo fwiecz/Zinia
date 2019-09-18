@@ -28,7 +28,7 @@
             android:inputType="textPersonName"/>
 
         <Switch
-            android:id="@+id/switch1"
+            android:id="@+id/moodEditorSwitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/mood_disable_unused_devices"

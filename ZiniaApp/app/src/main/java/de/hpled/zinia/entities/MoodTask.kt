@@ -2,6 +2,7 @@ package de.hpled.zinia.entities
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import java.io.Serializable
 
 /**
  * Contains what the given devices should perform during its respective [Mood].
@@ -12,7 +13,7 @@ data class MoodTask (
     var id: Long,
     var deviceId: Long,
     var color: Int?
-) {
+) : Serializable {
     // When accessing MoodTask, also access the device and store it here
     @Ignore
     var device: Device? = null
