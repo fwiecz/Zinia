@@ -15,20 +15,22 @@ import androidx.appcompat.widget.PopupMenu
 import de.hpled.zinia.R
 import de.hpled.zinia.entities.Mood
 
-interface OnMoodEditListener {
+interface OnMoodListener {
     fun onEditMood(mood: Mood)
     fun onDeleteMood(mood: Mood)
+    fun onClickMood(mood: Mood)
 }
 
 class MoodView(c: Context, attr: AttributeSet? = null) : LinearLayout(c, attr) {
     lateinit var mood: Mood
-    private var listener: OnMoodEditListener? = null
+    private var listener: OnMoodListener? = null
     val menuButton by lazy { findViewById<ImageButton>(R.id.moodViewMenuButton) }
     val title by lazy { findViewById<TextView>(R.id.moodViewTitle) }
 
     init {
-        View.inflate(context, R.layout.view_mood, this)
+        val root = View.inflate(context, R.layout.view_mood, this)
         menuButton.setOnClickListener { onMenuButton(it as ImageButton) }
+        root.setOnClickListener { listener?.onClickMood(mood) }
     }
 
     private fun onMenuButton(view: ImageButton) {
@@ -51,14 +53,14 @@ class MoodView(c: Context, attr: AttributeSet? = null) : LinearLayout(c, attr) {
         }
     }
 
-    fun set(mood: Mood, listener: OnMoodEditListener) {
+    fun set(mood: Mood, listener: OnMoodListener) {
         this.mood = mood
         title.text = mood.name
         this.listener = listener
     }
 }
 
-class MoodViewAdapter(private val context: Context, private val listener: OnMoodEditListener) :
+class MoodViewAdapter(private val context: Context, private val listener: OnMoodListener) :
     BaseAdapter() {
 
     var moodList: List<Mood> = listOf()

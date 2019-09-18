@@ -1,12 +1,8 @@
 package de.hpled.zinia.fragments
 
-import android.app.Activity
-import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,9 +19,9 @@ import de.hpled.zinia.entities.MoodTask
 import de.hpled.zinia.services.ColorSendingService
 import de.hpled.zinia.views.MoodView
 import de.hpled.zinia.views.MoodViewAdapter
-import de.hpled.zinia.views.OnMoodEditListener
+import de.hpled.zinia.views.OnMoodListener
 
-class MoodsFragment : Fragment(), OnMoodEditListener {
+class MoodsFragment : Fragment(), OnMoodListener {
     private lateinit var root : FrameLayout
     private val gridView by lazy { root.findViewById<GridView>(R.id.moodsGridView) }
     private val moodAdapter by lazy { MoodViewAdapter(context!!, this) }
@@ -51,19 +47,6 @@ class MoodsFragment : Fragment(), OnMoodEditListener {
         database.moodDao.findAllLiveData().observe(this, Observer {
             moodAdapter.moodList = it
         })
-        gridView.setOnItemClickListener(playMoodClickListener)
-    }
-
-    private val playMoodClickListener = object : AdapterView.OnItemClickListener {
-        override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            if(view is MoodView) {
-                AsyncTask.execute {
-                    database.getMoodWithTasks(view.mood.id).tasks?.apply {
-                        playMoodTasks(this)
-                    }
-                }
-            }
-        }
     }
 
     private fun playMoodTasks(moodTasks: List<MoodTask>) {
@@ -85,6 +68,14 @@ class MoodsFragment : Fragment(), OnMoodEditListener {
 
     override fun onDeleteMood(mood: Mood) {
         // TODO delete mood
+    }
+
+    override fun onClickMood(mood: Mood) {
+        AsyncTask.execute {
+            database.getMoodWithTasks(mood.id).tasks?.apply {
+                playMoodTasks(this)
+            }
+        }
     }
 
     companion object {
