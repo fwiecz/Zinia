@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
+import kotlin.math.max
 import kotlin.math.min
 
 class ColorWheelView(c: Context, attr: AttributeSet?) : View(c, attr) {
@@ -14,7 +15,7 @@ class ColorWheelView(c: Context, attr: AttributeSet?) : View(c, attr) {
         SweepGradient(width / 2f, height / 2f, sweepColors, null)
     }
     private val whiteGradient by lazy {
-        RadialGradient(width / 2f, height / 2f, radius, radialColors, null, Shader.TileMode.CLAMP)
+        RadialGradient(width / 2f, height / 2f, max(radius, 100f), radialColors, null, Shader.TileMode.CLAMP)
     }
     private val radius by lazy {
         min(width / 2f, height / 2f)

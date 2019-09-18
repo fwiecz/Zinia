@@ -17,7 +17,7 @@ import de.hpled.zinia.viewmodels.DeviceViewModel
 import java.lang.IllegalStateException
 import java.net.URL
 
-class DeviceActivity : AppCompatActivity(), ColorPickerFragment.OnColorChangedListener {
+class DeviceActivity : AppCompatActivity() {
     private lateinit var device: Device
     private lateinit var onOffSwitch: Switch
     private val database by lazy {
@@ -36,7 +36,8 @@ class DeviceActivity : AppCompatActivity(), ColorPickerFragment.OnColorChangedLi
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         device = intent.getSerializableExtra(INTENT_DEVICE) as Device
         supportActionBar?.title = device.name
-        colorPicker.onColorChangedListener += this
+        viewmodel.colorSendingService.targetIP = device.ipAddress
+        colorPicker.onColorChangedListener += viewmodel.colorSendingService
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -75,16 +76,6 @@ class DeviceActivity : AppCompatActivity(), ColorPickerFragment.OnColorChangedLi
             database.deleteDevice(it)
             finish()
         }.show(supportFragmentManager, null)
-    }
-
-    override fun onColorChanged(color: Int, final: Boolean) {
-        viewmodel.targetColor = color
-        if (final) {
-            viewmodel.stopExecutor()
-            viewmodel.executeSingleColor(device.ipAddress, color)
-        } else if (!viewmodel.isExecuting) {
-            viewmodel.startExecutor(device.ipAddress)
-        }
     }
 
     companion object {
