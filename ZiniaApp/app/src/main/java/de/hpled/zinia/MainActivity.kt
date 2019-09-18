@@ -24,9 +24,13 @@ class MainActivity : AppCompatActivity() {
         ViewModelProviders.of(this).get(AppPropertiesViewModel::class.java)
     }
 
-    private val navigationFragment by lazy { findNavController(R.id.nav_host_fragment) }
+    private val navigationFragment by lazy {
+        findNavController(R.id.nav_host_fragment)
+    }
 
-    private val bottomNavigation by lazy { findViewById<BottomNavigationView>(R.id.homeBottomNavigation) }
+    private val bottomNavigation by lazy {
+        findViewById<BottomNavigationView>(R.id.homeBottomNavigation)
+    }
 
     private var quitApplication: Boolean = false
     private val handler = Handler()
@@ -51,15 +55,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item != null) {
-            when (item.itemId) {
-                R.id.main_options_menu_nightmode -> {
-                    item.isChecked = !item.isChecked
-                    appProperties.setNightmode(item.isChecked)
-                }
+        when (item?.itemId) {
+            R.id.main_options_menu_nightmode -> {
+                item.isChecked = !item.isChecked
+                appProperties.setNightmode(item.isChecked)
             }
         }
-        return true
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed() {
