@@ -30,10 +30,10 @@ interface MoodTaskDao {
     @Query("SELECT * FROM moodtask WHERE id = (:id) LIMIT 1")
     fun findById(id: Long) : MoodTask
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg moodTasks: MoodTask) : List<Long>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(moodTask: MoodTask) : Long
 
     @Delete

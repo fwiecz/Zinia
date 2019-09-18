@@ -67,7 +67,9 @@ class MoodsFragment : Fragment(), OnMoodListener {
     }
 
     override fun onEditMood(mood: Mood) {
-        // TODO edit mood
+        val intent = Intent(context, MoodEditorActivity::class.java)
+        intent.putExtra(MoodEditorActivity.INTENT_MOOD_ID, mood.id)
+        startActivityForResult(intent, MOOD_EDITOR)
     }
 
     override fun onDeleteMood(mood: Mood) {

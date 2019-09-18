@@ -38,11 +38,25 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener, OnPickMood
     }
     private lateinit var devices: List<Device>
     private var allDevicesInUse = false
+    private var moodId = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mood_editor)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        if(intent.hasExtra(INTENT_MOOD_ID)) {
+            moodId = intent.getLongExtra(INTENT_MOOD_ID, 0)
+            AsyncTask.execute {
+                val mood = database.getMoodWithTasks(moodId)
+                handler.post {
+                    viewmodel.moodTasks.value = mood.tasks
+                    name.setText(mood.name)
+                    turnOffDevices.isChecked = mood.turnOffUnusedDevices
+                }
+            }
+        }
+        viewmodel.moodTasks
     }
 
     override fun onStart() {
@@ -117,7 +131,7 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener, OnPickMood
         if (moodCanBeSaved() && moodTasks != null) {
             AsyncTask.execute {
                 val ids = database.moodTaskDao.insertAll( *moodTasks.toTypedArray() ).toLongArray()
-                val mood = Mood(0, name.text.toString().trim(), turnOffDevices.isChecked, ids)
+                val mood = Mood(moodId, name.text.toString().trim(), turnOffDevices.isChecked, ids)
                 database.moodDao.insert(mood)
                 setResult(Activity.RESULT_OK)
                 finish()
@@ -129,5 +143,9 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener, OnPickMood
                 Toast.LENGTH_LONG
             ).show()
         }
+    }
+
+    companion object {
+        const val INTENT_MOOD_ID = "INTENT_MOOD_ID"
     }
 }

@@ -36,10 +36,10 @@ interface MoodDao {
     @Query("SELECT * FROM moods WHERE name = (:name)")
     fun findAllByName(name: String) : List<Mood>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg moods: Mood) : List<Long>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(mood: Mood) : Long
 
     @Delete
