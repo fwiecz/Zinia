@@ -74,6 +74,17 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
         return mood
     }
 
+    fun deleteMoodAndMoodTasks(id: Long) {
+        AsyncTask.execute {
+            val mood = getMoodWithTasks(id)
+            val tasks = mood.tasks?.toTypedArray()
+            if(tasks != null) {
+                moodTaskDao.deleteAll(*tasks)
+            }
+            moodDao.deleteAll(mood)
+        }
+    }
+
     companion object {
         private val newDeviceIntentFeatures = listOf(
             AddNewDeviceActivity.INTENT_IP,

@@ -67,7 +67,7 @@ class MoodsFragment : Fragment(), OnMoodListener {
     }
 
     override fun onDeleteMood(mood: Mood) {
-        // TODO delete mood
+        database.deleteMoodAndMoodTasks(mood.id)
     }
 
     override fun onClickMood(mood: Mood) {

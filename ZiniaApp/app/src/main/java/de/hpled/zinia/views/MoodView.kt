@@ -47,7 +47,8 @@ class MoodView(c: Context, attr: AttributeSet? = null) : LinearLayout(c, attr) {
     private val onMenuShowListener = object : PopupMenu.OnMenuItemClickListener {
         override fun onMenuItemClick(item: MenuItem?): Boolean {
             when(item?.itemId) {
-                R.id.moode_menu_delete -> listener?.onDeleteMood(mood)
+                R.id.mood_menu_delete -> listener?.onDeleteMood(mood)
+                R.id.mood_menu_edit -> listener?.onEditMood(mood)
             }
             return true
         }
