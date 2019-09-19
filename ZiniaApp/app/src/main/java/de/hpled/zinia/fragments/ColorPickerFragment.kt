@@ -1,41 +1,27 @@
 package de.hpled.zinia.fragments
 
 
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.SweepGradient
-import android.graphics.drawable.GradientDrawable
-import android.media.Image
 import android.os.Bundle
-import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 
 import de.hpled.zinia.R
+import de.hpled.zinia.views.BrightnessWarmthView
+import de.hpled.zinia.views.ColorPickerView
+import de.hpled.zinia.views.OnColorChangedListener
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
-import kotlin.math.acos
-import kotlin.math.min
 
 /**
  * The User can intuitively pick a targetColor.
  */
-class ColorPickerFragment : Fragment() {
+class ColorPickerFragment : Fragment(), OnColorChangedListener {
 
     private lateinit var root: LinearLayout
-    private val frame by lazy { root.findViewById<FrameLayout>(R.id.colorWheelFrame) }
-    private val thumb by lazy { root.findViewById<View>(R.id.colorWheelThumb) }
-    private val handler = Handler()
-    private lateinit var center : Vector2D
-    private val angleReference = Vector2D(0.0, 1.0)
-    private var radius: Double = 0.0
+    private val colorPicker by lazy { root.findViewById<ColorPickerView>(R.id.colorPickerView) }
+    private val slider by lazy { root.findViewById<BrightnessWarmthView>(R.id.brightnessWarmthView) }
     val onColorChangedListener = mutableListOf<OnColorChangedListener>()
 
     override fun onCreateView(
@@ -46,63 +32,12 @@ class ColorPickerFragment : Fragment() {
         return root
     }
 
+    override fun onColorChanged(color: Int, final: Boolean) {
+        onColorChangedListener.forEach { it.onColorChanged(color, final) }
+    }
+
     override fun onStart() {
         super.onStart()
-        frame.setOnTouchListener(onTouchListener)
-        thumb.visibility = View.INVISIBLE
-        handler.post {
-            center = Vector2D(frame.width / 2.0, frame.height / 2.0)
-            radius = min(frame.width / 2.0, frame.height / 2.0)
-        }
-    }
-
-    private fun checkThumbsStaysInBounds(x: Double, y: Double) : Vector2D {
-        val v = Vector2D(x, y).subtract(center)
-        if(v.norm > radius) {
-            return v.normalize().scalarMultiply(radius).add(center)
-        } else {
-            return Vector2D(x, y)
-        }
-    }
-
-    private fun informListener(x: Double, y: Double, final: Boolean) {
-        val v = Vector2D(x, y).subtract(center)
-        val angleRaw = acos(v.dotProduct(angleReference) / (v.norm * angleReference.norm))
-        val angle = (Math.toDegrees(angleRaw) * -Math.signum(v.x)) + 180
-        val length = v.norm / radius
-        val color = Color.HSVToColor(floatArrayOf(angle.toFloat(), length.toFloat(), 1f))
-        onColorChangedListener.forEach {
-            it.onColorChanged(color, final)
-        }
-    }
-
-    private val onTouchListener = object : View.OnTouchListener {
-        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-            when(event?.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    thumb.visibility = View.VISIBLE
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    val v = checkThumbsStaysInBounds(event.x.toDouble(), event.y.toDouble())
-                    thumb.x = v.x.toFloat() - (thumb.width / 2f)
-                    thumb.y = v.y.toFloat() - (thumb.height / 2f)
-                    informListener(v.x, v.y, false)
-                }
-                MotionEvent.ACTION_UP -> {
-                    val v = checkThumbsStaysInBounds(event.x.toDouble(), event.y.toDouble())
-                    informListener(v.x, v.y, true)
-                }
-            }
-            v?.performClick()
-            return true
-        }
-    }
-
-    interface OnColorChangedListener {
-        /**
-         * The selected targetColor has changed.
-         * @param final whether the user has stopped giving input
-         */
-        fun onColorChanged(color: Int, final: Boolean)
+        colorPicker.onColorChangedListener += this
     }
 }

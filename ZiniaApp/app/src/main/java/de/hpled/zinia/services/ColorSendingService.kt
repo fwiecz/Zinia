@@ -1,14 +1,14 @@
 package de.hpled.zinia.services
 
 import android.graphics.Color
-import de.hpled.zinia.fragments.ColorPickerFragment
+import de.hpled.zinia.views.OnColorChangedListener
 import java.net.URL
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
 class ColorSendingService(private val sendingFrequency: Long) :
-    ColorPickerFragment.OnColorChangedListener {
+    OnColorChangedListener {
 
     private val executor = ScheduledThreadPoolExecutor(5)
     private var targetColor = 0

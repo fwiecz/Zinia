@@ -1,46 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:elevation="1dp"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    tools:context=".fragments.ColorPickerFragment">
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    <de.hpled.zinia.views.ColorPickerView
+        android:id="@+id/colorPickerView"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="20dp"
-        android:background="@drawable/card_background">
-
-        <FrameLayout
-            android:id="@+id/colorWheelFrame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipChildren="false">
-
-        <de.hpled.zinia.views.ColorWheelView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:rotation="-90" />
-
-        <View
-            android:id="@+id/colorWheelThumb"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:elevation="2dp"
-            android:visibility="invisible"
-            android:background="@drawable/color_pick_thumb"/>
-        </FrameLayout>
-
-    </RelativeLayout>
+        android:layout_weight="1"/>
 
     <de.hpled.zinia.views.BrightnessWarmthView
-        android:layout_marginTop="10dp"
+        android:id="@+id/brightnessWarmthView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

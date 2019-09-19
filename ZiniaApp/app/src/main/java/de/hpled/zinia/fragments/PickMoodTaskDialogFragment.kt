@@ -15,12 +15,14 @@ import de.hpled.zinia.PickMoodTaskPagerAdapter
 import de.hpled.zinia.R
 import de.hpled.zinia.entities.MoodTask
 import de.hpled.zinia.viewmodels.PickMoodTaskDialogViewModel
+import de.hpled.zinia.views.OnColorChangedListener
 
 interface OnPickMoodTaskListener {
     fun onPickMoodTask(task: MoodTask)
 }
 
-class PickMoodTaskDialogFragment : DialogFragment(), ColorPickerFragment.OnColorChangedListener {
+class PickMoodTaskDialogFragment : DialogFragment(),
+    OnColorChangedListener {
 
     private lateinit var root: View
     private val handler = Handler()
