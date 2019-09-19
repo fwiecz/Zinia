@@ -19,6 +19,7 @@ import de.hpled.zinia.entities.Mood
 import de.hpled.zinia.entities.MoodTask
 import de.hpled.zinia.services.ColorSendingService
 import de.hpled.zinia.services.HttpRequestService
+import de.hpled.zinia.viewmodels.MoodsFragmentViewModel
 import de.hpled.zinia.views.MoodView
 import de.hpled.zinia.views.MoodViewAdapter
 import de.hpled.zinia.views.OnMoodListener
@@ -31,6 +32,9 @@ class MoodsFragment : Fragment(), OnMoodListener {
     private val addButton by lazy { root.findViewById<FloatingActionButton>(R.id.moodsAddButton) }
     private val database by lazy {
         ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java)
+    }
+    private val viewmodel by lazy {
+        ViewModelProviders.of(this).get(MoodsFragmentViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -52,15 +56,6 @@ class MoodsFragment : Fragment(), OnMoodListener {
         })
     }
 
-    private fun playMoodTasks(moodTasks: List<MoodTask>) {
-        moodTasks.forEach {
-            turnDeviceOn(it.device!!)
-            if(it.color != null) {
-                ColorSendingService.sendSingleColor(it.device!!.ipAddress, it.color!!).run()
-            }
-        }
-    }
-
     private fun createMood() {
         val intent = Intent(context, MoodEditorActivity::class.java)
         startActivityForResult(intent, MOOD_EDITOR)
@@ -80,25 +75,15 @@ class MoodsFragment : Fragment(), OnMoodListener {
         AsyncTask.execute {
             val moodWithTasks = database.getMoodWithTasks(mood.id)
             moodWithTasks.tasks?.apply {
-                playMoodTasks(this)
+                viewmodel.playMoodTasks(this)
             }
             if(moodWithTasks.turnOffUnusedDevices) {
                 val devices = database.findAllDevices()
                 val used = moodWithTasks.tasks?.mapNotNull { it.device } ?: listOf()
                 val unused = devices - used
-                unused.forEach { turnDeviceOff(it) }
+                unused.forEach { viewmodel.turnDeviceOff(it) }
             }
         }
-    }
-
-    private fun turnDeviceOn(device: Device) {
-        val url = URL("http://${device.ipAddress}/setOn")
-        HttpRequestService.requestToRunnable<Any>(url, {}, {}, Any::class.java).run()
-    }
-
-    private fun turnDeviceOff(device: Device) {
-        val url = URL("http://${device.ipAddress}/setOff")
-        HttpRequestService.requestToRunnable<Any>(url, {}, {}, Any::class.java).run()
     }
 
     override fun onDestroy() {
