@@ -9,7 +9,7 @@ import de.hpled.zinia.fragments.ColorPickerFragment
 class PickMoodTaskPagerAdapter(private val context: Context, fm: FragmentManager) :
     FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    val colorPickerFragment by lazy { ColorPickerFragment() }
+    val colorPickerFragment = ColorPickerFragment()
 
     private val TAB_TITLES = arrayOf(
         R.string.pick_color_label

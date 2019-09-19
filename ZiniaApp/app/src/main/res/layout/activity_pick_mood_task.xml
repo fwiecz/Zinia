@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
-    android:orientation="vertical">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/pickMoodTaskToolbar"
-        style="@style/ThemeOverlay.AppCompat.ActionBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:elevation="4dp"
-        app:navigationIcon="?attr/homeAsUpIndicator"
-        app:titleTextColor="@color/colorTextPrimary"
-        android:stateListAnimator="@null" />
+    android:orientation="vertical"
+    tools:context=".PickMoodTaskActivity">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/pickMoodTaskTabs"

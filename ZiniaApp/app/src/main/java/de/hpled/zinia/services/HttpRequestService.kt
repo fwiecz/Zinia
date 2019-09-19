@@ -39,6 +39,7 @@ class HttpRequestService {
                     doOutput = true
                 }
                 try {
+                    Log.i(TAG, "Connecting to $url")
                     connection.connect()
                     val reader = BufferedReader(InputStreamReader(connection.getInputStream()))
                     val response = gson.fromJson<T>(reader.readText(), responseType)

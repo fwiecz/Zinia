@@ -2,6 +2,7 @@ package de.hpled.zinia
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
@@ -19,13 +20,11 @@ import de.hpled.zinia.entities.Mood
 import de.hpled.zinia.entities.MoodTask
 import de.hpled.zinia.fragments.DevicePickDialogFragment
 import de.hpled.zinia.fragments.OnDevicePickListener
-import de.hpled.zinia.fragments.OnPickMoodTaskListener
-import de.hpled.zinia.fragments.PickMoodTaskDialogFragment
 import de.hpled.zinia.viewmodels.MoodEditorViewModel
 import de.hpled.zinia.views.MoodTaskView
 import de.hpled.zinia.views.MoodTaskViewAdapter
 
-class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener, OnPickMoodTaskListener {
+class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener {
     private val handler = Handler()
     private val name by lazy { findViewById<EditText>(R.id.moodEditorName) }
     private val gridView by lazy { findViewById<GridView>(R.id.moodEditorGridView) }
@@ -106,13 +105,13 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener, OnPickMood
         return name.text.isNotEmpty() && viewmodel.moodTasks.value?.isNotEmpty()!!
     }
 
-    private fun pickMoodTask(moodTask: MoodTask) = PickMoodTaskDialogFragment().apply {
-        task = moodTask.copy().also { it.device = moodTask.device }
-        listener += this@MoodEditorActivity
-        show(supportFragmentManager, null)
+    private fun pickMoodTask(moodTask: MoodTask) {
+        val intent = Intent(this, PickMoodTaskActivity::class.java)
+        intent.putExtra(PickMoodTaskActivity.INTENT_MOODTASK, moodTask)
+        startActivityForResult(intent, REQUEST_PICK_MOODTASK)
     }
 
-    override fun onPickMoodTask(task: MoodTask) {
+    private fun onMoodTaskHasChanged(task: MoodTask) {
         val newlist = viewmodel.moodTasks.value?.let {
             val old = it.find { it.deviceId == task.deviceId }
             val oldIndex = it.indexOf(old)
@@ -127,6 +126,18 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener, OnPickMood
         pickMoodTask(moodTask)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(requestCode) {
+            REQUEST_PICK_MOODTASK -> if(resultCode == Activity.RESULT_OK && data != null) {
+                val task = data.getSerializableExtra(PickMoodTaskActivity.INTENT_MOODTASK) as MoodTask
+                AsyncTask.execute{
+                    task.device = database.deviceDao.findById(task.deviceId)
+                    handler.post { onMoodTaskHasChanged(task) }
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 
     private fun deleteMoodTask(moodTask: MoodTask) {
         AlertDialog.Builder(this, R.style.DefaultAlertDialogStyle).apply {
@@ -176,5 +187,6 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener, OnPickMood
 
     companion object {
         const val INTENT_MOOD_ID = "INTENT_MOOD_ID"
+        const val REQUEST_PICK_MOODTASK = 1
     }
 }

@@ -26,6 +26,7 @@ class ColorPickerView(c: Context, attr: AttributeSet) : RelativeLayout(c, attr) 
 
     private val frame by lazy { findViewById<FrameLayout>(R.id.colorWheelFrame) }
     private val thumb by lazy { findViewById<View>(R.id.colorWheelThumb) }
+    private val wheel by lazy { findViewById<ColorWheelView>(R.id.colorWheelView) }
     private val mHandler = Handler()
     private lateinit var center : Vector2D
     private val angleReference = Vector2D(0.0, 1.0)
@@ -43,10 +44,11 @@ class ColorPickerView(c: Context, attr: AttributeSet) : RelativeLayout(c, attr) 
                     thumb.y = v.y.toFloat() - (thumb.height / 2f)
                     informListener(v.x, v.y, false)
                 }
-                MotionEvent.ACTION_UP -> {
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     val v = checkThumbsStaysInBounds(event.x.toDouble(), event.y.toDouble())
                     informListener(v.x, v.y, true)
                 }
+
             }
             view?.performClick()
             true
@@ -56,6 +58,11 @@ class ColorPickerView(c: Context, attr: AttributeSet) : RelativeLayout(c, attr) 
         View.inflate(context, R.layout.view_color_picker, this)
         frame.setOnTouchListener(onTouchListener)
         thumb.visibility = View.INVISIBLE
+        setWillNotDraw(false)
+        initMetrics()
+    }
+
+    private fun initMetrics() {
         mHandler.post {
             center = Vector2D(frame.width / 2.0, frame.height / 2.0)
             radius = min(frame.width / 2.0, frame.height / 2.0)
