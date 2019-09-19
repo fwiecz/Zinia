@@ -146,7 +146,6 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener {
             setNegativeButton(getString(R.string.cancel_label)) {dialog, which ->  }
             setPositiveButton(getString(R.string.remove_label)) {dialog, which ->
                 viewmodel.moodTasks.value = viewmodel.moodTasks.value!! - moodTask
-                AsyncTask.execute{ database.moodTaskDao.deleteAll(moodTask) }
             }
             create()
             show()
@@ -170,6 +169,14 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener {
         val moodTasks = viewmodel.moodTasks.value
         if (moodCanBeSaved() && moodTasks != null) {
             AsyncTask.execute {
+                // delete unused MoodTasks
+                if(database.moodDao.findAll().map { it.id }.contains(moodId)) {
+                    val oldMoodTasks = database.getMoodWithTasks(moodId).tasks ?: listOf()
+                    val newTasks = moodTasks.map { it.id }
+                    val delTasks = oldMoodTasks.filter { it.id !in newTasks }
+                    database.moodTaskDao.deleteAll( *delTasks.toTypedArray() )
+                }
+
                 val ids = database.moodTaskDao.insertAll(*moodTasks.toTypedArray()).toLongArray()
                 val mood = Mood(moodId, name.text.toString().trim(), turnOffDevices.isChecked, ids)
                 database.moodDao.insert(mood)
