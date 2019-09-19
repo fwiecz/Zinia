@@ -80,8 +80,9 @@ class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId) {
             R.id.mood_task_done -> onClickDone()
+            android.R.id.home -> finish()
         }
-        return super.onOptionsItemSelected(item)
+        return true
     }
 
     override fun onPause() {
@@ -99,6 +100,11 @@ class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener {
     override fun onDestroy() {
         database.close()
         super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 
     companion object {
