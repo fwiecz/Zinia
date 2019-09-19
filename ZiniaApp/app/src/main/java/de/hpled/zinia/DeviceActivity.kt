@@ -38,7 +38,13 @@ class DeviceActivity : AppCompatActivity() {
         device = intent.getSerializableExtra(INTENT_DEVICE) as Device
         supportActionBar?.title = device.name
         viewmodel.colorSendingService.targetIP = device.ipAddress
+    }
+
+    override fun onStart() {
+        super.onStart()
         colorPicker.onColorChangedListener += viewmodel.colorSendingService
+        viewmodel.deviceColor.observe(this, Observer { colorPicker.setThumbToColor(it) })
+        viewmodel.getDeviceColor(device)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

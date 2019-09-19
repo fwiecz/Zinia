@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import de.hpled.zinia.R
+import de.hpled.zinia.dto.ColorDTO
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
 import kotlin.math.acos
 import kotlin.math.min
@@ -76,6 +77,18 @@ class ColorPickerView(c: Context, attr: AttributeSet) : RelativeLayout(c, attr) 
         } else {
             return Vector2D(x, y)
         }
+    }
+
+    fun setThumbToColor(color: ColorDTO) {
+        val hsv = color.toHSV()
+        println(hsv.toList())
+        val v = Vector2D(0.0, hsv[1] * -radius)
+        hsv[0] = Math.toRadians(hsv[0].toDouble()).toFloat()
+        val posx = (v.x * Math.cos(hsv[0].toDouble()) - v.y * Math.sin(hsv[0].toDouble()))
+        val posy = (v.x * Math.sin(hsv[0].toDouble()) + v.y * Math.cos(hsv[0].toDouble()))
+        thumb.x = posx.toFloat() - (thumb.width / 2) + center.x.toFloat()
+        thumb.y = posy.toFloat() - (thumb.height / 2) + center.y.toFloat()
+        thumb.visibility = View.VISIBLE
     }
 
     private fun informListener(x: Double, y: Double, final: Boolean) {

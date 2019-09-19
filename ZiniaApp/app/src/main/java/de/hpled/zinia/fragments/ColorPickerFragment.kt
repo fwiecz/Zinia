@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 
 import de.hpled.zinia.R
+import de.hpled.zinia.dto.ColorDTO
 import de.hpled.zinia.views.BrightnessWarmthView
 import de.hpled.zinia.views.ColorPickerView
 import de.hpled.zinia.views.OnColorChangedListener
@@ -31,6 +32,10 @@ class ColorPickerFragment : Fragment(), OnColorChangedListener {
     ): View? {
         root = inflater.inflate(R.layout.fragment_color_picker, container, false) as LinearLayout
         return root
+    }
+
+    fun setThumbToColor(color: ColorDTO) {
+        colorPicker.setThumbToColor(color)
     }
 
     override fun onColorChanged(color: Int, final: Boolean) {
