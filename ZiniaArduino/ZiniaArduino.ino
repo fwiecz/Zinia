@@ -26,6 +26,10 @@ const char* password = "";
 // The NeoPixel object is used to communicate with the LEDs.
 Adafruit_NeoPixel pixel = Adafruit_NeoPixel(NUM_LEDS, LED_DATA, NEO_GRB + NEO_KHZ800);
 
+// Available modes:
+#define MODE_READY 0
+#define MODE_SINGLE_COLOR 1
+
 // The server object is responsible for handling incoming http requests.
 ESP8266WebServer server(80);
 
@@ -41,11 +45,19 @@ const char* emptyJson = "{}";
 // Requests will still be answered with status 200 (OK).
 int isOn = 1;
 
+// The current Mode of the device
+int mode = MODE_READY;
+
 // How fast colors should change
 float colorSpeed = 0.01f;
 
 // Positions: numLights: 12-15, isOn: 25
 char statusMsg[] = "{\"numLeds\":\"    \",\"isOn\": }";
+
+// Positions: red: 6-9, green: 17-20, blue: 28-31
+char colorMsg[] = "{\"r\":\"    \",\"g\":\"    \",\"b\":\"    \"}";
+
+short lastSingleColor[4];
 
 void setup() {
   pinMode(LED_DATA, OUTPUT);
@@ -78,12 +90,23 @@ void setup() {
 
 // The Status Message containing software/hardware information.
 void sendStatus() {
-  statusMsg[12] = ascii((NUM_LEDS / 1000) % 10);
-  statusMsg[13] = ascii((NUM_LEDS / 100) % 10);
-  statusMsg[14] = ascii((NUM_LEDS / 10) % 10);
-  statusMsg[15] = ascii(NUM_LEDS % 10);
+  writeNumberTo(statusMsg, 12, 4, NUM_LEDS);
   statusMsg[25] = ascii(isOn);
   server.send(200, applicationJson, statusMsg);
+}
+
+// Send the color if the device is in MODE_SINGLE_COLOR mode
+void sendColor() {
+  if(mode == MODE_SINGLE_COLOR) {
+    writeNumberTo(colorMsg, 6, 4, lastSingleColor[0]); // red
+    writeNumberTo(colorMsg, 17, 4, lastSingleColor[1]); // green
+    writeNumberTo(colorMsg, 28, 4, lastSingleColor[2]); // blue
+  } else {
+    writeNullTo(colorMsg, 6);
+    writeNullTo(colorMsg, 17);
+    writeNullTo(colorMsg, 28);
+  }
+  server.send(200, applicationJson, colorMsg);
 }
 
 // Initializes REST calls
@@ -92,6 +115,7 @@ void initializeServer() {
   server.on("/setSingleColor", setSingleColor);
   server.on("/setOn", setOn);
   server.on("/setOff", setOff);
+  server.on("/getColor", sendColor);
   server.onNotFound( [](){
     server.send(404, textPlain, F("Page not found"));
   });
@@ -114,10 +138,11 @@ void setOn() {
 // Interpolates to the given color. [colorSpeed] has no effect here.
 void setSingleColor() {
   if(isOn) {
-    short r = server.arg(F("r")).toInt();
-    short g = server.arg(F("g")).toInt();
-    short b = server.arg(F("b")).toInt();
-    manager.setSingleColor(r, g, b);
+    mode = MODE_SINGLE_COLOR;
+    lastSingleColor[0] = server.arg(F("r")).toInt();
+    lastSingleColor[1] = server.arg(F("g")).toInt();
+    lastSingleColor[2] = server.arg(F("b")).toInt();
+    manager.setSingleColor(lastSingleColor[0], lastSingleColor[1], lastSingleColor[2]);
   }
   server.send(200, applicationJson, emptyJson);
 }
@@ -137,6 +162,25 @@ void setAllPixelsTo(int r, int g, int b) {
 // Returns the given number as ascii digit (0-9).
 int ascii(int num) {
   return num + 48;
+}
+
+// Writes 'null' to the specified char array at the given position;
+void writeNullTo(char* array, int pos) {
+  array[pos] = 'n'; array[pos+1] = 'u'; array[pos+2] = 'l'; array[pos+3] = 'l';
+}
+
+void writeNumberTo(char* array, int pos, int digits, int number) {
+  for(int i=0; i<digits; i++) {
+    array[pos+i] = ascii((number / tenTimes(digits-i-1)) % 10);
+  }
+}
+
+int tenTimes(int times) {
+  if(times == 0)return 1;
+  if(times == 1)return 10;
+  if(times == 2)return 100;
+  if(times == 3)return 1000;
+  return tenTimes(times - 1) * 10; 
 }
 
 void updatePixels() {
