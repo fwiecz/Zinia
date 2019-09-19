@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/card_background"
-    android:padding="20dp"
     android:elevation="1dp"
     android:clipChildren="false"
     android:clipToPadding="false"
     tools:context=".fragments.ColorPickerFragment">
 
-    <FrameLayout
-        android:id="@+id/colorWheelFrame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="false">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="20dp"
+        android:background="@drawable/card_background">
+
+        <FrameLayout
+            android:id="@+id/colorWheelFrame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false">
 
         <de.hpled.zinia.views.ColorWheelView
             android:layout_width="match_parent"
@@ -27,8 +33,15 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:elevation="2dp"
+            android:visibility="invisible"
             android:background="@drawable/color_pick_thumb"/>
+        </FrameLayout>
 
-    </FrameLayout>
+    </RelativeLayout>
 
-</RelativeLayout>
+    <de.hpled.zinia.views.BrightnessWarmthView
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

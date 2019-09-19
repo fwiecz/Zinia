@@ -15,4 +15,6 @@
     <color name="colorMenuIcon">#646464</color>
     <color name="colorSwitchUnchecked">#EBEBEB</color>
     <color name="colorMoodTaskCircleBackground">#D8D8D8</color>
+    <color name="colorWarmth">#FFECBD</color>
+    <color name="colorWarmthProgress">#814316</color>
 </resources>

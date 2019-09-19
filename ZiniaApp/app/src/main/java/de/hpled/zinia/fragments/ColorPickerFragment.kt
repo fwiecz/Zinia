@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 
@@ -28,7 +29,7 @@ import kotlin.math.min
  */
 class ColorPickerFragment : Fragment() {
 
-    private lateinit var root: RelativeLayout
+    private lateinit var root: LinearLayout
     private val frame by lazy { root.findViewById<FrameLayout>(R.id.colorWheelFrame) }
     private val thumb by lazy { root.findViewById<View>(R.id.colorWheelThumb) }
     private val handler = Handler()
@@ -41,7 +42,7 @@ class ColorPickerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        root = inflater.inflate(R.layout.fragment_color_picker, container, false) as RelativeLayout
+        root = inflater.inflate(R.layout.fragment_color_picker, container, false) as LinearLayout
         return root
     }
 
