@@ -28,6 +28,10 @@ class MoodTaskView(c: Context, attr: AttributeSet? = null) : LinearLayout(c, att
 
     init {
         View.inflate(context, R.layout.view_mood_task, this)
+        // tint the plus icon
+        addButtonLayout.compoundDrawables.mapNotNull { it }.firstOrNull()?.setTint(
+            context.resources.getColor(R.color.colorTextTertiary)
+        )
     }
 
     fun set(moodTask: MoodTask?) {
