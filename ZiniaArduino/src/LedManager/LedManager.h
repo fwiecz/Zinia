@@ -13,6 +13,8 @@ class LedManager
         float _timeStep;
         int _mode;
         float _singleColorSpeed;
+        long _timestamp;
+        float _timeAdjust;
         bool compute(float step);
     public:
         LedManager(int numLeds, float singleColorSpeed);

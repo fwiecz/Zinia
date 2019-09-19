@@ -50,9 +50,18 @@ void LedManager::setSingleColor(short r, short g, short b) {
 
 // Returns true if timeStep >= 1
 bool LedManager::compute(float step) {
-    _timeStep += step;
+    if(_timestamp > 0) {
+        long deltatime = micros() - _timestamp;
+        _timeAdjust = 1000.0 / (float)deltatime;
+    } else {
+        _timeAdjust = 1;
+    }
+    _timestamp = micros();
+
+    _timeStep += (step / _timeAdjust);
     if(_timeStep >= 1) {
         _timeStep -= 1;
+        _timeStep = min(_timeStep, 2);
         return true;
     }
     return false;
