@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_margin="5dp"
         android:background="@drawable/card_background"
         android:elevation="1dp"
         android:gravity="center"
@@ -30,7 +30,7 @@
         android:id="@+id/warmth_slider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_margin="5dp"
         android:background="@drawable/card_background"
         android:backgroundTint="@color/colorWarmth"
         android:elevation="1dp"

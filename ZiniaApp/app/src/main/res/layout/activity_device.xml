@@ -4,21 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorBackground"
+    android:orientation="vertical"
+    android:padding="5dp"
     tools:context=".DeviceActivity">
 
-    <fragment
-        android:id="@+id/colorPickFragment"
+    <de.hpled.zinia.views.ColorPickerView
+        android:id="@+id/deviceColorPickerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_margin="10dp"
-        class="de.hpled.zinia.fragments.ColorPickerFragment"/>
+        android:layout_weight="1" />
 
-    <View
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <de.hpled.zinia.views.BrightnessWarmthView
+                android:id="@+id/deviceBrightnessWarmth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

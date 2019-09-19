@@ -9,6 +9,7 @@
     android:clipToPadding="false"
     android:elevation="1dp"
     android:orientation="vertical"
+    android:layout_margin="5dp"
     android:padding="20dp"
     tools:context=".fragments.ColorPickerFragment">
 

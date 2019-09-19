@@ -14,6 +14,7 @@ import de.hpled.zinia.fragments.ColorPickerFragment
 import de.hpled.zinia.fragments.DeleteDialogFragment
 import de.hpled.zinia.services.HttpRequestService
 import de.hpled.zinia.viewmodels.DeviceViewModel
+import de.hpled.zinia.views.ColorPickerView
 import java.lang.IllegalStateException
 import java.net.URL
 
@@ -24,7 +25,7 @@ class DeviceActivity : AppCompatActivity() {
         ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java)
     }
     private val colorPicker by lazy {
-        supportFragmentManager.findFragmentById(R.id.colorPickFragment) as ColorPickerFragment
+        findViewById<ColorPickerView>(R.id.deviceColorPickerView)
     }
     private val viewmodel by lazy {
         ViewModelProviders.of(this).get(DeviceViewModel::class.java)
