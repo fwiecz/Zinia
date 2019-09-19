@@ -85,6 +85,10 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    fun close() {
+        database.close()
+    }
+
     companion object {
         private val newDeviceIntentFeatures = listOf(
             AddNewDeviceActivity.INTENT_IP,

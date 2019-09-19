@@ -79,6 +79,11 @@ class DeviceActivity : AppCompatActivity() {
         }.show(supportFragmentManager, null)
     }
 
+    override fun onDestroy() {
+        database.close()
+        super.onDestroy()
+    }
+
     companion object {
         const val INTENT_DEVICE = "DEVICE"
     }

@@ -124,6 +124,11 @@ class ListDevicesFragment : Fragment() {
         }
     }
 
+    override fun onDestroy() {
+        database.close()
+        super.onDestroy()
+    }
+
     companion object {
         private const val NEW_DEVICE_REQUEST_CODE = 0
     }

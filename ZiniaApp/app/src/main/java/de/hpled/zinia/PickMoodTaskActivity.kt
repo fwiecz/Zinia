@@ -17,7 +17,7 @@ import de.hpled.zinia.views.OnColorChangedListener
 
 class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener {
     private val handler = Handler()
-    private val databse by lazy {
+    private val database by lazy {
         ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java)
     }
     private val pagerAdapter by lazy {
@@ -39,7 +39,7 @@ class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener {
         val task = intent?.getSerializableExtra(INTENT_MOODTASK) as MoodTask
         clearOldFragments()
         AsyncTask.execute {
-            val device = databse.deviceDao.findById(task.deviceId)
+            val device = database.deviceDao.findById(task.deviceId)
             moodTask = task.apply { this.device = device }
             handler.post {
                 supportActionBar?.setTitle(getString(R.string.pick_moodtask_dialog_title, device.name))
@@ -94,6 +94,11 @@ class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener {
         val t = supportFragmentManager.beginTransaction()
         f.forEach { t.remove(it) }
         t.commitNow()
+    }
+
+    override fun onDestroy() {
+        database.close()
+        super.onDestroy()
     }
 
     companion object {

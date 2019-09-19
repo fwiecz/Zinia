@@ -185,6 +185,11 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener {
         }
     }
 
+    override fun onDestroy() {
+        database.close()
+        super.onDestroy()
+    }
+
     companion object {
         const val INTENT_MOOD_ID = "INTENT_MOOD_ID"
         const val REQUEST_PICK_MOODTASK = 1

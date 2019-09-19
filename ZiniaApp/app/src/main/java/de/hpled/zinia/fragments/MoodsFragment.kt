@@ -101,6 +101,11 @@ class MoodsFragment : Fragment(), OnMoodListener {
         HttpRequestService.requestToRunnable<Any>(url, {}, {}, Any::class.java).run()
     }
 
+    override fun onDestroy() {
+        database.close()
+        super.onDestroy()
+    }
+
     companion object {
         private const val MOOD_EDITOR = 1
     }
