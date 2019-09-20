@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import de.hpled.zinia.dto.ColorDTO
 import de.hpled.zinia.dto.DeviceStatusDTO
 import de.hpled.zinia.entities.Device
+import de.hpled.zinia.services.BrightnessSendingService
 import de.hpled.zinia.services.ColorSendingService
 import de.hpled.zinia.services.HttpRequestService
 import java.net.URL
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit
 class DeviceViewModel : ViewModel() {
     private val handler = Handler()
     val colorSendingService = ColorSendingService(sendingFrequency)
+    val brightnessSendingService = BrightnessSendingService(sendingFrequency)
     val deviceIsOn = MutableLiveData(false)
     val deviceColor = MutableLiveData<ColorDTO>()
     val executor = ScheduledThreadPoolExecutor(3)

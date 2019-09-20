@@ -43,6 +43,7 @@ class DeviceActivity : AppCompatActivity(), OnBrightnessWarmthChangedListener{
         device = intent.getSerializableExtra(INTENT_DEVICE) as Device
         supportActionBar?.title = device.name
         viewmodel.colorSendingService.targetIP = device.ipAddress
+        viewmodel.brightnessSendingService.targetIP = device.ipAddress
     }
 
     override fun onStart() {
@@ -51,10 +52,7 @@ class DeviceActivity : AppCompatActivity(), OnBrightnessWarmthChangedListener{
         viewmodel.deviceColor.observe(this, Observer { colorPicker.setThumbToColor(it) })
         viewmodel.getDeviceColor(device)
         brWarmSlider.listener += this
-    }
-
-    override fun onBrightnessChanged(value: Int, final: Boolean) {
-
+        brWarmSlider.listener += viewmodel.brightnessSendingService
     }
 
     override fun onWarmthChanged(value: Int, final: Boolean) {
@@ -106,5 +104,9 @@ class DeviceActivity : AppCompatActivity(), OnBrightnessWarmthChangedListener{
 
     companion object {
         const val INTENT_DEVICE = "DEVICE"
+    }
+
+    override fun onBrightnessChanged(value: Int, final: Boolean) {
+        // Handled by BrightnessSendingService
     }
 }
