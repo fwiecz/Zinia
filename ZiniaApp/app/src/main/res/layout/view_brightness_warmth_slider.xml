@@ -12,7 +12,7 @@
         android:elevation="1dp"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:padding="15dp">
 
         <ImageView
             android:layout_width="20dp"
@@ -36,7 +36,7 @@
         android:elevation="1dp"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:padding="15dp">
 
         <ImageView
             android:layout_width="20dp"
