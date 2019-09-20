@@ -13,18 +13,20 @@ import de.hpled.zinia.R
 import de.hpled.zinia.dto.ColorDTO
 import de.hpled.zinia.views.BrightnessWarmthView
 import de.hpled.zinia.views.ColorPickerView
+import de.hpled.zinia.views.OnBrightnessWarmthChangedListener
 import de.hpled.zinia.views.OnColorChangedListener
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
 
 /**
  * The User can intuitively pick a targetColor.
  */
-class ColorPickerFragment : Fragment(), OnColorChangedListener {
+class ColorPickerFragment : Fragment(), OnColorChangedListener, OnBrightnessWarmthChangedListener {
     private val handler = Handler()
     private lateinit var root: LinearLayout
     private val colorPicker by lazy { root.findViewById<ColorPickerView>(R.id.colorPickerView) }
     private val slider by lazy { root.findViewById<BrightnessWarmthView>(R.id.brightnessWarmthView) }
     val onColorChangedListener = mutableListOf<OnColorChangedListener>()
+    val onBrightnessWarmthChangedListener = mutableSetOf<OnBrightnessWarmthChangedListener>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +42,14 @@ class ColorPickerFragment : Fragment(), OnColorChangedListener {
 
     override fun onColorChanged(color: Int, final: Boolean) {
         onColorChangedListener.forEach { it.onColorChanged(color, final) }
+    }
+
+    override fun onBrightnessChanged(value: Int, final: Boolean) {
+        onBrightnessWarmthChangedListener.forEach { it.onBrightnessChanged(value, final) }
+    }
+
+    override fun onWarmthChanged(value: Int, final: Boolean) {
+        onBrightnessWarmthChangedListener.forEach { it.onWarmthChanged(value, final) }
     }
 
     override fun onStart() {

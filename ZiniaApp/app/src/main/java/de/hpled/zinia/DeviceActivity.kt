@@ -14,21 +14,26 @@ import de.hpled.zinia.fragments.ColorPickerFragment
 import de.hpled.zinia.fragments.DeleteDialogFragment
 import de.hpled.zinia.services.HttpRequestService
 import de.hpled.zinia.viewmodels.DeviceViewModel
+import de.hpled.zinia.views.BrightnessWarmthView
 import de.hpled.zinia.views.ColorPickerView
+import de.hpled.zinia.views.OnBrightnessWarmthChangedListener
 import java.lang.IllegalStateException
 import java.net.URL
 
-class DeviceActivity : AppCompatActivity() {
+class DeviceActivity : AppCompatActivity(), OnBrightnessWarmthChangedListener{
     private lateinit var device: Device
     private lateinit var onOffSwitch: Switch
     private val database by lazy {
         ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java)
     }
+    private val viewmodel by lazy {
+        ViewModelProviders.of(this).get(DeviceViewModel::class.java)
+    }
     private val colorPicker by lazy {
         findViewById<ColorPickerView>(R.id.deviceColorPickerView)
     }
-    private val viewmodel by lazy {
-        ViewModelProviders.of(this).get(DeviceViewModel::class.java)
+    private val brWarmSlider by lazy {
+        findViewById<BrightnessWarmthView>(R.id.deviceBrightnessWarmth)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +50,15 @@ class DeviceActivity : AppCompatActivity() {
         colorPicker.onColorChangedListener += viewmodel.colorSendingService
         viewmodel.deviceColor.observe(this, Observer { colorPicker.setThumbToColor(it) })
         viewmodel.getDeviceColor(device)
+        brWarmSlider.listener += this
+    }
+
+    override fun onBrightnessChanged(value: Int, final: Boolean) {
+
+    }
+
+    override fun onWarmthChanged(value: Int, final: Boolean) {
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

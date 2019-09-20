@@ -80,15 +80,16 @@ class ColorPickerView(c: Context, attr: AttributeSet) : RelativeLayout(c, attr) 
     }
 
     fun setThumbToColor(color: ColorDTO) {
-        val hsv = color.toHSV()
-        println(hsv.toList())
-        val v = Vector2D(0.0, hsv[1] * -radius)
-        hsv[0] = Math.toRadians(hsv[0].toDouble()).toFloat()
-        val posx = (v.x * Math.cos(hsv[0].toDouble()) - v.y * Math.sin(hsv[0].toDouble()))
-        val posy = (v.x * Math.sin(hsv[0].toDouble()) + v.y * Math.cos(hsv[0].toDouble()))
-        thumb.x = posx.toFloat() - (thumb.width / 2) + center.x.toFloat()
-        thumb.y = posy.toFloat() - (thumb.height / 2) + center.y.toFloat()
-        thumb.visibility = View.VISIBLE
+        mHandler.post {
+            val hsv = color.toHSV()
+            val v = Vector2D(0.0, hsv[1] * -radius)
+            hsv[0] = Math.toRadians(hsv[0].toDouble()).toFloat()
+            val posx = (v.x * Math.cos(hsv[0].toDouble()) - v.y * Math.sin(hsv[0].toDouble()))
+            val posy = (v.x * Math.sin(hsv[0].toDouble()) + v.y * Math.cos(hsv[0].toDouble()))
+            thumb.x = posx.toFloat() - (thumb.width / 2) + center.x.toFloat()
+            thumb.y = posy.toFloat() - (thumb.height / 2) + center.y.toFloat()
+            thumb.visibility = View.VISIBLE
+        }
     }
 
     private fun informListener(x: Double, y: Double, final: Boolean) {

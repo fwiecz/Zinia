@@ -21,13 +21,14 @@
             android:tint="@color/colorTextTertiary" />
 
         <SeekBar
+            android:id="@+id/brightnessSlider"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/warmth_slider"
+        android:id="@+id/warmthLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
@@ -36,7 +37,8 @@
         android:elevation="1dp"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="15dp">
+        android:padding="15dp"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="20dp"
@@ -45,6 +47,7 @@
             android:tint="@color/colorTextTertiary" />
 
         <SeekBar
+            android:id="@+id/warmthSlider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:progressTint="@color/colorWarmthProgress"

@@ -13,9 +13,11 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import de.hpled.zinia.entities.MoodTask
 import de.hpled.zinia.services.ColorSendingService
+import de.hpled.zinia.views.OnBrightnessWarmthChangedListener
 import de.hpled.zinia.views.OnColorChangedListener
 
-class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener {
+class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener,
+    OnBrightnessWarmthChangedListener {
     private val handler = Handler()
     private val database by lazy {
         ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java)
@@ -42,7 +44,12 @@ class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener {
             val device = database.deviceDao.findById(task.deviceId)
             moodTask = task.apply { this.device = device }
             handler.post {
-                supportActionBar?.setTitle(getString(R.string.pick_moodtask_dialog_title, device.name))
+                supportActionBar?.setTitle(
+                    getString(
+                        R.string.pick_moodtask_dialog_title,
+                        device.name
+                    )
+                )
                 onInitAsync()
             }
         }
@@ -52,10 +59,16 @@ class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener {
         pager.adapter = pagerAdapter
         tabs.setupWithViewPager(pager)
         colorSendingService.targetIP = moodTask.device?.ipAddress ?: ""
-        pagerAdapter.colorPickerFragment.onColorChangedListener.apply {
-            clear()
-            add(colorSendingService)
-            add(this@PickMoodTaskActivity)
+        pagerAdapter.colorPickerFragment.apply {
+            onColorChangedListener.apply {
+                clear()
+                add(colorSendingService)
+                add(this@PickMoodTaskActivity)
+            }
+            onBrightnessWarmthChangedListener.apply {
+                clear()
+                add(this@PickMoodTaskActivity)
+            }
         }
     }
 
@@ -67,9 +80,17 @@ class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener {
     }
 
     override fun onColorChanged(color: Int, final: Boolean) {
-        if(final) {
+        if (final) {
             moodTask.color = color
         }
+    }
+
+    override fun onBrightnessChanged(value: Int, final: Boolean) {
+
+    }
+
+    override fun onWarmthChanged(value: Int, final: Boolean) {
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -78,7 +99,7 @@ class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId) {
+        when (item?.itemId) {
             R.id.mood_task_done -> onClickDone()
             android.R.id.home -> finish()
         }
