@@ -83,10 +83,10 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener {
             // If the add button was tapped
             if (view as? MoodTaskView != null && view.moodTask == null && !allDevicesInUse) {
                 val alreadyUsedDevices = moodTaskAdapter.moodTaskList.mapNotNull { it?.device }
-                val dialog = DevicePickDialogFragment(devices - alreadyUsedDevices, this@MoodEditorActivity)
+                val dialog =
+                    DevicePickDialogFragment(devices - alreadyUsedDevices, this@MoodEditorActivity)
                 dialog.show(supportFragmentManager, null)
-            }
-            else if(view as? MoodTaskView != null && view.moodTask != null) {
+            } else if (view as? MoodTaskView != null && view.moodTask != null) {
                 view.moodTask?.apply { pickMoodTask(this) }
             }
         }
@@ -94,7 +94,7 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener {
 
     private val onLongClickListener = object : AdapterView.OnItemLongClickListener {
         override fun onItemLongClick(p: AdapterView<*>?, v: View?, pos: Int, id: Long): Boolean {
-            if(v != null && v is MoodTaskView) {
+            if (v != null && v is MoodTaskView) {
                 v.moodTask?.apply { deleteMoodTask(this) }
             }
             return true
@@ -121,16 +121,22 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener {
     }
 
     override fun onDevicePicked(device: Device) {
-        val moodTask = MoodTask(0, device.id, Color.WHITE).apply { this.device = device }
+        val moodTask = MoodTask(
+            0,
+            device.id,
+            Color.WHITE,
+            resources.getInteger(R.integer.maxBrightness)
+        ).apply { this.device = device }
         viewmodel.moodTasks.value = (viewmodel.moodTasks.value ?: listOf()) + moodTask
         pickMoodTask(moodTask)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
-            REQUEST_PICK_MOODTASK -> if(resultCode == Activity.RESULT_OK && data != null) {
-                val task = data.getSerializableExtra(PickMoodTaskActivity.INTENT_MOODTASK) as MoodTask
-                AsyncTask.execute{
+        when (requestCode) {
+            REQUEST_PICK_MOODTASK -> if (resultCode == Activity.RESULT_OK && data != null) {
+                val task =
+                    data.getSerializableExtra(PickMoodTaskActivity.INTENT_MOODTASK) as MoodTask
+                AsyncTask.execute {
                     task.device = database.deviceDao.findById(task.deviceId)
                     handler.post { onMoodTaskHasChanged(task) }
                 }
@@ -143,8 +149,8 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener {
         AlertDialog.Builder(this, R.style.DefaultAlertDialogStyle).apply {
             setTitle(getString(R.string.remove_device_title))
             setMessage(getString(R.string.remove_device_message, moodTask.device?.name))
-            setNegativeButton(getString(R.string.cancel_label)) {dialog, which ->  }
-            setPositiveButton(getString(R.string.remove_label)) {dialog, which ->
+            setNegativeButton(getString(R.string.cancel_label)) { dialog, which -> }
+            setPositiveButton(getString(R.string.remove_label)) { dialog, which ->
                 viewmodel.moodTasks.value = viewmodel.moodTasks.value!! - moodTask
             }
             create()
@@ -170,11 +176,11 @@ class MoodEditorActivity : AppCompatActivity(), OnDevicePickListener {
         if (moodCanBeSaved() && moodTasks != null) {
             AsyncTask.execute {
                 // delete unused MoodTasks
-                if(database.moodDao.findAll().map { it.id }.contains(moodId)) {
+                if (database.moodDao.findAll().map { it.id }.contains(moodId)) {
                     val oldMoodTasks = database.getMoodWithTasks(moodId).tasks ?: listOf()
                     val newTasks = moodTasks.map { it.id }
                     val delTasks = oldMoodTasks.filter { it.id !in newTasks }
-                    database.moodTaskDao.deleteAll( *delTasks.toTypedArray() )
+                    database.moodTaskDao.deleteAll(*delTasks.toTypedArray())
                 }
 
                 val ids = database.moodTaskDao.insertAll(*moodTasks.toTypedArray()).toLongArray()

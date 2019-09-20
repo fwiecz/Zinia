@@ -2,6 +2,7 @@ package de.hpled.zinia
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,7 +12,9 @@ import android.view.MenuItem
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import de.hpled.zinia.dto.ColorDTO
 import de.hpled.zinia.entities.MoodTask
+import de.hpled.zinia.services.BrightnessSendingService
 import de.hpled.zinia.services.ColorSendingService
 import de.hpled.zinia.views.OnBrightnessWarmthChangedListener
 import de.hpled.zinia.views.OnColorChangedListener
@@ -32,6 +35,7 @@ class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener,
         findViewById<TabLayout>(R.id.pickMoodTaskTabs)
     }
     private val colorSendingService = ColorSendingService(sendingFrequency)
+    private val brightnessSendingService = BrightnessSendingService(sendingFrequency)
     private lateinit var moodTask: MoodTask
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +63,7 @@ class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener,
         pager.adapter = pagerAdapter
         tabs.setupWithViewPager(pager)
         colorSendingService.targetIP = moodTask.device?.ipAddress ?: ""
+        brightnessSendingService.targetIP = moodTask.device?.ipAddress ?: ""
         pagerAdapter.colorPickerFragment.apply {
             onColorChangedListener.apply {
                 clear()
@@ -67,8 +72,11 @@ class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener,
             }
             onBrightnessWarmthChangedListener.apply {
                 clear()
+                add(brightnessSendingService)
                 add(this@PickMoodTaskActivity)
             }
+            setThumbToColor(ColorDTO.from(moodTask.color ?: Color.WHITE))
+            setBrightness(moodTask.brightness)
         }
     }
 
@@ -86,7 +94,7 @@ class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener,
     }
 
     override fun onBrightnessChanged(value: Int, final: Boolean) {
-
+        moodTask.brightness = value
     }
 
     override fun onWarmthChanged(value: Int, final: Boolean) {

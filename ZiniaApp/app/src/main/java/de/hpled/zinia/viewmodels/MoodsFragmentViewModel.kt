@@ -3,6 +3,7 @@ package de.hpled.zinia.viewmodels
 import androidx.lifecycle.ViewModel
 import de.hpled.zinia.entities.Device
 import de.hpled.zinia.entities.MoodTask
+import de.hpled.zinia.services.BrightnessSendingService
 import de.hpled.zinia.services.ColorSendingService
 import de.hpled.zinia.services.HttpRequestService
 import java.net.URL
@@ -15,10 +16,15 @@ class MoodsFragmentViewModel : ViewModel() {
     fun playMoodTasks(moodTasks: List<MoodTask>) {
         moodTasks.forEach {
             val afterOn = Runnable {
-                if(it.color != null) {
+                if (it.color != null) {
                     val job = ColorSendingService.sendSingleColor(it.device!!.ipAddress, it.color!!)
                     executor.execute(job)
                 }
+                val br = BrightnessSendingService.sendSingleBrightness(
+                    it.device!!.ipAddress,
+                    it.brightness
+                )
+                executor.execute(br)
             }
 
             turnDeviceOn(it.device!!, afterOn)

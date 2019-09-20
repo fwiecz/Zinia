@@ -12,7 +12,7 @@ import androidx.room.RoomDatabase
 import de.hpled.zinia.entities.*
 import de.hpled.zinia.newdevice.AddNewDeviceActivity
 
-@Database(entities = arrayOf(Device::class, Mood::class, MoodTask::class), version = 3)
+@Database(entities = arrayOf(Device::class, Mood::class, MoodTask::class), version = 4)
 abstract class ApplicationDB : RoomDatabase() {
     abstract fun deviceDao(): DeviceDao
     abstract fun moodDao(): MoodDao

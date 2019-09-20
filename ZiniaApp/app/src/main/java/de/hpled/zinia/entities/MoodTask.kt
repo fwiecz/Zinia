@@ -12,7 +12,8 @@ data class MoodTask (
     @PrimaryKey(autoGenerate = true)
     var id: Long,
     var deviceId: Long,
-    var color: Int?
+    var color: Int?,
+    var brightness: Int
 ) : Serializable {
     // When accessing MoodTask, also access the device and store it here
     @Ignore

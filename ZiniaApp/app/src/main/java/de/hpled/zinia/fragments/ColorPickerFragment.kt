@@ -67,5 +67,9 @@ class ColorPickerFragment : Fragment(), OnColorChangedListener, OnBrightnessWarm
             clear()
             add(this@ColorPickerFragment)
         }
+        slider.listener.apply {
+            clear()
+            add(this@ColorPickerFragment)
+        }
     }
 }

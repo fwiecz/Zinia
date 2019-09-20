@@ -21,4 +21,10 @@ data class ColorDTO (
     fun isNotNull() : Boolean {
         return r != null && g != null && b != null
     }
+
+    companion object {
+        fun from(color: Int) : ColorDTO {
+            return ColorDTO(Color.red(color), Color.green(color), Color.blue(color))
+        }
+    }
 }
