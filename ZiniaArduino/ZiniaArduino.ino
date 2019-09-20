@@ -1,3 +1,17 @@
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 #include <Adafruit_NeoPixel.h>
 #include <WiFiClient.h>
 #include <ESP8266WiFi.h>
@@ -5,7 +19,7 @@
 #include "src/LedManager/LedManager.h"
 
 // How many LEDs are connected?
-#define NUM_LEDS 3
+#define NUM_LEDS 5
 
 // The data output pin for the LEDs 
 #define LED_DATA 5 // 5 is D1 on WeMos D1 mini
@@ -16,12 +30,15 @@
 // The LED used to display technical information
 #define INFO_LED 2 // Built-in LED on WeMos D1 mini
 
-// When the LEDs are set to a single color, this speed is used instead of [colorSpeed].
-const float singleColorSpeed = 0.001;
-
 // The SSID (name) and password for your Wifi
 const char* ssid = "";
 const char* password = "";
+
+// When the LEDs are set to a single color, this speed is used instead of [colorSpeed].
+const float singleColorSpeed = 0.001;
+
+// The Brightness value will not be send as float so a maximum value for int conversion has to be set.
+const int maxBrightnessAsInt = 255;
 
 // The NeoPixel object is used to communicate with the LEDs.
 Adafruit_NeoPixel pixel = Adafruit_NeoPixel(NUM_LEDS, LED_DATA, NEO_GRB + NEO_KHZ800);
@@ -57,7 +74,11 @@ char statusMsg[] = "{\"numLeds\":\"    \",\"isOn\": }";
 // Positions: red: 6-9, green: 17-20, blue: 28-31
 char colorMsg[] = "{\"r\":\"    \",\"g\":\"    \",\"b\":\"    \"}";
 
+// Positions: brightness: 7-10
+char brightnessMsg[] = "{\"br\":\"    \"}";
+
 short lastSingleColor[4];
+int lastBrightness = maxBrightnessAsInt;
 
 void setup() {
   pinMode(LED_DATA, OUTPUT);
@@ -72,7 +93,7 @@ void setup() {
 
   // LOW means ON! While the chip tries to connect, the led will be on.
   digitalWrite(INFO_LED, LOW);
-  setAllPixelsTo(0, 0, 0);
+  updatePixels();
 
   // If no credentials given
   if(strcmp(ssid, empty) == 0 || strcmp(password, empty) == 0) {
@@ -109,6 +130,12 @@ void sendColor() {
   server.send(200, applicationJson, colorMsg);
 }
 
+// Sends the target brightness as int. 
+void sendBrighness() {
+  writeNumberTo(brightnessMsg, 7, 4, lastBrightness);
+  server.send(200, applicationJson, brightnessMsg);
+}
+
 // Initializes REST calls
 void initializeServer() {
   server.on("/", sendStatus);
@@ -116,6 +143,8 @@ void initializeServer() {
   server.on("/setOn", setOn);
   server.on("/setOff", setOff);
   server.on("/getColor", sendColor);
+  server.on("/getBrightness", sendBrighness);
+  server.on("/setBrightness", setBrightness);
   server.onNotFound( [](){
     server.send(404, textPlain, F("Page not found"));
   });
@@ -132,6 +161,9 @@ void setOff() {
 // Sets isOn to 1, but 
 void setOn() {
   isOn = 1;
+  if(mode == MODE_SINGLE_COLOR) {
+    manager.setSingleColor(lastSingleColor[0], lastSingleColor[1], lastSingleColor[2]);
+  }
   server.send(200, applicationJson, emptyJson);
 }
 
@@ -143,20 +175,26 @@ void setSingleColor() {
     lastSingleColor[1] = server.arg(F("g")).toInt();
     lastSingleColor[2] = server.arg(F("b")).toInt();
     manager.setSingleColor(lastSingleColor[0], lastSingleColor[1], lastSingleColor[2]);
+    sendColor();
+    return;
+  }
+  server.send(200, applicationJson, emptyJson);
+}
+
+// Interpolates to the given brightness.
+void setBrightness() {
+  if(isOn) {
+    lastBrightness = server.arg(F("br")).toInt();
+    float br = (float)lastBrightness / (float)maxBrightnessAsInt;
+    manager.setBrightness(br);
+    sendBrighness();
+    return;
   }
   server.send(200, applicationJson, emptyJson);
 }
 
 void wpsSetUp() {
   // TODO actual wps setup
-}
-
-// Sets all pixels to the given color.
-void setAllPixelsTo(int r, int g, int b) {
-  for(int i=0; i<NUM_LEDS; i++) {
-    pixel.setPixelColor(0, r, g, b);
-  }
-  pixel.show();
 }
 
 // Returns the given number as ascii digit (0-9).
@@ -169,20 +207,23 @@ void writeNullTo(char* array, int pos) {
   array[pos] = 'n'; array[pos+1] = 'u'; array[pos+2] = 'l'; array[pos+3] = 'l';
 }
 
+// Writes the given number to the specified char array at the given position. 
 void writeNumberTo(char* array, int pos, int digits, int number) {
   for(int i=0; i<digits; i++) {
-    array[pos+i] = ascii((number / tenTimes(digits-i-1)) % 10);
+    array[pos+i] = ascii((number / tenPow(digits-i-1)) % 10);
   }
 }
 
-int tenTimes(int times) {
-  if(times == 0)return 1;
-  if(times == 1)return 10;
-  if(times == 2)return 100;
-  if(times == 3)return 1000;
-  return tenTimes(times - 1) * 10; 
+// Returns 10^n
+int tenPow(int n) {
+  if(n == 0)return 1;
+  if(n == 1)return 10;
+  if(n == 2)return 100;
+  if(n == 3)return 1000;
+  return tenPow(n - 1) * 10; 
 }
 
+// The main update function for led pixels.
 void updatePixels() {
   for(int i=0; i<NUM_LEDS; i++) {
     pixel.setPixelColor(i, manager.getRed(i), manager.getGreen(i), manager.getBlue(i));

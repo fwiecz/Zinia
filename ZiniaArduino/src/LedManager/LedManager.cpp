@@ -11,29 +11,57 @@ LedManager::LedManager(int numLeds, float singleColorSpeed)
         _to[i] = new short[3];
     }
     _timeStep = 0.0;
+    _fromBrightness = 1.0;
+    _toBrightness = 1.0;
+    _brightness = 1.0;
 }
 
 short LedManager::lerp(short from, short to, float t) {
     return ((to - from) * t) + from;
 }
 
+float LedManager::lerp(float from, float to, float t) {
+    return ((to - from) * t) + from;
+}
+
 short LedManager::getRed(int pos) {
+    return (short)(getRedRaw(pos) * _brightness);
+}
+
+short LedManager::getRedRaw(int pos) {
     return lerp(_from[pos][0], _to[pos][0], _timeStep);
 }
 
 short LedManager::getGreen(int pos) {
+    return (short)(getGreenRaw(pos) * _brightness);
+}
+
+short LedManager::getGreenRaw(int pos) {
     return lerp(_from[pos][1], _to[pos][1], _timeStep);
 }
 
 short LedManager::getBlue(int pos) {
+    return (short)(getBlueRaw(pos) * _brightness);
+}
+
+short LedManager::getBlueRaw(int pos) {
     return lerp(_from[pos][2], _to[pos][2], _timeStep);
 }
+
 
 void LedManager::currentStateToFromBuffer() {
     for(int i=0; i<_numLeds; i++) {
         _from[i][0] = getRed(i);
         _from[i][1] = getGreen(i);
         _from[i][2] = getBlue(i);
+    }
+}
+
+void LedManager::toBufferToFromBuffer() {
+    for(int i=0; i<_numLeds; i++) {
+        _from[i][0] = _to[i][0];
+        _from[i][1] = _to[i][1];
+        _from[i][2] = _to[i][2];
     }
 }
 
@@ -48,6 +76,17 @@ void LedManager::setSingleColor(short r, short g, short b) {
     _timeStep = 0;
 }
 
+void LedManager::computeBrightness() {
+    if(_fromBrightness != _toBrightness) {
+        _brTimeStep += _singleColorSpeed / _timeAdjust;
+        _brTimeStep = min(1, _brTimeStep);
+        _brightness = lerp(_fromBrightness, _toBrightness, _brTimeStep);   
+        if(_brTimeStep >= 1) {
+            _fromBrightness = _toBrightness;
+        }
+    }
+}
+
 // Returns true if timeStep >= 1
 bool LedManager::compute(float step) {
     if(_timestamp > 0) {
@@ -58,6 +97,7 @@ bool LedManager::compute(float step) {
     }
     _timestamp = micros();
 
+    computeBrightness();
     _timeStep += (step / _timeAdjust);
     if(_timeStep >= 1) {
         _timeStep -= 1;
@@ -65,6 +105,12 @@ bool LedManager::compute(float step) {
         return true;
     }
     return false;
+}
+
+void LedManager::setBrightness(float br) {
+    _fromBrightness = _brightness;
+    _toBrightness = br;
+    _brTimeStep = 0;
 }
 
 void LedManager::update(float step) {
@@ -78,7 +124,7 @@ void LedManager::update(float step) {
         case MODE_SINGLE_COLOR : {
             if(newRowRequired) { // The target color was reached
                 _timeStep = 1;
-                currentStateToFromBuffer();
+                toBufferToFromBuffer();
                 _timeStep = 0;
             }
             break;
