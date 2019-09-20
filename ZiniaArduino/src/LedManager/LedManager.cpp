@@ -51,9 +51,9 @@ short LedManager::getBlueRaw(int pos) {
 
 void LedManager::currentStateToFromBuffer() {
     for(int i=0; i<_numLeds; i++) {
-        _from[i][0] = getRed(i);
-        _from[i][1] = getGreen(i);
-        _from[i][2] = getBlue(i);
+        _from[i][0] = getRedRaw(i);
+        _from[i][1] = getGreenRaw(i);
+        _from[i][2] = getBlueRaw(i);
     }
 }
 
