@@ -40,6 +40,14 @@ class ColorPickerFragment : Fragment(), OnColorChangedListener, OnBrightnessWarm
         colorPicker.setThumbToColor(color)
     }
 
+    fun setBrightness(value: Int) {
+        slider.setBrightness(value)
+    }
+
+    fun setWarmth(value: Int) {
+        slider.setWarmth(value)
+    }
+
     override fun onColorChanged(color: Int, final: Boolean) {
         onColorChangedListener.forEach { it.onColorChanged(color, final) }
     }

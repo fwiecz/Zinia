@@ -53,6 +53,8 @@ class DeviceActivity : AppCompatActivity(), OnBrightnessWarmthChangedListener{
         viewmodel.getDeviceColor(device)
         brWarmSlider.listener += this
         brWarmSlider.listener += viewmodel.brightnessSendingService
+        viewmodel.deviceBrightness.observe(this, Observer { brWarmSlider.setBrightness(it) })
+        viewmodel.getDeviceBrightness(device)
     }
 
     override fun onWarmthChanged(value: Int, final: Boolean) {

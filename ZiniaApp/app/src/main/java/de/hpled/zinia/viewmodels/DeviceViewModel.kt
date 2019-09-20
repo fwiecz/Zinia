@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import de.hpled.zinia.dto.BrightnessDTO
 import de.hpled.zinia.dto.ColorDTO
 import de.hpled.zinia.dto.DeviceStatusDTO
 import de.hpled.zinia.entities.Device
@@ -21,6 +22,7 @@ class DeviceViewModel : ViewModel() {
     val brightnessSendingService = BrightnessSendingService(sendingFrequency)
     val deviceIsOn = MutableLiveData(false)
     val deviceColor = MutableLiveData<ColorDTO>()
+    val deviceBrightness = MutableLiveData<Int>()
     val executor = ScheduledThreadPoolExecutor(3)
 
     fun turnDeviceOn(device: Device) {
@@ -58,6 +60,14 @@ class DeviceViewModel : ViewModel() {
                 }
             }},
             error = {}, responseType = ColorDTO::class.java)
+        executor.execute(req)
+    }
+
+    fun getDeviceBrightness(device: Device) {
+        val url = URL("http://${device.ipAddress}/getBrightness")
+        val req = HttpRequestService.requestToRunnable<BrightnessDTO>(url,
+            success = {handler.post { deviceBrightness.value = it.br }},
+            error = {}, responseType = BrightnessDTO::class.java)
         executor.execute(req)
     }
 

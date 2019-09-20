@@ -49,14 +49,24 @@ class BrightnessWarmthView(c: Context, attr: AttributeSet?) : LinearLayout(c, at
         }
     }
 
+    fun setBrightness(value: Int) {
+        brSlider.progress = value
+    }
+
+    fun setWarmth(value: Int) {
+        warmSlider.progress = value
+    }
+
     init {
         View.inflate(context, R.layout.view_brightness_warmth_slider, this)
         brSlider.apply {
             max = BRIGHTNESS_MAX
+            progress = BRIGHTNESS_MAX
             setOnSeekBarChangeListener(brightnesSeekBarListener)
         }
         warmSlider.apply {
             max = WARMTH_MAX
+            progress = 0
             setOnSeekBarChangeListener(warmthSeekBarListener)
         }
     }
