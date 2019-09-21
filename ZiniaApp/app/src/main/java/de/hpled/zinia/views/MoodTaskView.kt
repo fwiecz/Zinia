@@ -2,6 +2,7 @@ package de.hpled.zinia.views
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +42,7 @@ class MoodTaskView(c: Context, attr: AttributeSet? = null) : LinearLayout(c, att
 
         if (moodTask != null) {
             title.text = moodTask.device?.name ?: "-Error-"
-            colorView.drawable.setTint(moodTask.color ?: Color.BLACK)
+            colorView.drawable.setColorFilter(moodTask.color ?: Color.BLACK, PorterDuff.Mode.SRC)
             colorView.background.setTint(context.resources.getColor(R.color.colorMoodTaskCircleBackground))
         }
     }
