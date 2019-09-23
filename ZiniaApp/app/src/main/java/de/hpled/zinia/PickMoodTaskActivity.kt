@@ -75,8 +75,10 @@ class PickMoodTaskActivity : AppCompatActivity(), OnColorChangedListener,
                 add(brightnessSendingService)
                 add(this@PickMoodTaskActivity)
             }
-            setThumbToColor(ColorDTO.from(moodTask.color ?: Color.WHITE))
-            setBrightness(moodTask.brightness)
+            handler.post { // Wait for fragment to be initialized
+                setThumbToColor(ColorDTO.from(moodTask.color ?: Color.WHITE))
+                setBrightness(moodTask.brightness)
+            }
         }
     }
 
