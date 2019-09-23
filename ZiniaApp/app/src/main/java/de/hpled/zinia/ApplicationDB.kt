@@ -47,9 +47,25 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
-     * Asynchronously Deletes the given device from the database.
+     * Asynchronously Deletes the given device from the database. It checks for every Mood, whether
+     * the device is part of it and removes it if necessary.
      */
-    fun deleteDevice(device: Device) = AsyncTask.execute { deviceDao.deleteAll(device) }
+    fun deleteDevice(device: Device) {
+        AsyncTask.execute {
+            val moods = moodDao.findAll().map { getMoodWithTasks(it.id) }
+            moods.forEach { mood ->
+                val tasks = mood.tasks
+                var tasksToDelete = listOf<MoodTask>()
+                if(tasks != null) {
+                    tasksToDelete = tasks.filter { it.deviceId == device.id }
+                    tasksToDelete.forEach {
+                        deleteMoodTask(it.id)
+                    }
+                }
+            }
+            deviceDao.deleteAll(device)
+        }
+    }
 
     /**
      * Returns a list of all devices. Cannot run on main thread.
@@ -74,6 +90,23 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
         return mood
     }
 
+    /**
+     * Deletes a single MoodTask and removes its references on the respective Mood.
+     */
+    fun deleteMoodTask(id: Long) {
+        val mood = moodDao.findAll().find { it.taskIds.contains(id) }
+        val newids = mood?.taskIds?.toMutableList()?.apply { remove(id) }
+        if(newids != null) {
+            mood.taskIds = newids.toLongArray()
+            moodDao.insert(mood)
+        }
+        val task = getMoodTaskWithDevice(id)
+        moodTaskDao.deleteAll(task)
+    }
+
+    /**
+     * Deletes the Mood and all its MoodTasks
+     */
     fun deleteMoodAndMoodTasks(id: Long) {
         AsyncTask.execute {
             val mood = getMoodWithTasks(id)
@@ -85,6 +118,9 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Closes the databse reference.
+     */
     fun close() {
         database.close()
     }
