@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/card_background"
     android:padding="8dp"
-    android:layout_margin="8dp"
+    android:layout_margin="5dp"
     android:gravity="center"
     android:elevation="1dp">
 
