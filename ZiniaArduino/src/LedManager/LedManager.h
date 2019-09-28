@@ -37,7 +37,7 @@ class LedManager
         int _numSequenceColors;
         int _currentSequenceColor;
         int _keepSequenceColorTime;
-        bool _sequenceColorShouldChange;
+        int _sequenceColorShouldChange;
         unsigned long _lastSequenceChangeMillis;
         StaticJsonDocument<JSON_SIZE> json;
         void setColorToToBuffer(uint16_t r, uint16_t g, uint16_t b);
