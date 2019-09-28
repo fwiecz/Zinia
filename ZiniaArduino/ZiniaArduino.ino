@@ -19,7 +19,7 @@
 #include "src/LedManager/LedManager.h"
 
 // How many LEDs are connected?
-#define NUM_LEDS 5
+#define NUM_LEDS 45
 
 // The data output pin for the LEDs 
 #define LED_DATA 5 // 5 is D1 on WeMos D1 mini
@@ -80,13 +80,15 @@ char brightnessMsg[] = "{\"br\":\"    \"}";
 short lastSingleColor[4];
 int lastBrightness = maxBrightnessAsInt;
 
+#define NUM_WPS_DEBOUNCE 5
+bool inWpsMode = false;
+byte wpsButtonDebounce[NUM_WPS_DEBOUNCE];
+byte wpsButtonCounter = 0;
+
 void setup() {
   pinMode(LED_DATA, OUTPUT);
   pinMode(INFO_LED, OUTPUT);
   pinMode(WPS_BUTTON_PIN, INPUT_PULLUP);
-
-  // Whenever the WPS button is pressed, the WPS subroutine starts
-  attachInterrupt(digitalPinToInterrupt(WPS_BUTTON_PIN), wpsSetUp, FALLING);
 
   // Communicate to the computer
   Serial.begin(115200);
@@ -95,15 +97,15 @@ void setup() {
   digitalWrite(INFO_LED, LOW);
   updatePixels();
 
+  WiFi.mode(WIFI_STA);
+  WiFi.setAutoReconnect(true);
+
   // If no credentials given
   if(strcmp(ssid, empty) == 0 || strcmp(password, empty) == 0) {
-    // TODO read credentials from EEPROM
+    WiFi.begin();
   }
   else { // Connect to the given credentials
     WiFi.begin(ssid, password);
-    while(WiFi.status() != WL_CONNECTED) {
-      delay(500);
-    }
   }
 
   initializeServer();
@@ -193,8 +195,38 @@ void setBrightness() {
   server.send(200, applicationJson, emptyJson);
 }
 
+// Starts the WPS setup
 void wpsSetUp() {
-  // TODO actual wps setup
+  if(!inWpsMode) {
+    inWpsMode = true;
+    for(int i=0; i<10; i++) {
+      digitalWrite(INFO_LED, i % 2);
+      delay(100);
+    }
+    WiFi.beginWPSConfig();
+    digitalWrite(INFO_LED, LOW);
+    delay(100);
+    inWpsMode = false;
+  }
+}
+
+// Checks whether the WPS button is pressed for some time
+void checkWpsButton() {
+  if(wpsButtonCounter > 100) {
+    wpsButtonCounter = 0;
+    for(int i=0; i<NUM_WPS_DEBOUNCE-1; i++) {
+      wpsButtonDebounce[i] = wpsButtonDebounce[i+1];
+    }
+    wpsButtonDebounce[NUM_WPS_DEBOUNCE - 1] = (digitalRead(WPS_BUTTON_PIN) == LOW);
+    int count = 0;
+    for(int i=0; i<NUM_WPS_DEBOUNCE; i++) {
+      count += wpsButtonDebounce[i];
+    }
+    if(count == NUM_WPS_DEBOUNCE) {
+      wpsSetUp();
+    }
+  }
+  wpsButtonCounter ++;
 }
 
 // Returns the given number as ascii digit (0-9).
@@ -234,7 +266,6 @@ void updatePixels() {
 void loop() {
   if(WiFi.status() != WL_CONNECTED) { // If no connection, turn the info led on
     digitalWrite(INFO_LED, LOW);
-    delay(500);
   }
   else { // If connection established, handle requests
     digitalWrite(INFO_LED, HIGH);
@@ -243,4 +274,6 @@ void loop() {
 
   manager.update(colorSpeed);
   updatePixels();
+
+  checkWpsButton();
 }
