@@ -3,12 +3,12 @@
 LedManager::LedManager(int numLeds, float singleColorSpeed)
 {
     _numLeds = numLeds;
-    _from = new short*[numLeds];
-    _to = new short*[numLeds];
+    _from = new uint16_t*[numLeds];
+    _to = new uint16_t*[numLeds];
     _singleColorSpeed = singleColorSpeed;
     for(int i=0; i<numLeds; i++) {
-        _from[i] = new short[3];
-        _to[i] = new short[3];
+        _from[i] = new uint16_t[3];
+        _to[i] = new uint16_t[3];
     }
     _timeStep = 0.0;
     _fromBrightness = 1.0;
@@ -16,7 +16,7 @@ LedManager::LedManager(int numLeds, float singleColorSpeed)
     _brightness = 1.0;
 }
 
-short LedManager::lerp(short from, short to, float t) {
+uint16_t LedManager::lerp(uint16_t from, uint16_t to, float t) {
     return ((to - from) * t) + from;
 }
 
@@ -24,27 +24,27 @@ float LedManager::lerp(float from, float to, float t) {
     return ((to - from) * t) + from;
 }
 
-short LedManager::getRed(int pos) {
-    return (short)(getRedRaw(pos) * _brightness);
+uint16_t LedManager::getRed(int pos) {
+    return (uint16_t)(getRedRaw(pos) * _brightness);
 }
 
-short LedManager::getRedRaw(int pos) {
+uint16_t LedManager::getRedRaw(int pos) {
     return lerp(_from[pos][0], _to[pos][0], _timeStep);
 }
 
-short LedManager::getGreen(int pos) {
-    return (short)(getGreenRaw(pos) * _brightness);
+uint16_t LedManager::getGreen(int pos) {
+    return (uint16_t)(getGreenRaw(pos) * _brightness);
 }
 
-short LedManager::getGreenRaw(int pos) {
+uint16_t LedManager::getGreenRaw(int pos) {
     return lerp(_from[pos][1], _to[pos][1], _timeStep);
 }
 
-short LedManager::getBlue(int pos) {
-    return (short)(getBlueRaw(pos) * _brightness);
+uint16_t LedManager::getBlue(int pos) {
+    return (uint16_t)(getBlueRaw(pos) * _brightness);
 }
 
-short LedManager::getBlueRaw(int pos) {
+uint16_t LedManager::getBlueRaw(int pos) {
     return lerp(_from[pos][2], _to[pos][2], _timeStep);
 }
 
@@ -81,7 +81,7 @@ void LedManager::setColorToToBuffer(uint16_t r, uint16_t g, uint16_t b) {
     }
 }
 
-void LedManager::setSingleColor(short r, short g, short b) {
+void LedManager::setSingleColor(uint16_t r, uint16_t g, uint16_t b) {
     _mode = MODE_SINGLE_COLOR;
     currentStateToFromBuffer();
     setColorToToBuffer(r, g, b);

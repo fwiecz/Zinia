@@ -12,8 +12,8 @@ class LedManager
 {
     private:
         int _numLeds;
-        short** _from; // colors will be interpolated between _from and _to
-        short** _to;   // based on the _timStep variable.
+        uint16_t** _from; // colors will be interpolated between _from and _to
+        uint16_t** _to;   // based on the _timStep variable.
         float _timeStep;
         int _mode;
         float _singleColorSpeed;
@@ -25,14 +25,14 @@ class LedManager
         float _brTimeStep;
         bool compute(float step);
         void computeBrightness();
-        short getRedRaw(int pos);
-        short getGreenRaw(int pos);
-        short getBlueRaw(int pos);
+        uint16_t getRedRaw(int pos);
+        uint16_t getGreenRaw(int pos);
+        uint16_t getBlueRaw(int pos);
         void nextSequenceColor();
         void currentStateToFromBuffer();
         void currentStateToToBuffer();
         void toBufferToFromBuffer();
-        short lerp(short from, short to, float t);
+        uint16_t lerp(uint16_t from, uint16_t to, float t);
         float lerp(float from, float to, float t);
         int _numSequenceColors;
         int _currentSequenceColor;
@@ -44,11 +44,11 @@ class LedManager
         void checkColorSequenceTime();
     public:
         LedManager(int numLeds, float singleColorSpeed);
-        short getRed(int pos);
-        short getGreen(int pos);
-        short getBlue(int pos);
+        uint16_t getRed(int pos);
+        uint16_t getGreen(int pos);
+        uint16_t getBlue(int pos);
         void update(float step);
-        void setSingleColor(short r, short g, short b);
+        void setSingleColor(uint16_t r, uint16_t g, uint16_t b);
         void setBrightness(float br);
         bool setColorSequence(String *body);
 };

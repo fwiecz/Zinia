@@ -79,7 +79,7 @@ char colorMsg[] = "{\"r\":\"    \",\"g\":\"    \",\"b\":\"    \"}";
 // Positions: brightness: 7-10
 char brightnessMsg[] = "{\"br\":\"    \"}";
 
-short lastSingleColor[4];
+uint16_t lastSingleColor[4];
 int lastBrightness = maxBrightnessAsInt;
 
 #define NUM_WPS_DEBOUNCE 5
