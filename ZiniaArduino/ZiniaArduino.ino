@@ -57,6 +57,8 @@ const char* empty = "";
 const char* textPlain = "text/plain";
 const char* applicationJson = "application/json";
 const char* emptyJson = "{}";
+const char* argBody = "plain";
+const char* argSpeed = "speed";
 
 // Whether the server should take action to further reuqests.
 // Requests will still be answered with status 200 (OK).
@@ -66,7 +68,7 @@ int isOn = 1;
 int mode = MODE_READY;
 
 // How fast colors should change
-float colorSpeed = 0.01f;
+float colorSpeed = 0.001;
 
 // Positions: numLights: 12-15, isOn: 25
 char statusMsg[] = "{\"numLeds\":\"    \",\"isOn\": }";
@@ -147,6 +149,7 @@ void initializeServer() {
   server.on("/getColor", sendColor);
   server.on("/getBrightness", sendBrighness);
   server.on("/setBrightness", setBrightness);
+  server.on("/setColorSequence", setColorSequence);
   server.onNotFound( [](){
     server.send(404, textPlain, F("Page not found"));
   });
@@ -157,7 +160,7 @@ void initializeServer() {
 void setOff() {
   isOn = 0;
   manager.setSingleColor(0, 0, 0);
-  server.send(200, applicationJson, emptyJson);
+  sendEmptyResponse();
 }
 
 // Sets isOn to 1, but 
@@ -166,7 +169,7 @@ void setOn() {
   if(mode == MODE_SINGLE_COLOR) {
     manager.setSingleColor(lastSingleColor[0], lastSingleColor[1], lastSingleColor[2]);
   }
-  server.send(200, applicationJson, emptyJson);
+  sendEmptyResponse();
 }
 
 // Interpolates to the given color. [colorSpeed] has no effect here.
@@ -180,7 +183,7 @@ void setSingleColor() {
     sendColor();
     return;
   }
-  server.send(200, applicationJson, emptyJson);
+  sendEmptyResponse();
 }
 
 // Interpolates to the given brightness.
@@ -192,6 +195,23 @@ void setBrightness() {
     sendBrighness();
     return;
   }
+  sendEmptyResponse();
+}
+
+void setColorSequence() {
+  if(isOn && server.hasArg(argBody)) {
+    String body = server.arg(argBody);
+    if(server.hasArg(argSpeed)) {
+      colorSpeed = server.arg(argSpeed).toFloat();
+    }
+    bool success = manager.setColorSequence(&body);
+    success ? sendEmptyResponse() : server.send(500, emptyJson);
+    return;
+  }
+  sendEmptyResponse();
+}
+
+void sendEmptyResponse() {
   server.send(200, applicationJson, emptyJson);
 }
 

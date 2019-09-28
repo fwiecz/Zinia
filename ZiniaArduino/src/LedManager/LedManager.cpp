@@ -57,6 +57,14 @@ void LedManager::currentStateToFromBuffer() {
     }
 }
 
+void LedManager::currentStateToToBuffer() {
+    for(int i=0; i<_numLeds; i++) {
+        _to[i][0] = getRedRaw(i);
+        _to[i][1] = getGreenRaw(i);
+        _to[i][2] = getBlueRaw(i);
+    }
+}
+
 void LedManager::toBufferToFromBuffer() {
     for(int i=0; i<_numLeds; i++) {
         _from[i][0] = _to[i][0];
@@ -65,14 +73,18 @@ void LedManager::toBufferToFromBuffer() {
     }
 }
 
-void LedManager::setSingleColor(short r, short g, short b) {
-    _mode = MODE_SINGLE_COLOR;
-    currentStateToFromBuffer();
+void LedManager::setColorToToBuffer(uint16_t r, uint16_t g, uint16_t b) {
     for(int i=0; i<_numLeds; i++) {
         _to[i][0] = r;
         _to[i][1] = g;
         _to[i][2] = b;
     }
+}
+
+void LedManager::setSingleColor(short r, short g, short b) {
+    _mode = MODE_SINGLE_COLOR;
+    currentStateToFromBuffer();
+    setColorToToBuffer(r, g, b);
     _timeStep = 0;
 }
 
@@ -87,10 +99,16 @@ void LedManager::computeBrightness() {
     }
 }
 
+void LedManager::setBrightness(float br) {
+    _fromBrightness = _brightness;
+    _toBrightness = br;
+    _brTimeStep = 0;
+}
+
 // Returns true if timeStep >= 1
 bool LedManager::compute(float step) {
     if(_timestamp > 0) {
-        long deltatime = micros() - _timestamp;
+        unsigned long deltatime = micros() - _timestamp;
         _timeAdjust = 1000.0 / (float)deltatime;
     } else {
         _timeAdjust = 1;
@@ -107,12 +125,6 @@ bool LedManager::compute(float step) {
     return false;
 }
 
-void LedManager::setBrightness(float br) {
-    _fromBrightness = _brightness;
-    _toBrightness = br;
-    _brTimeStep = 0;
-}
-
 void LedManager::update(float step) {
 
     // colors should always change in same speed
@@ -127,6 +139,13 @@ void LedManager::update(float step) {
                 toBufferToFromBuffer();
                 _timeStep = 0;
             }
+            break;
+        }
+        case MODE_COLOR_SEQUENCE : {
+            if(newRowRequired) {
+                nextSequenceColor();
+            }
+            checkColorSequenceTime();
             break;
         }
     }
