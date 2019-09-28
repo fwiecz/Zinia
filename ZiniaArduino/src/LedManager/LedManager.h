@@ -16,6 +16,7 @@ class LedManager
         uint16_t** _to;   // based on the _timStep variable.
         float _timeStep;
         int _mode;
+        float _speed;
         float _singleColorSpeed;
         unsigned long _timestamp;
         float _timeAdjust;
@@ -47,10 +48,11 @@ class LedManager
         uint16_t getRed(int pos);
         uint16_t getGreen(int pos);
         uint16_t getBlue(int pos);
-        void update(float step);
+        void update();
         void setSingleColor(uint16_t r, uint16_t g, uint16_t b);
         void setBrightness(float br);
         bool setColorSequence(String *body);
+        void setSpeed(float speed);
 };
 
 #endif

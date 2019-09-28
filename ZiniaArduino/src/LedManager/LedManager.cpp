@@ -14,6 +14,7 @@ LedManager::LedManager(int numLeds, float singleColorSpeed)
     _fromBrightness = 1.0;
     _toBrightness = 1.0;
     _brightness = 1.0;
+    _speed = 0.001;
 }
 
 uint16_t LedManager::lerp(uint16_t from, uint16_t to, float t) {
@@ -48,6 +49,9 @@ uint16_t LedManager::getBlueRaw(int pos) {
     return lerp(_from[pos][2], _to[pos][2], _timeStep);
 }
 
+void LedManager::setSpeed(float speed) {
+    _speed = speed;
+}
 
 void LedManager::currentStateToFromBuffer() {
     for(int i=0; i<_numLeds; i++) {
@@ -125,10 +129,9 @@ bool LedManager::compute(float step) {
     return false;
 }
 
-void LedManager::update(float step) {
-
+void LedManager::update() {
     // colors should always change in same speed
-    step = _mode == MODE_SINGLE_COLOR ? _singleColorSpeed : step;
+    float step = _mode == MODE_SINGLE_COLOR ? _singleColorSpeed : _speed;
 
     bool newRowRequired = compute(step);
 

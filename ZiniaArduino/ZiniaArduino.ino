@@ -34,7 +34,7 @@
 const char* ssid = "";
 const char* password = "";
 
-// When the LEDs are set to a single color, this speed is used instead of [colorSpeed].
+// When the LEDs are set to a single color.
 const float singleColorSpeed = 0.001;
 
 // The Brightness value will not be send as float so a maximum value for int conversion has to be set.
@@ -66,9 +66,6 @@ int isOn = 1;
 
 // The current Mode of the device
 int mode = MODE_READY;
-
-// How fast colors should change
-float colorSpeed = 0.001;
 
 // Positions: numLights: 12-15, isOn: 25
 char statusMsg[] = "{\"numLeds\":\"    \",\"isOn\": }";
@@ -172,7 +169,7 @@ void setOn() {
   sendEmptyResponse();
 }
 
-// Interpolates to the given color. [colorSpeed] has no effect here.
+// Interpolates to the given color.
 void setSingleColor() {
   if(isOn) {
     mode = MODE_SINGLE_COLOR;
@@ -202,7 +199,7 @@ void setColorSequence() {
   if(isOn && server.hasArg(argBody)) {
     String body = server.arg(argBody);
     if(server.hasArg(argSpeed)) {
-      colorSpeed = server.arg(argSpeed).toFloat();
+      manager.setSpeed(server.arg(argSpeed).toFloat());
     }
     bool success = manager.setColorSequence(&body);
     success ? sendEmptyResponse() : server.send(500, emptyJson);
@@ -292,7 +289,7 @@ void loop() {
     server.handleClient();
   }
 
-  manager.update(colorSpeed);
+  manager.update();
   updatePixels();
 
   checkWpsButton();
