@@ -26,5 +26,18 @@ class Migrations {
                 """.trimIndent())
             }
         }
+
+        val FROM_5_TO_6 = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("""
+                    CREATE TABLE 'color_sequence' (
+                    id INTEGER NOT NULL, 
+                    transitionSpeed FLOAT NOT NULL,
+                    keepingTimeMillis INTEGER NOT NULL,
+                    colors TEXT NOT NULL,
+                    PRIMARY KEY(id))
+                """.trimIndent())
+            }
+        }
     }
 }

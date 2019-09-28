@@ -3,27 +3,27 @@ package de.hpled.zinia
 import android.app.Application
 import android.content.Intent
 import android.os.AsyncTask
-import android.os.Handler
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import de.hpled.zinia.entities.*
 import de.hpled.zinia.newdevice.AddNewDeviceActivity
 
-@Database(entities = arrayOf(Device::class, Mood::class, MoodTask::class), version = 4)
+@Database(entities = arrayOf(Device::class, Mood::class, MoodTask::class, ColorSequence::class),
+    version = 6)
 abstract class ApplicationDB : RoomDatabase() {
     abstract fun deviceDao(): DeviceDao
     abstract fun moodDao(): MoodDao
     abstract fun moodTaskDao(): MoodTaskDao
+    abstract fun colorSequenceDao(): ColorSequenceDao
 }
 
 class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
     private val context = getApplication<Application>().applicationContext
     private val database = Room.databaseBuilder(context, ApplicationDB::class.java, "app-database")
         .addMigrations(Migrations.FROM_1_TO_2)
-        .fallbackToDestructiveMigration()
+        .addMigrations(Migrations.FROM_5_TO_6)
         .build()
     val deviceDao = database.deviceDao()
     val devices = deviceDao.findAllLiveData()
