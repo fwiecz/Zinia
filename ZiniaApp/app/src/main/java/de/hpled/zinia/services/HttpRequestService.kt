@@ -4,8 +4,10 @@ import android.os.AsyncTask
 import android.util.Log
 import com.google.gson.Gson
 import java.io.BufferedReader
+import java.io.DataOutputStream
 import java.io.InputStreamReader
 import java.lang.reflect.Type
+import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.reflect.typeOf
 
@@ -26,12 +28,12 @@ class HttpRequestService {
          * @return The request as Runnable
          */
         @JvmStatic
-        fun <T>requestToRunnable(
+        fun <T> requestToRunnable(
             url: URL,
-            responseListener: OnResponseListener<T>,
+            responseListener: OnResponseListener<T>?,
             responseType: Type = Any::class.java,
             timeout: Int = 2000
-        ) : Runnable {
+        ): Runnable {
             return Runnable {
                 val connection = url.openConnection().apply {
                     connectTimeout = timeout
@@ -43,9 +45,9 @@ class HttpRequestService {
                     connection.connect()
                     val reader = BufferedReader(InputStreamReader(connection.getInputStream()))
                     val response = gson.fromJson<T>(reader.readText(), responseType)
-                    responseListener.onSuccess(response)
+                    responseListener?.onSuccess(response)
                 } catch (e: Exception) {
-                    responseListener.onError()
+                    responseListener?.onError()
                     Log.w(TAG, "Cannot connect to $url.")
                 }
             }
@@ -77,11 +79,12 @@ class HttpRequestService {
             error: () -> Unit,
             responseType: Type = Any::class.java,
             timeout: Int = 2000
-        ) : Runnable {
+        ): Runnable {
             return requestToRunnable(url, object : OnResponseListener<T> {
                 override fun onSuccess(response: T) {
                     success(response)
                 }
+
                 override fun onError() {
                     error()
                 }
@@ -100,6 +103,59 @@ class HttpRequestService {
             timeout: Int = 2000
         ) {
             request(url, object : OnResponseListener<T> {
+                override fun onSuccess(response: T) {
+                    success(response)
+                }
+
+                override fun onError() {
+                    error()
+                }
+            }, responseType, timeout)
+        }
+
+        @JvmStatic
+        fun <T> jsonRequestRunnable(
+            url: URL,
+            payload: Any,
+            responseListener: OnResponseListener<T>? = null,
+            responseType: Type = Any::class.java,
+            timeout: Int = 2000
+        ): Runnable {
+            return Runnable {
+                val c = (url.openConnection() as HttpURLConnection).apply {
+                    requestMethod = "POST"
+                    setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                    setRequestProperty("Accept", "application/json");
+                    doInput = true
+                    doOutput = true
+                }
+                try {
+                    c.connect()
+                    DataOutputStream(c.outputStream).apply {
+                        writeBytes(gson.toJson(payload))
+                        flush()
+                        close()
+                    }
+                    val reader = BufferedReader(InputStreamReader(c.getInputStream()))
+                    val response = gson.fromJson<T>(reader.readText(), responseType)
+                    responseListener?.onSuccess(response)
+                } catch (e: Exception) {
+                    responseListener?.onError()
+                    Log.w(TAG, "Cannot connect to $url.")
+                }
+            }
+        }
+
+        @JvmStatic
+        fun <T> jsonRequestRunnable(
+            url: URL,
+            payload: Any,
+            success: (T) -> Unit,
+            error: () -> Unit,
+            responseType: Type = Any::class.java,
+            timeout: Int = 2000
+        ) : Runnable {
+            return jsonRequestRunnable<T>(url, payload, object : OnResponseListener<T> {
                 override fun onSuccess(response: T) {
                     success(response)
                 }
