@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryMidDark"
+    android:elevation="10dp"
+    android:layout_marginTop="5dp"
+    android:padding="5dp"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/TitleTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="@string/choose_show_type_label"
+        android:textSize="18sp" />
+
+    <GridView
+        android:id="@+id/chooseShowGridView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnWidth="140dp"
+        android:numColumns="auto_fit">
+    </GridView>
+
+</LinearLayout>

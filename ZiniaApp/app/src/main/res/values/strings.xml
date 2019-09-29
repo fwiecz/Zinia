@@ -42,4 +42,6 @@
     <string name="remove_device_message">Are you sure you want to remove %1$s from this Mood?</string>
     <string name="remove_label">Remove</string>
     <string name="navigation_shows_label">Shows</string>
+    <string name="choose_show_type_label">What kind of show?</string>
+    <string name="color_sequence_label">Color Sequence</string>
 </resources>
