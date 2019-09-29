@@ -44,4 +44,5 @@
     <string name="navigation_shows_label">Shows</string>
     <string name="choose_show_type_label">What kind of show?</string>
     <string name="color_sequence_label">Color Sequence</string>
+    <string name="color_sequence_editor_label">Color Sequence Editor</string>
 </resources>

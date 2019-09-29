@@ -47,6 +47,12 @@
             android:parentActivityName=".MoodEditorActivity"
             android:theme="@style/AppTheme">
         </activity>
+        <activity android:name=".ColorSequenceEditorActivity"
+            android:label="@string/color_sequence_editor_label"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme">
+        </activity>
+
     </application>
 
 </manifest>

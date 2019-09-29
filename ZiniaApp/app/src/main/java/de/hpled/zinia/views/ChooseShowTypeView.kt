@@ -17,6 +17,10 @@ import androidx.core.view.children
 import de.hpled.zinia.R
 import kotlin.math.max
 
+interface OnChooseShowTypeListener {
+    fun onChooseShowType(itemId: Int)
+}
+
 class ChooseShowTypeView(c: Context, attr: AttributeSet? = null) : LinearLayout(c, attr) {
 
     private val grid by lazy { findViewById<GridView>(R.id.chooseShowGridView) }
@@ -26,6 +30,8 @@ class ChooseShowTypeView(c: Context, attr: AttributeSet? = null) : LinearLayout(
 
     private var targetHeight = 0
     private var currentAnimator: ValueAnimator? = null
+
+    val onChooseShowTypeListener = mutableSetOf<OnChooseShowTypeListener>()
 
     init {
         View.inflate(context, R.layout.view_choose_show_type, this)
@@ -37,8 +43,8 @@ class ChooseShowTypeView(c: Context, attr: AttributeSet? = null) : LinearLayout(
         adapter.items = p.menu.children.toList()
 
         grid.setOnItemClickListener { parent, view, position, id ->
-            when((view as ShowTypeView).itemId) {
-                R.id.show_type_color_sqeuence -> { }
+            if(view is ShowTypeView) {
+                onChooseShowTypeListener.forEach { it.onChooseShowType(view.itemId) }
             }
         }
 

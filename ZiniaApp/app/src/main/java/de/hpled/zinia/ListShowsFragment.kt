@@ -2,6 +2,7 @@ package de.hpled.zinia
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.TransitionDrawable
 import androidx.lifecycle.ViewModelProviders
@@ -13,9 +14,10 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hpled.zinia.views.ChooseShowTypeView
+import de.hpled.zinia.views.OnChooseShowTypeListener
 
 
-class ListShowsFragment : Fragment() {
+class ListShowsFragment : Fragment(), OnChooseShowTypeListener {
     private lateinit var root: FrameLayout
     private val viewModel: ListShowsViewModel by lazy {
         ViewModelProviders.of(this).get(ListShowsViewModel::class.java)
@@ -40,11 +42,21 @@ class ListShowsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
+        chooseType.onChooseShowTypeListener += this
         addButton.setOnClickListener {
             chooseTypeIsVisible = !chooseTypeIsVisible
             chooseType.toggle(chooseTypeIsVisible)
             toggleFloatingButton(!chooseTypeIsVisible)
+        }
+    }
+
+    override fun onChooseShowType(itemId: Int) {
+        closeChooseMenu()
+        when(itemId) {
+            R.id.show_type_color_sqeuence -> {
+                val intent = Intent(context, ColorSequenceEditorActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 
@@ -67,5 +79,11 @@ class ListShowsFragment : Fragment() {
             }
             start()
         }
+    }
+
+    private fun closeChooseMenu() {
+        chooseTypeIsVisible = false
+        chooseType.hide()
+        toggleFloatingButton(true)
     }
 }
