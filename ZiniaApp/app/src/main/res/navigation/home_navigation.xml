@@ -17,4 +17,10 @@
         android:label="@string/navigation_moods_label"
         tools:layout="@layout/fragment_moods" />
 
+    <fragment
+        android:id="@+id/navigation_shows"
+        android:name="de.hpled.zinia.ListShowsFragment"
+        android:label="@string/navigation_shows_label"
+        tools:layout="@layout/fragment_list_shows"/>
+
 </navigation>

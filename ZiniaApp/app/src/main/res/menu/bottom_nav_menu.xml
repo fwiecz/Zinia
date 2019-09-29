@@ -8,8 +8,12 @@
 
     <item
         android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/material_palette"
         android:title="@string/navigation_moods_label" />
 
+    <item
+        android:id="@+id/navigation_shows"
+        android:icon="@drawable/material_movie_filter"
+        android:title="@string/navigation_shows_label" />
 
 </menu>

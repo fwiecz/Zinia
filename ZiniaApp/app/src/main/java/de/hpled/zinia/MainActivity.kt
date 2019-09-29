@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private val appBarConfSet = setOf(
-            R.id.navigation_devices, R.id.navigation_dashboard
+            R.id.navigation_devices, R.id.navigation_dashboard, R.id.navigation_shows
         )
         private const val PRESS_BACK_TIMEOUT = 2000L
     }
