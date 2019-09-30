@@ -1,10 +1,9 @@
-package de.hpled.zinia
+package de.hpled.zinia.fragments
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.drawable.TransitionDrawable
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -13,6 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import de.hpled.zinia.ColorSequenceEditorActivity
+import de.hpled.zinia.viewmodels.ListShowsViewModel
+import de.hpled.zinia.R
 import de.hpled.zinia.views.ChooseShowTypeView
 import de.hpled.zinia.views.OnChooseShowTypeListener
 

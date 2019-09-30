@@ -1,4 +1,4 @@
-package de.hpled.zinia
+package de.hpled.zinia.viewmodels
 
 import androidx.lifecycle.ViewModel
 
