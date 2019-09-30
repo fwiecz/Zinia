@@ -17,32 +17,26 @@
         android:text="@string/preview_label"
         android:textSize="18sp" />
 
-    <LinearLayout
+    <Spinner
+        android:id="@+id/previewDeviceSpinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_weight="1">
+        android:layout_weight="1" />
 
-        <ImageButton
-            android:background="?attr/actionBarItemBackground"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:src="@drawable/material_sync" />
+    <ImageButton
+        android:id="@+id/previewPlay"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:background="?attr/actionBarItemBackground"
+        android:src="@drawable/material_sync" />
 
-        <ImageButton
-            android:background="?attr/actionBarItemBackground"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:src="@drawable/material_pause" />
-
-    </LinearLayout>
-
-    <Spinner
-        android:id="@+id/colorSeqEditorDeviceSpinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <ImageButton
+        android:id="@+id/previewStop"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:background="?attr/actionBarItemBackground"
+        android:src="@drawable/material_pause" />
 
 </LinearLayout>
