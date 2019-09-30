@@ -45,4 +45,5 @@
     <string name="choose_show_type_label">What kind of show?</string>
     <string name="color_sequence_label">Color Sequence</string>
     <string name="color_sequence_editor_label">Color Sequence Editor</string>
+    <string name="pick_preview_device_label">Device for preview</string>
 </resources>
