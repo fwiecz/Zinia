@@ -69,7 +69,7 @@ class PreviewControllerFragment : Fragment(), AdapterView.OnItemSelectedListener
             viewmodel.devices = it
             devicesSpinner.adapter = ArrayAdapter<String>(
                 this.context!!,
-                android.R.layout.simple_spinner_item,
+                R.layout.view_spinner_checked_text,
                 it.map { it.name }
             ).apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
 

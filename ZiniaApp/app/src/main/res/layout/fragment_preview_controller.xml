@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/card_background"
+    android:gravity="center"
     android:orientation="horizontal"
     android:padding="5dp"
-    android:gravity="center"
     tools:context=".fragments.PreviewControllerFragment">
 
     <TextView
@@ -29,7 +29,8 @@
         android:layout_height="40dp"
         android:layout_margin="5dp"
         android:background="?attr/actionBarItemBackground"
-        android:src="@drawable/material_sync" />
+        android:src="@drawable/material_sync"
+        android:tint="@color/colorTextPrimary" />
 
     <ImageButton
         android:id="@+id/previewStop"
@@ -37,6 +38,7 @@
         android:layout_height="40dp"
         android:layout_margin="5dp"
         android:background="?attr/actionBarItemBackground"
-        android:src="@drawable/material_pause" />
+        android:src="@drawable/material_pause"
+        android:tint="@color/colorTextPrimary" />
 
 </LinearLayout>
