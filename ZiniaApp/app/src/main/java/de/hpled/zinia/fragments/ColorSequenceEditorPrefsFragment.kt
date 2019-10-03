@@ -66,9 +66,11 @@ class ColorSequenceEditorPrefsFragment : Fragment() {
             keepLabel.text = getString(R.string.time_in_seconds, it / 1000, (it % 1000) / 100)
         })
         viewmodel.name.value?.apply { nameEdit.setText(this) }
-        viewmodel.keep.value?.apply { keepSeekbar.progress = (this / deInterp.getInterpolation(deInterp.getInterpolation(this.toFloat() / keepSeekbar.max))).toInt()
+
+        // TODO correct reverse interpolation
+        viewmodel.keep.value?.apply { keepSeekbar.progress =
+            (this / deInterp.getInterpolation(deInterp.getInterpolation(this.toFloat() / keepSeekbar.max))).toInt()
         }
-        println(deInterp.getInterpolation(0.5f))
         initListener()
     }
 

@@ -38,9 +38,13 @@
         </LinearLayout>
     </ScrollView>
 
-    <View
+    <fragment
+        android:id="@+id/colorSequenceFragment"
+        class="de.hpled.zinia.fragments.ColorSequenceEditorFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:layout_margin="5dp"
+        tools:layout="@layout/fragment_color_sequence_editor" />
 
 </LinearLayout>

@@ -50,6 +50,7 @@
         <activity android:name=".ColorSequenceEditorActivity"
             android:label="@string/color_sequence_editor_label"
             android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="adjustNothing"
             android:theme="@style/AppTheme">
         </activity>
 
