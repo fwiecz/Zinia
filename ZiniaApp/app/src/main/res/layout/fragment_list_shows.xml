@@ -3,7 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.ListShowsFragment">
+    android:padding="5dp"
+    tools:context=".shows.fragments.ListShowsFragment">
+
+    <GridView
+        android:id="@+id/listShowsGridView"
+        android:layout_width="match_parent"
+        android:numColumns="auto_fit"
+        android:columnWidth="300dp"
+        android:layout_height="match_parent">
+    </GridView>
 
     <LinearLayout
         android:layout_width="match_parent"

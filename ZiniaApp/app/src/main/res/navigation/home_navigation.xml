@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/navigation_shows"
-        android:name="de.hpled.zinia.fragments.ListShowsFragment"
+        android:name="de.hpled.zinia.shows.fragments.ListShowsFragment"
         android:label="@string/navigation_shows_label"
         tools:layout="@layout/fragment_list_shows"/>
 

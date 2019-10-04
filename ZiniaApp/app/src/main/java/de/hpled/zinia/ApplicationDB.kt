@@ -30,6 +30,7 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
     val devices = deviceDao.findAllLiveData()
     val moodDao = database.moodDao()
     val moodTaskDao = database.moodTaskDao()
+    val colorSequenceDao = database.colorSequenceDao()
 
     /**
      * Stores the device in the database given by the intent.

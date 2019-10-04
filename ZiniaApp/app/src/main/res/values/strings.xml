@@ -50,4 +50,6 @@
     <string name="keep_color_label">How long should the color be kept?</string>
     <string name="time_in_seconds">%1$d.%2$ds</string>
     <string name="preview_label">Preview</string>
+    <string name="save_label">Save</string>
+    <string name="color_sequence_cannot_save">Please enter a name and add at least one color.</string>
 </resources>

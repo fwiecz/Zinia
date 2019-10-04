@@ -1,17 +1,16 @@
 package de.hpled.zinia.colorsequence
 
 import android.graphics.Color
+import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.os.PersistableBundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewParent
-import androidx.core.view.size
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
-import androidx.viewpager.widget.ViewPager
+import de.hpled.zinia.ApplicationDbViewModel
 import de.hpled.zinia.R
 import de.hpled.zinia.colorsequence.adapters.ColorsequenceEditorPagerAdapter
 import de.hpled.zinia.entities.ColorSequence
@@ -43,6 +42,9 @@ class ColorSequenceEditorActivity : AppCompatActivity(), OnPreviewControllerActi
 
     private val viewmodel by lazy {
         ViewModelProviders.of(this).get(ColorSequenceEditorActivityViewModel::class.java)
+    }
+    private val database by lazy {
+        ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java)
     }
     private val previewController by lazy {
         supportFragmentManager.findFragmentById(R.id.colorSequencePreview)
@@ -94,7 +96,7 @@ class ColorSequenceEditorActivity : AppCompatActivity(), OnPreviewControllerActi
     }
 
     override fun onPreviewPlay(device: Device) {
-        val seq = buildColorSequence().also { println(it) }
+        val seq = buildColorSequence()
         viewmodel.executor.execute(seq.getSendingJob(device.ipAddress))
     }
 
@@ -127,18 +129,43 @@ class ColorSequenceEditorActivity : AppCompatActivity(), OnPreviewControllerActi
         }
     }
 
+    private fun checkSaveable() : Boolean {
+        return editorPrefs.getName().isNotEmpty() && sequence.getColors().isNotEmpty()
+    }
+
+    private fun onClickSave() {
+        if(checkSaveable()) {
+            AsyncTask.execute {
+                val seq = buildColorSequence()
+                database.colorSequenceDao.insert(seq)
+                handler.post { finish() }
+            }
+        }
+        else {
+            Toast.makeText( applicationContext,
+                getString(R.string.color_sequence_cannot_save),
+                Toast.LENGTH_LONG)
+                .show()
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             android.R.id.home -> finish()
-            R.id.done_menu_done -> {
-                finish()
+            R.id.save_menu_save -> {
+                onClickSave()
             }
         }
         return true
     }
 
+    override fun finish() {
+        database.close()
+        super.finish()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.done_menu, menu)
+        menuInflater.inflate(R.menu.save_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 }
