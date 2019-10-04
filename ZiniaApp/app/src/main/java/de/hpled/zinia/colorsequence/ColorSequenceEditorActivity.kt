@@ -1,0 +1,144 @@
+package de.hpled.zinia.colorsequence
+
+import android.graphics.Color
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.os.Handler
+import android.os.PersistableBundle
+import android.view.Menu
+import android.view.MenuItem
+import android.view.ViewParent
+import androidx.core.view.size
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.ViewPager
+import de.hpled.zinia.R
+import de.hpled.zinia.colorsequence.adapters.ColorsequenceEditorPagerAdapter
+import de.hpled.zinia.entities.ColorSequence
+import de.hpled.zinia.entities.Device
+import de.hpled.zinia.colorsequence.fragments.ColorSequenceEditorFragment
+import de.hpled.zinia.colorsequence.fragments.ColorSequenceEditorPrefsFragment
+import de.hpled.zinia.colorsequence.views.OnSegmentClickListener
+import de.hpled.zinia.colorsequence.views.StaticViewPager
+import de.hpled.zinia.fragments.ColorPickerFragment
+import de.hpled.zinia.fragments.OnPreviewControllerActionListener
+import de.hpled.zinia.fragments.PreviewControllerFragment
+import de.hpled.zinia.services.ColorSendingService
+import de.hpled.zinia.views.OnColorChangedListener
+import java.util.concurrent.ScheduledThreadPoolExecutor
+
+class ColorSequenceEditorActivityViewModel : ViewModel() {
+    var editIndex: Int? = null
+    var editColor: Int = Color.WHITE
+    val executor = ScheduledThreadPoolExecutor(1)
+    val colorSendingService = ColorSendingService(SENDING_FREQ)
+
+    companion object {
+        private const val SENDING_FREQ = 300L
+    }
+}
+
+class ColorSequenceEditorActivity : AppCompatActivity(), OnPreviewControllerActionListener,
+    OnSegmentClickListener, OnColorChangedListener {
+
+    private val viewmodel by lazy {
+        ViewModelProviders.of(this).get(ColorSequenceEditorActivityViewModel::class.java)
+    }
+    private val previewController by lazy {
+        supportFragmentManager.findFragmentById(R.id.colorSequencePreview)
+                as PreviewControllerFragment
+    }
+    private val editorPrefs by lazy {
+        supportFragmentManager.findFragmentById(R.id.colorSequencePrefs)
+                as ColorSequenceEditorPrefsFragment
+    }
+    private val pager by lazy {
+        findViewById<StaticViewPager>(R.id.colorSequencePager)
+    }
+    private val pagerAdapter by lazy {
+        ColorsequenceEditorPagerAdapter(supportFragmentManager)
+    }
+    private val sequence by lazy {
+        supportFragmentManager.fragments.find { it is ColorSequenceEditorFragment }
+                as ColorSequenceEditorFragment
+    }
+    private val colorPicker by lazy {
+        supportFragmentManager.fragments.find { it is ColorPickerFragment } as ColorPickerFragment
+    }
+    private val handler = Handler()
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_color_sequence_editor)
+        supportActionBar?.setDefaultDisplayHomeAsUpEnabled(true)
+        pager.adapter = pagerAdapter
+    }
+
+    override fun onStart() {
+        super.onStart()
+        handler.post {
+            sequence.onSegmentClickListener += this
+            previewController.onPreviewControllerActionListener += this
+            colorPicker.setOnDoneListener {
+                pager.currentItem = 0
+                viewmodel.editIndex?.apply { sequence.setColorAt(this, viewmodel.editColor) }
+                sequence.nextColor = viewmodel.editColor
+            }
+            colorPicker.onColorChangedListener.apply {
+                clear()
+                add(this@ColorSequenceEditorActivity)
+                add(viewmodel.colorSendingService)
+            }
+        }
+    }
+
+    override fun onPreviewPlay(device: Device) {
+        val seq = buildColorSequence().also { println(it) }
+        viewmodel.executor.execute(seq.getSendingJob(device.ipAddress))
+    }
+
+    override fun onPreviewStop(device: Device) {}
+
+    override fun onDeviceChanged(device: Device?) {
+        viewmodel.colorSendingService.targetIP = device?.ipAddress ?: ""
+    }
+
+    private fun buildColorSequence() = ColorSequence(
+        0,
+        editorPrefs.getName(),
+        editorPrefs.getSpeed(),
+        editorPrefs.getKeep(),
+        sequence.getColors().toIntArray()
+    )
+
+    override fun onColorChanged(color: Int, final: Boolean) {
+        if(final) {
+            viewmodel.editColor = color
+        }
+    }
+
+    override fun onSegmentClick(index: Int, color: Int) {
+        viewmodel.editIndex = index
+        viewmodel.editColor = color
+        colorPicker.setThumbToColor(color)
+        handler.post {
+            pager.currentItem = 1
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> finish()
+            R.id.done_menu_done -> {
+                finish()
+            }
+        }
+        return true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.done_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+}

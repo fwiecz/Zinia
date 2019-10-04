@@ -1,4 +1,4 @@
-package de.hpled.zinia.fragments
+package de.hpled.zinia.colorsequence.fragments
 
 
 import android.os.Bundle
@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.Interpolator
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.SeekBar
@@ -69,7 +68,8 @@ class ColorSequenceEditorPrefsFragment : Fragment() {
 
         // TODO correct reverse interpolation
         viewmodel.keep.value?.apply { keepSeekbar.progress =
-            (this / deInterp.getInterpolation(deInterp.getInterpolation(this.toFloat() / keepSeekbar.max))).toInt()
+            (this / deInterp.getInterpolation(
+                deInterp.getInterpolation(this.toFloat() / keepSeekbar.max))).toInt()
         }
         initListener()
     }
@@ -102,11 +102,11 @@ class ColorSequenceEditorPrefsFragment : Fragment() {
         })
     }
 
-    fun getName() = viewmodel.name
+    fun getName() = viewmodel.name.value ?: ""
 
-    fun getSpeed() = viewmodel.speed
+    fun getSpeed() = viewmodel.speed.value ?: 0f
 
-    fun getKeep() = viewmodel.keep
+    fun getKeep() = viewmodel.keep.value ?: 0
 
     companion object {
         private val interp = AccelerateInterpolator()

@@ -1,15 +1,12 @@
-package de.hpled.zinia.views
+package de.hpled.zinia.colorsequence.views
 
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.Shape
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
-import com.google.android.material.shape.ShapePath
 import de.hpled.zinia.R
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
 import kotlin.math.acos
@@ -58,7 +55,10 @@ class ColorSequenceCircleView(c: Context, attr: AttributeSet? = null) : FrameLay
                 seg.setColor(i)
             }
             else {
-                val seg = ColorSequenceSegmentView(context, innerRadius)
+                val seg = ColorSequenceSegmentView(
+                    context,
+                    innerRadius
+                )
                 addView(seg, params)
                 post {
                     seg.setAngle(degreesPerSegment * index, degreesPerSegment)
@@ -68,23 +68,39 @@ class ColorSequenceCircleView(c: Context, attr: AttributeSet? = null) : FrameLay
         }
     }
 
+    private fun posToIndex(x: Float, y: Float) : Int? {
+        val center = Vector2D(width / 2.0, height / 2.0)
+        val pos = Vector2D(x.toDouble(), y.toDouble())
+        val diff = pos.subtract(center)
+        if (diff.norm.let { it < dia / 2 && it > innerRadius }) {
+            val angleRaw =
+                acos(diff.dotProduct(angleReference) / (diff.norm * angleReference.norm))
+            val angle = ((Math.toDegrees(angleRaw) * Math.signum(diff.y)) + 360) % 360
+            val index = (angle / (360f / childCount)).toInt()
+            return index
+        }
+        return null
+    }
+
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         if (event != null && childCount > 0) {
             if (event.action == MotionEvent.ACTION_DOWN) {
-                val center = Vector2D(width / 2.0, height / 2.0)
-                val pos = Vector2D(event.x.toDouble(), event.y.toDouble())
-                val diff = pos.subtract(center)
-                if (diff.norm.let { it < dia / 2 && it > innerRadius }) {
-                    val angleRaw =
-                        acos(diff.dotProduct(angleReference) / (diff.norm * angleReference.norm))
-                    val angle = ((Math.toDegrees(angleRaw) * Math.signum(diff.y)) + 360) % 360
-                    val index = (angle / (360f / childCount)).toInt()
-                    pressedSegment = getChildAt(index) as ColorSequenceSegmentView
+                posToIndex(event.x, event.y)?.apply {
+                    pressedSegment = getChildAt(this) as ColorSequenceSegmentView
                     pressedSegment?.setPressed(event.x, event.y)
                 }
             }
+            if(event.action in listOf(MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_UP) ) {
+                posToIndex(event.x, event.y)?.apply {
+                    if(pressedSegment === getChildAt(this)) {
+                        onSegmentClickListener.forEach {
+                            it.onSegmentClick(this, pressedSegment?.getColor() ?: Color.WHITE)
+                        }
+                    }
+                }
+            }
         }
-        return false
+        return true
     }
 
     fun updateMetrics() {

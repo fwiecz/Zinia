@@ -18,6 +18,7 @@ import de.hpled.zinia.entities.Device
 interface OnPreviewControllerActionListener {
     fun onPreviewPlay(device: Device)
     fun onPreviewStop(device: Device)
+    fun onDeviceChanged(device: Device?)
 }
 
 class PreviewControllerViewModel : ViewModel() {
@@ -78,6 +79,9 @@ class PreviewControllerFragment : Fragment(), AdapterView.OnItemSelectedListener
                 devicesSpinner.setSelection( it.indexOfFirst { it.name == name } )
             }
             viewmodel.device.value = viewmodel.devices.get(devicesSpinner.selectedItemPosition)
+        })
+        viewmodel.device.observe(this, Observer { device ->
+            onPreviewControllerActionListener.forEach { it.onDeviceChanged(device) }
         })
         devicesSpinner.onItemSelectedListener = this
         initButtons()

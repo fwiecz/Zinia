@@ -12,7 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import de.hpled.zinia.ColorSequenceEditorActivity
+import de.hpled.zinia.colorsequence.ColorSequenceEditorActivity
 import de.hpled.zinia.viewmodels.ListShowsViewModel
 import de.hpled.zinia.R
 import de.hpled.zinia.views.ChooseShowTypeView

@@ -7,7 +7,7 @@
     android:background="@color/colorBackground"
     android:orientation="vertical"
     android:padding="5dp"
-    tools:context=".ColorSequenceEditorActivity">
+    tools:context=".colorsequence.ColorSequenceEditorActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
 
             <fragment
                 android:id="@+id/colorSequencePrefs"
-                class="de.hpled.zinia.fragments.ColorSequenceEditorPrefsFragment"
+                class="de.hpled.zinia.colorsequence.fragments.ColorSequenceEditorPrefsFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
@@ -37,13 +37,11 @@
         </LinearLayout>
     </ScrollView>
 
-    <fragment
-        android:id="@+id/colorSequenceFragment"
-        class="de.hpled.zinia.fragments.ColorSequenceEditorFragment"
+    <de.hpled.zinia.colorsequence.views.StaticViewPager
+        android:id="@+id/colorSequencePager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_margin="5dp"
-        tools:layout="@layout/fragment_color_sequence_editor" />
+        android:layout_weight="1">
+    </de.hpled.zinia.colorsequence.views.StaticViewPager>
 
 </LinearLayout>

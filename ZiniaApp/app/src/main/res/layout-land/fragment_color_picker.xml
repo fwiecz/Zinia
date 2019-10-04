@@ -2,20 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp"
-    android:orientation="horizontal"
-    android:gravity="center">
+    android:gravity="center"
+    android:orientation="horizontal">
 
-    <de.hpled.zinia.views.ColorPickerView
-        android:id="@+id/colorPickerView"
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+
+        <de.hpled.zinia.views.ColorPickerView
+            android:id="@+id/colorPickerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageButton
+            android:id="@+id/colorPickerFragmentDone"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="10dp"
+            android:background="@drawable/background_clickable"
+            android:src="@drawable/material_done"
+            android:tint="@color/colorTextPrimary"
+            android:visibility="gone" />
+    </FrameLayout>
 
     <de.hpled.zinia.views.BrightnessWarmthView
         android:id="@+id/brightnessWarmthView"
         android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
 </LinearLayout>

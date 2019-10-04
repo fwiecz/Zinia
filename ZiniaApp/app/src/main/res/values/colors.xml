@@ -18,4 +18,5 @@
     <color name="colorMoodTaskCircleBackground">#D8D8D8</color>
     <color name="colorWarmth">#FFECBD</color>
     <color name="colorWarmthProgress">#814316</color>
+    <color name="colorDeleteIndicator">#E92222</color>
 </resources>

@@ -5,9 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="5dp"
-    tools:context=".fragments.ColorSequenceEditorFragment">
+    tools:context=".colorsequence.fragments.ColorSequenceEditorFragment">
 
     <ImageButton
+        android:id="@+id/colorSequenceDeleteButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/circle_background_clickable"
@@ -15,7 +16,7 @@
         android:src="@drawable/material_delete"
         android:tint="@color/colorTextPrimary" />
 
-    <de.hpled.zinia.views.ColorSequenceCircleView
+    <de.hpled.zinia.colorsequence.views.ColorSequenceCircleView
         android:id="@+id/colorSequenceCircleView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

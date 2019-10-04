@@ -1,4 +1,4 @@
-package de.hpled.zinia.views
+package de.hpled.zinia.colorsequence.views
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -21,6 +21,7 @@ class ColorSequenceSegmentView(c: Context, private val innerRadius: Float) : Vie
     private val rippleRect = RectF()
     private val outerRect = RectF()
     private val innerRect = RectF()
+    private var color = Color.WHITE
 
     init {
         isClickable = false
@@ -28,13 +29,14 @@ class ColorSequenceSegmentView(c: Context, private val innerRadius: Float) : Vie
             style = Paint.Style.FILL_AND_STROKE
             strokeCap = Paint.Cap.ROUND
             strokeJoin = Paint.Join.ROUND
-            strokeWidth = STROKE
+            strokeWidth =
+                STROKE
             color = Color.TRANSPARENT
         }
     }
 
     fun setPressed(x: Float, y: Float) {
-        ripple.setHotspot(x , y - STROKE*2)
+        ripple.setHotspot(x , y - STROKE *2)
         ripple.state = intArrayOf(android.R.attr.state_pressed, android.R.attr.state_enabled)
         postDelayed({setUntouched()}, 10)
     }
@@ -44,6 +46,7 @@ class ColorSequenceSegmentView(c: Context, private val innerRadius: Float) : Vie
     }
 
     fun setColor(col: Int) {
+        color = col
         ValueAnimator.ofArgb(shape.paint.color, col).apply {
             duration = 300
             addUpdateListener { shape.paint.color = it.animatedValue as Int; invalidate() }
@@ -51,9 +54,14 @@ class ColorSequenceSegmentView(c: Context, private val innerRadius: Float) : Vie
         }
     }
 
+    fun getColor() = color
+
     fun setAngle(start: Float, degrees: Float) {
         background = ripple
-        outerRect.set(STROKE, STROKE, width - STROKE, height - STROKE)
+        outerRect.set(
+            STROKE,
+            STROKE, width - STROKE, height - STROKE
+        )
         innerRect.set(
             width / 2f - innerRadius, height / 2f - innerRadius,
             width / 2f + innerRadius, height / 2f + innerRadius
@@ -64,12 +72,17 @@ class ColorSequenceSegmentView(c: Context, private val innerRadius: Float) : Vie
 
         val path = Path()
 
-        val degOffInn = degreeOffset(innerRect)
+        val degOffInn =
+            degreeOffset(
+                innerRect
+            )
         if (degOffInn * 2 < degrees) {
             path.addArc(
                 innerRect,
                 start + degrees - degOffInn,
-                min(-degrees + degreeOffset(innerRect) * 2, -0.1f)
+                min(-degrees + degreeOffset(
+                    innerRect
+                ) * 2, -0.1f)
             )
         } else {
             path.addArc(
@@ -81,8 +94,12 @@ class ColorSequenceSegmentView(c: Context, private val innerRadius: Float) : Vie
 
         path.arcTo(
             outerRect,
-            start + degreeOffset(outerRect),
-            degrees - degreeOffset(outerRect) * 2
+            start + degreeOffset(
+                outerRect
+            ),
+            degrees - degreeOffset(
+                outerRect
+            ) * 2
         )
 
         path.close()

@@ -14,6 +14,7 @@ import java.net.URL
 data class ColorSequence (
     @PrimaryKey(autoGenerate = true)
     val id: Long,
+    val name: String,
     var transitionSpeed: Float,
     var keepingTimeMillis: Int,
     var colors: IntArray

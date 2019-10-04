@@ -1,12 +1,14 @@
 package de.hpled.zinia.fragments
 
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.LinearLayout
 
 import de.hpled.zinia.R
@@ -23,9 +25,16 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
 class ColorPickerFragment : Fragment(), OnColorChangedListener, OnBrightnessWarmthChangedListener {
     private val handler = Handler()
     private lateinit var root: LinearLayout
-    private val colorPicker by lazy { root.findViewById<ColorPickerView>(R.id.colorPickerView) }
-    private val slider by lazy { root.findViewById<BrightnessWarmthView>(R.id.brightnessWarmthView) }
-    val onColorChangedListener = mutableListOf<OnColorChangedListener>()
+    private val colorPicker by lazy {
+        root.findViewById<ColorPickerView>(R.id.colorPickerView)
+    }
+    private val slider by lazy {
+        root.findViewById<BrightnessWarmthView>(R.id.brightnessWarmthView)
+    }
+    private val doneButton by lazy {
+        root.findViewById<ImageButton>(R.id.colorPickerFragmentDone)
+    }
+    val onColorChangedListener = mutableSetOf<OnColorChangedListener>()
     val onBrightnessWarmthChangedListener = mutableSetOf<OnBrightnessWarmthChangedListener>()
 
     override fun onCreateView(
@@ -40,12 +49,28 @@ class ColorPickerFragment : Fragment(), OnColorChangedListener, OnBrightnessWarm
         colorPicker.setThumbToColor(color)
     }
 
+    fun setThumbToColor(color: Int) {
+        colorPicker.setThumbToColor(
+            ColorDTO(Color.red(color), Color.green(color), Color.blue(color))
+        )
+    }
+
     fun setBrightness(value: Int) {
         slider.setBrightness(value)
     }
 
     fun setWarmth(value: Int) {
         slider.setWarmth(value)
+    }
+
+    fun setOnDoneListener(listener: View.OnClickListener?) {
+        doneButton.visibility = if(listener != null)View.VISIBLE else View.GONE
+        doneButton.setOnClickListener(listener)
+    }
+
+    fun setOnDoneListener( listener: (() -> Unit)? ) {
+        doneButton.visibility = if(listener != null)View.VISIBLE else View.GONE
+        doneButton.setOnClickListener{ listener?.run { listener() } }
     }
 
     override fun onColorChanged(color: Int, final: Boolean) {

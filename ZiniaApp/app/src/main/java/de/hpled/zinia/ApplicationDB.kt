@@ -11,7 +11,7 @@ import de.hpled.zinia.entities.*
 import de.hpled.zinia.newdevice.AddNewDeviceActivity
 
 @Database(entities = arrayOf(Device::class, Mood::class, MoodTask::class, ColorSequence::class),
-    version = 6)
+    version = 7)
 abstract class ApplicationDB : RoomDatabase() {
     abstract fun deviceDao(): DeviceDao
     abstract fun moodDao(): MoodDao
@@ -24,6 +24,7 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
     private val database = Room.databaseBuilder(context, ApplicationDB::class.java, "app-database")
         .addMigrations(Migrations.FROM_1_TO_2)
         .addMigrations(Migrations.FROM_5_TO_6)
+        .addMigrations(Migrations.FROM_6_TO_7)
         .build()
     val deviceDao = database.deviceDao()
     val devices = deviceDao.findAllLiveData()
