@@ -5,6 +5,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,15 +20,21 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hpled.zinia.ApplicationDbViewModel
 import de.hpled.zinia.R
 import de.hpled.zinia.colorsequence.ColorSequenceEditorActivity
+import de.hpled.zinia.entities.Device
 import de.hpled.zinia.fragments.DeleteDialogFragment
+import de.hpled.zinia.fragments.DevicePickDialogFragment
+import de.hpled.zinia.fragments.OnDevicePickListener
 import de.hpled.zinia.shows.adapters.ShowViewAdapter
 import de.hpled.zinia.shows.interfaces.OnShowViewListener
 import de.hpled.zinia.shows.interfaces.Show
 import de.hpled.zinia.shows.interfaces.ShowType
 import de.hpled.zinia.views.ChooseShowTypeView
 import de.hpled.zinia.views.OnChooseShowTypeListener
+import java.util.concurrent.ScheduledThreadPoolExecutor
 
 class ShowsViewModel : ViewModel() {
+
+    private val executor = ScheduledThreadPoolExecutor(1)
 
     fun getEditorIntentForShow(context: Context, show: Show) : Intent {
         return Intent(context, when(show.getShowType()) {
@@ -39,6 +46,10 @@ class ShowsViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun playShow(show: Show, device: Device) {
+        executor.execute(show.getSendingJob(device.ipAddress))
     }
 }
 
@@ -104,11 +115,17 @@ class ListShowsFragment : Fragment(), OnChooseShowTypeListener, OnShowViewListen
     }
 
     override fun onClick(show: Show) {
-        println("click")
+        AsyncTask.execute {
+            val devices = database.findAllDevices()
+            DevicePickDialogFragment(devices, object : OnDevicePickListener {
+                override fun onDevicePicked(device: Device) {
+                    viewModel.playShow(show, device)
+                }
+            }).show(childFragmentManager, null)
+        }
     }
 
     override fun onLongClick(show: Show) {
-        println("long")
     }
 
     override fun onEdit(show: Show) {
@@ -150,5 +167,10 @@ class ListShowsFragment : Fragment(), OnChooseShowTypeListener, OnShowViewListen
         chooseTypeIsVisible = false
         chooseType.hide()
         toggleFloatingButton(true)
+    }
+
+    override fun onDestroy() {
+        database.close()
+        super.onDestroy()
     }
 }

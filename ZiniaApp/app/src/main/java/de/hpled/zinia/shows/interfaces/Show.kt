@@ -12,4 +12,5 @@ interface Show {
     fun getShowIconRes() : Int
     fun getShowType() : ShowType
     fun getBackgroundGradientValues() : IntArray?
+    fun getSendingJob(ip: String) : Runnable
 }

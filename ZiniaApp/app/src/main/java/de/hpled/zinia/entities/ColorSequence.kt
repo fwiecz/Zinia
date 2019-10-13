@@ -27,7 +27,7 @@ data class ColorSequence(
         })
     }
 
-    fun getSendingJob(ip: String) : Runnable{
+    override fun getSendingJob(ip: String) : Runnable {
         val url = URL("http://$ip/setColorSequence?speed=$transitionSpeed")
         return HttpRequestService.jsonRequestRunnable<Any>(url, toDTO())
     }
