@@ -110,6 +110,10 @@ class ColorSequenceEditorFragment : Fragment(), OnSegmentClickListener {
         }
     }
 
+    fun setColors(colors: IntArray) {
+        viewmodel.colors.value = colors.toList()
+    }
+
     private fun addRandomColor() {
         viewmodel.colors.value =
             (viewmodel.colors.value ?: listOf()) + listOf(nextColor)

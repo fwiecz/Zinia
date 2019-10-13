@@ -68,13 +68,29 @@ class ColorSequenceEditorActivity : AppCompatActivity(), OnPreviewControllerActi
         supportFragmentManager.fragments.find { it is ColorPickerFragment } as ColorPickerFragment
     }
     private val handler = Handler()
-
+    private var targetId = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_color_sequence_editor)
         supportActionBar?.setDefaultDisplayHomeAsUpEnabled(true)
         pager.adapter = pagerAdapter
+
+        targetId = intent.getLongExtra(INTENT_COLOR_SEQ_ID, 0L)
+        if(targetId != 0L) {
+            AsyncTask.execute {
+                try {
+                    val cs = database.colorSequenceDao.findById(targetId)
+                    handler.post {
+                        editorPrefs.setPrefs(cs.name, cs.transitionSpeed, cs.keepingTimeMillis)
+                        // wait for initialization
+                        handler.post { sequence.setColors(cs.colors) }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
     }
 
     override fun onStart() {
@@ -107,7 +123,7 @@ class ColorSequenceEditorActivity : AppCompatActivity(), OnPreviewControllerActi
     }
 
     private fun buildColorSequence() = ColorSequence(
-        0,
+        targetId,
         editorPrefs.getName(),
         editorPrefs.getSpeed(),
         editorPrefs.getKeep(),
@@ -167,5 +183,9 @@ class ColorSequenceEditorActivity : AppCompatActivity(), OnPreviewControllerActi
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.save_menu, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    companion object {
+        const val INTENT_COLOR_SEQ_ID = "INTENT_COLOR_SEQ_ID"
     }
 }

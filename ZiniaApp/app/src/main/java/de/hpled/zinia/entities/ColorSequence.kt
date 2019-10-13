@@ -50,10 +50,10 @@ interface ColorSequenceDao {
     @Query("SELECT * FROM color_sequence WHERE id = (:id) LIMIT 1")
     fun findById(id: Long) : ColorSequence
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg show: ColorSequence) : List<Long>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(show: ColorSequence) : Long
 
     @Delete

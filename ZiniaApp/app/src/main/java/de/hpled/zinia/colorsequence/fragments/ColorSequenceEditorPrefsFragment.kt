@@ -109,6 +109,13 @@ class ColorSequenceEditorPrefsFragment : Fragment() {
         })
     }
 
+    fun setPrefs(name: String, speed: Int, keep: Int) {
+        viewmodel.name.value = name
+        nameEdit.setText(name)
+        viewmodel.speed.value = speed
+        viewmodel.keep.value = keep
+    }
+
     fun getName() = viewmodel.name.value ?: ""
 
     fun getSpeed() = viewmodel.speed.value ?: 1

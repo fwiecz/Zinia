@@ -2,6 +2,7 @@ package de.hpled.zinia.shows.fragments
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -22,11 +23,23 @@ import de.hpled.zinia.fragments.DeleteDialogFragment
 import de.hpled.zinia.shows.adapters.ShowViewAdapter
 import de.hpled.zinia.shows.interfaces.OnShowViewListener
 import de.hpled.zinia.shows.interfaces.Show
+import de.hpled.zinia.shows.interfaces.ShowType
 import de.hpled.zinia.views.ChooseShowTypeView
 import de.hpled.zinia.views.OnChooseShowTypeListener
 
 class ShowsViewModel : ViewModel() {
 
+    fun getEditorIntentForShow(context: Context, show: Show) : Intent {
+        return Intent(context, when(show.getShowType()) {
+            ShowType.COLOR_SEQUENCE -> ColorSequenceEditorActivity::class.java
+        }).apply {
+            when(show.getShowType()) {
+                ShowType.COLOR_SEQUENCE -> {
+                    putExtra(ColorSequenceEditorActivity.INTENT_COLOR_SEQ_ID, show.getShowId())
+                }
+            }
+        }
+    }
 }
 
 class ListShowsFragment : Fragment(), OnChooseShowTypeListener, OnShowViewListener {
@@ -99,7 +112,8 @@ class ListShowsFragment : Fragment(), OnChooseShowTypeListener, OnShowViewListen
     }
 
     override fun onEdit(show: Show) {
-        println("edit")
+        val intent = viewModel.getEditorIntentForShow(context!!, show)
+        startActivity(intent)
     }
 
     override fun onDelete(show: Show) {
