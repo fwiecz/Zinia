@@ -18,7 +18,7 @@
     <string name="new_device_num_leds_label">How many LEDs has the device?</string>
     <string name="new_device_num_leds_hint" translatable="false">1-9999</string>
     <string name="delete_device_title">Delete Device</string>
-    <string name="delete_device_text">Are you sure you want to delete %1$s?</string>
+    <string name="delete_text">Are you sure you want to delete %1$s?</string>
     <string name="delete_label">Delete</string>
     <string name="ip_address_label" translatable="false">IP: %1$s</string>
     <string name="enter_name_label">Enter Name</string>
@@ -52,4 +52,6 @@
     <string name="preview_label">Preview</string>
     <string name="save_label">Save</string>
     <string name="color_sequence_cannot_save">Please enter a name and add at least one color.</string>
+    <string name="percent_one_decimal_label">%1$d.%2$d%%</string>
+    <string name="delete_show_label">Delete Show</string>
 </resources>

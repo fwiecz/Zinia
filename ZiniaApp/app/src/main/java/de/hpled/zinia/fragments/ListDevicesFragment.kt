@@ -95,7 +95,7 @@ class ListDevicesFragment : Fragment() {
 
     private fun initDeleteDialog(view: DeviceView) {
         fragmentManager?.run {
-            DeleteDialogFragment(view.device, {
+            DeleteDeviceDialogFragment(view.device, {
                 database.deleteDevice(it)
             }).show(this, null)
         }

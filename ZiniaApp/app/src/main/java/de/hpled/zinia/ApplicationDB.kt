@@ -9,9 +9,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import de.hpled.zinia.entities.*
 import de.hpled.zinia.newdevice.AddNewDeviceActivity
+import de.hpled.zinia.shows.interfaces.Show
+import de.hpled.zinia.shows.interfaces.ShowType
 
 @Database(entities = arrayOf(Device::class, Mood::class, MoodTask::class, ColorSequence::class),
-    version = 7)
+    version = 8)
 abstract class ApplicationDB : RoomDatabase() {
     abstract fun deviceDao(): DeviceDao
     abstract fun moodDao(): MoodDao
@@ -25,6 +27,7 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
         .addMigrations(Migrations.FROM_1_TO_2)
         .addMigrations(Migrations.FROM_5_TO_6)
         .addMigrations(Migrations.FROM_6_TO_7)
+        .addMigrations(Migrations.FROM_7_TO_8)
         .build()
     val deviceDao = database.deviceDao()
     val devices = deviceDao.findAllLiveData()
@@ -117,6 +120,17 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
                 moodTaskDao.deleteAll(*tasks)
             }
             moodDao.deleteAll(mood)
+        }
+    }
+
+    /**
+     * Deletes a [Show] based on [Show.getShowType]
+     */
+    fun deleteShow(show: Show) {
+        AsyncTask.execute {
+            when(show.getShowType()) {
+                ShowType.COLOR_SEQUENCE -> colorSequenceDao.deleteAll(show as ColorSequence)
+            }
         }
     }
 

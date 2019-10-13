@@ -35,7 +35,7 @@ class MoodView(c: Context, attr: AttributeSet? = null) : LinearLayout(c, attr) {
 
     private fun onMenuButton(view: ImageButton) {
         val popMenu = PopupMenu(context, view).apply {
-            menuInflater.inflate(R.menu.mood_menu, menu)
+            menuInflater.inflate(R.menu.edit_delete_menu, menu)
             setOnMenuItemClickListener(onMenuShowListener)
         }
         MenuPopupHelper(context, popMenu.menu as MenuBuilder, view).apply {
@@ -47,8 +47,8 @@ class MoodView(c: Context, attr: AttributeSet? = null) : LinearLayout(c, attr) {
     private val onMenuShowListener = object : PopupMenu.OnMenuItemClickListener {
         override fun onMenuItemClick(item: MenuItem?): Boolean {
             when(item?.itemId) {
-                R.id.mood_menu_delete -> listener?.onDeleteMood(mood)
-                R.id.mood_menu_edit -> listener?.onEditMood(mood)
+                R.id.menu_delete -> listener?.onDeleteMood(mood)
+                R.id.menu_edit -> listener?.onEditMood(mood)
             }
             return true
         }

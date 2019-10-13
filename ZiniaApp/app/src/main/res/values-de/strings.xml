@@ -17,7 +17,7 @@
     <string name="save_device_button_label">Gerät speichern</string>
     <string name="new_device_num_leds_label">Wie viele LEDs hat das Gerät?</string>
     <string name="delete_device_title">Gerät Löschen</string>
-    <string name="delete_device_text">Soll %1$s wirklich gelöscht werden?</string>
+    <string name="delete_text">Soll %1$s wirklich gelöscht werden?</string>
     <string name="delete_label">Löschen</string>
     <string name="enter_name_label">Namen Eingeben</string>
     <string name="please_enter_name_error">Bitte gib einen Namen ein.</string>
@@ -50,4 +50,6 @@
     <string name="preview_label">Vorschau</string>
     <string name="save_label">Speichern</string>
     <string name="color_sequence_cannot_save">Bitte gib einen Namen ein und füge mind. eine Farbe hinzu.</string>
+    <string name="percent_one_decimal_label">%1$d,%2$d%%</string>
+    <string name="delete_show_label">Show löschen</string>
 </resources>

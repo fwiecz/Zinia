@@ -10,6 +10,7 @@ import android.graphics.RectF
 import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.PathShape
+import android.renderscript.Sampler
 import android.view.View
 import kotlin.math.min
 
@@ -22,6 +23,8 @@ class ColorSequenceSegmentView(c: Context, private val innerRadius: Float) : Vie
     private val outerRect = RectF()
     private val innerRect = RectF()
     private var color = Color.WHITE
+    private var lastangle = 0f
+    private var targetStart: Float = 0f
 
     init {
         isClickable = false
@@ -57,6 +60,27 @@ class ColorSequenceSegmentView(c: Context, private val innerRadius: Float) : Vie
     fun getColor() = color
 
     fun setAngle(start: Float, degrees: Float) {
+        setAngle(targetStart, start, degrees)
+    }
+
+    fun setAngle(fromStart: Float, start: Float, degrees: Float) {
+        ValueAnimator.ofFloat(fromStart, start).apply {
+            duration = 500L
+            addUpdateListener { targetStart = it.animatedValue as Float }
+            start()
+        }
+        ValueAnimator.ofFloat(lastangle, degrees).apply {
+            duration = 500L
+            addUpdateListener {
+                lastangle = it.animatedValue as Float
+                setShape(targetStart, it.animatedValue as Float)
+                invalidate()
+            }
+            start()
+        }
+    }
+
+    private fun setShape(start: Float, degrees: Float) {
         background = ripple
         outerRect.set(
             STROKE,

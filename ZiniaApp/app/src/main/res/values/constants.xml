@@ -3,5 +3,5 @@
     <integer name="maxBrightness">255</integer>
     <integer name="maxWarmth">255</integer>
     <integer name="colorSeqKeepMax">60000</integer>
-    <integer name="colorSeqSpeedMax">200</integer>
+    <integer name="colorSeqSpeedMax">999</integer>
 </resources>

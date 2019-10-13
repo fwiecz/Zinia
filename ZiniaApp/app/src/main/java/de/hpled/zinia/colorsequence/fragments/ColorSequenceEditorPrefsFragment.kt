@@ -22,11 +22,20 @@ import de.hpled.zinia.R
 
 class ColorSequenceEditorPrefsViewModel : ViewModel() {
     val name = MutableLiveData<String>("")
-    val speed = MutableLiveData<Float>(SPEED_DEFAULT)
+    val speed = MutableLiveData<Int>(SPEED_DEFAULT)
     val keep = MutableLiveData<Int>(KEEP_DEFAULT)
 
+    fun setSpeedValue(progress: Int, max: Int) {
+        speed.value = (progress * interp.getInterpolation(progress.toFloat() / max) + 1).toInt()
+    }
+
+    fun setKeepValue(progress: Int, max: Int) {
+        keep.value = (progress * interp.getInterpolation(progress.toFloat() / max)).toInt()
+    }
+
     companion object {
-        const val SPEED_DEFAULT = 0.0002f
+        private val interp = AccelerateInterpolator()
+        const val SPEED_DEFAULT = 10
         const val KEEP_DEFAULT = 3000
     }
 }
@@ -42,6 +51,9 @@ class ColorSequenceEditorPrefsFragment : Fragment() {
     }
     private val speedSeekbar by lazy {
         root.findViewById<SeekBar>(R.id.colorSeqEditorSpeed)
+    }
+    private val speedLabel by lazy {
+        root.findViewById<TextView>(R.id.colorSeqEditorSpeedPercent)
     }
     private val keepSeekbar by lazy {
         root.findViewById<SeekBar>(R.id.colorSeqEditorKeep)
@@ -61,16 +73,15 @@ class ColorSequenceEditorPrefsFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+
+        viewmodel.speed.observe(this, Observer {
+            speedLabel.text = getString(R.string.percent_one_decimal_label, it / 10, it % 10)
+        })
         viewmodel.keep.observe(this, Observer {
             keepLabel.text = getString(R.string.time_in_seconds, it / 1000, (it % 1000) / 100)
         })
         viewmodel.name.value?.apply { nameEdit.setText(this) }
 
-        // TODO correct reverse interpolation
-        viewmodel.keep.value?.apply { keepSeekbar.progress =
-            (this / deInterp.getInterpolation(
-                deInterp.getInterpolation(this.toFloat() / keepSeekbar.max))).toInt()
-        }
         initListener()
     }
 
@@ -86,30 +97,21 @@ class ColorSequenceEditorPrefsFragment : Fragment() {
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                viewmodel.keep.value = (progress * interp.getInterpolation(
-                    progress.toFloat() / keepSeekbar.max)).toInt()
-                println(progress)
+                viewmodel.setKeepValue(progress, keepSeekbar.max)
             }
         })
         speedSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                viewmodel.speed.value = interp.getInterpolation(
-                    progress / resources.getInteger(R.integer.colorSeqSpeedMax).toFloat()) / 20
-                println(viewmodel.speed.value ?: 0)
+                viewmodel.setSpeedValue(progress, speedSeekbar.max)
             }
         })
     }
 
     fun getName() = viewmodel.name.value ?: ""
 
-    fun getSpeed() = viewmodel.speed.value ?: 0f
+    fun getSpeed() = viewmodel.speed.value ?: 1
 
     fun getKeep() = viewmodel.keep.value ?: 0
-
-    companion object {
-        private val interp = AccelerateInterpolator()
-        private val deInterp = DecelerateInterpolator()
-    }
 }

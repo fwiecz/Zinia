@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.GridView
-import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -19,18 +18,21 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hpled.zinia.ApplicationDbViewModel
 import de.hpled.zinia.R
 import de.hpled.zinia.colorsequence.ColorSequenceEditorActivity
-import de.hpled.zinia.shows.views.ColorSequenceViewAdapter
+import de.hpled.zinia.fragments.DeleteDialogFragment
+import de.hpled.zinia.shows.adapters.ShowViewAdapter
+import de.hpled.zinia.shows.interfaces.OnShowViewListener
+import de.hpled.zinia.shows.interfaces.Show
 import de.hpled.zinia.views.ChooseShowTypeView
 import de.hpled.zinia.views.OnChooseShowTypeListener
 
-class ListShowsViewModel : ViewModel() {
+class ShowsViewModel : ViewModel() {
 
 }
 
-class ListShowsFragment : Fragment(), OnChooseShowTypeListener {
+class ListShowsFragment : Fragment(), OnChooseShowTypeListener, OnShowViewListener {
     private lateinit var root: FrameLayout
-    private val viewModel: ListShowsViewModel by lazy {
-        ViewModelProviders.of(this).get(ListShowsViewModel::class.java)
+    private val viewModel: ShowsViewModel by lazy {
+        ViewModelProviders.of(this).get(ShowsViewModel::class.java)
     }
     private val database by lazy {
         ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java)
@@ -45,7 +47,7 @@ class ListShowsFragment : Fragment(), OnChooseShowTypeListener {
         root.findViewById<GridView>(R.id.listShowsGridView)
     }
     private val adapter by lazy {
-        ColorSequenceViewAdapter(context!!)
+        ShowViewAdapter(context!!, this)
     }
     private var chooseTypeIsVisible = false
     private val colorAccent by lazy { context!!.resources.getColor(R.color.colorAccent) }
@@ -72,8 +74,9 @@ class ListShowsFragment : Fragment(), OnChooseShowTypeListener {
     override fun onStart() {
         super.onStart()
         gridView.adapter = adapter
+        gridView.setOnItemClickListener(null)
         database.colorSequenceDao.findAllLiveData().observe(this, Observer {
-            adapter.colorSequences = it
+            adapter.shows = it
         })
     }
 
@@ -85,6 +88,27 @@ class ListShowsFragment : Fragment(), OnChooseShowTypeListener {
                 startActivity(intent)
             }
         }
+    }
+
+    override fun onClick(show: Show) {
+        println("click")
+    }
+
+    override fun onLongClick(show: Show) {
+        println("long")
+    }
+
+    override fun onEdit(show: Show) {
+        println("edit")
+    }
+
+    override fun onDelete(show: Show) {
+        val ddialog = DeleteDialogFragment(
+            getString(R.string.delete_show_label),
+            getString(R.string.delete_text, show.getShowName()),
+            { database.deleteShow(show) }
+        )
+        ddialog.show(childFragmentManager, null)
     }
 
     private fun toggleFloatingButton(isDefault: Boolean) {

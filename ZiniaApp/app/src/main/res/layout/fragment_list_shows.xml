@@ -3,16 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp"
     tools:context=".shows.fragments.ListShowsFragment">
 
     <GridView
         android:id="@+id/listShowsGridView"
         android:layout_width="match_parent"
-        android:numColumns="auto_fit"
+        android:layout_height="match_parent"
         android:columnWidth="300dp"
-        android:layout_height="match_parent">
-    </GridView>
+        android:numColumns="auto_fit"
+        android:padding="5dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,8 +24,8 @@
             style="@style/DefaultFloatingButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/material_add"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:src="@drawable/material_add" />
 
         <de.hpled.zinia.views.ChooseShowTypeView
             android:id="@+id/chooseShowTypeView"
@@ -35,6 +34,4 @@
             android:animateLayoutChanges="true" />
 
     </LinearLayout>
-
-
 </FrameLayout>

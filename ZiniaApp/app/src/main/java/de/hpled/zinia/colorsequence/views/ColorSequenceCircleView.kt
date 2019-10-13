@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.view.children
 import de.hpled.zinia.R
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
 import kotlin.math.acos
@@ -41,34 +42,41 @@ class ColorSequenceCircleView(c: Context, attr: AttributeSet? = null) : FrameLay
 
     fun setColorList(colors: List<Int>) {
         updateMetrics()
-        while(colors.size < childCount) {
-            removeViewAt(0)
+        while (colors.size < childCount) {
+            val indexChild = children.filterIndexed { index, view ->
+                if(index >= colors.size) {
+                    true
+                } else {
+                    (view as ColorSequenceSegmentView).getColor() != colors.get(index)
+                }
+            }.firstOrNull()
+            val index = indexOfChild(indexChild)
+            removeViewAt(if(index >= 0)index else 0)
         }
 
         val params = LayoutParams(dia, dia).apply { gravity = Gravity.CENTER }
         val degreesPerSegment = 360f / colors.size
 
         colors.forEachIndexed { index, i ->
-            if(index < childCount) {
+            if (index < childCount) {
                 val seg = getChildAt(index) as ColorSequenceSegmentView
                 seg.setAngle(degreesPerSegment * index, degreesPerSegment)
                 seg.setColor(i)
-            }
-            else {
+            } else {
                 val seg = ColorSequenceSegmentView(
                     context,
                     innerRadius
                 )
                 addView(seg, params)
                 post {
-                    seg.setAngle(degreesPerSegment * index, degreesPerSegment)
+                    seg.setAngle(360f, degreesPerSegment * index, degreesPerSegment)
                     seg.setColor(i)
                 }
             }
         }
     }
 
-    private fun posToIndex(x: Float, y: Float) : Int? {
+    private fun posToIndex(x: Float, y: Float): Int? {
         val center = Vector2D(width / 2.0, height / 2.0)
         val pos = Vector2D(x.toDouble(), y.toDouble())
         val diff = pos.subtract(center)
@@ -90,9 +98,9 @@ class ColorSequenceCircleView(c: Context, attr: AttributeSet? = null) : FrameLay
                     pressedSegment?.setPressed(event.x, event.y)
                 }
             }
-            if(event.action in listOf(MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_UP) ) {
+            if (event.action in listOf(MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_UP)) {
                 posToIndex(event.x, event.y)?.apply {
-                    if(pressedSegment === getChildAt(this)) {
+                    if (pressedSegment === getChildAt(this)) {
                         onSegmentClickListener.forEach {
                             it.onSegmentClick(this, pressedSegment?.getColor() ?: Color.WHITE)
                         }
@@ -108,9 +116,5 @@ class ColorSequenceCircleView(c: Context, attr: AttributeSet? = null) : FrameLay
         val offsetX = (width - dia) / 2f
         val offsetY = (height - dia) / 2f
         viewRect = RectF(offsetX, offsetY, dia.toFloat() + offsetX, dia.toFloat() + offsetY)
-    }
-
-    companion object {
-        private const val SWEEP_MARGIN = 12.0f
     }
 }

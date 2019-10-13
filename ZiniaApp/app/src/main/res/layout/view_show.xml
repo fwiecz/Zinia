@@ -12,30 +12,33 @@
         android:background="@drawable/card_background"/>
 
     <LinearLayout
+        android:id="@+id/showBody"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="7dp"
         android:background="@drawable/card_background_selectable"
         android:clickable="true"
+        android:focusable="true"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="5dp">
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="10dp"
-            android:src="@drawable/material_palette"
+            android:id="@+id/showIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
             android:tint="@color/colorTextSecondary" />
 
         <TextView
-            android:id="@+id/colorSeqViewLabel"
+            android:id="@+id/showLabel"
             style="@style/TitleTextViewStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <ImageButton
+            android:id="@+id/showMenuButton"
             style="?attr/actionOverflowButtonStyle"
             android:layout_width="40dp"
             android:layout_height="40dp"

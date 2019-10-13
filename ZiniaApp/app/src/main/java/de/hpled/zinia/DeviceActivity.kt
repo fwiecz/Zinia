@@ -2,23 +2,18 @@ package de.hpled.zinia
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Switch
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import de.hpled.zinia.dto.DeviceStatusDTO
 import de.hpled.zinia.entities.Device
-import de.hpled.zinia.fragments.ColorPickerFragment
-import de.hpled.zinia.fragments.DeleteDialogFragment
-import de.hpled.zinia.services.HttpRequestService
+import de.hpled.zinia.fragments.DeleteDeviceDialogFragment
 import de.hpled.zinia.viewmodels.DeviceViewModel
 import de.hpled.zinia.views.BrightnessWarmthView
 import de.hpled.zinia.views.ColorPickerView
 import de.hpled.zinia.views.OnBrightnessWarmthChangedListener
 import java.lang.IllegalStateException
-import java.net.URL
 
 class DeviceActivity : AppCompatActivity(), OnBrightnessWarmthChangedListener{
     private lateinit var device: Device
@@ -93,7 +88,7 @@ class DeviceActivity : AppCompatActivity(), OnBrightnessWarmthChangedListener{
     }
 
     private fun onDeleteDevice() {
-        DeleteDialogFragment(device) {
+        DeleteDeviceDialogFragment(device) {
             database.deleteDevice(it)
             finish()
         }.show(supportFragmentManager, null)

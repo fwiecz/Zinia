@@ -49,5 +49,28 @@ class Migrations {
                 """.trimIndent())
             }
         }
+
+        val FROM_7_TO_8 = object : Migration(7, 8) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("""
+                    ALTER TABLE 'color_sequence'
+                    RENAME TO 'color_sequence_old'
+                """.trimIndent())
+
+                database.execSQL("""
+                    CREATE TABLE 'color_sequence' (
+                    id INTEGER NOT NULL,
+                    name TEXT NOT NULL,
+                    transitionSpeed INTEGER NOT NULL,
+                    keepingTimeMillis INTEGER NOT NULL,
+                    colors TEXT NOT NULL,
+                    PRIMARY KEY(id))
+                """.trimIndent())
+
+                database.execSQL("""
+                    DROP TABLE 'color_sequence_old'
+                """.trimIndent())
+            }
+        }
     }
 }

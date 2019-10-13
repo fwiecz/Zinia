@@ -13,12 +13,12 @@ import androidx.lifecycle.ViewModelProviders
 import de.hpled.zinia.ApplicationDbViewModel
 import de.hpled.zinia.R
 import de.hpled.zinia.colorsequence.adapters.ColorsequenceEditorPagerAdapter
-import de.hpled.zinia.entities.ColorSequence
 import de.hpled.zinia.entities.Device
 import de.hpled.zinia.colorsequence.fragments.ColorSequenceEditorFragment
 import de.hpled.zinia.colorsequence.fragments.ColorSequenceEditorPrefsFragment
 import de.hpled.zinia.colorsequence.views.OnSegmentClickListener
 import de.hpled.zinia.colorsequence.views.StaticViewPager
+import de.hpled.zinia.entities.ColorSequence
 import de.hpled.zinia.fragments.ColorPickerFragment
 import de.hpled.zinia.fragments.OnPreviewControllerActionListener
 import de.hpled.zinia.fragments.PreviewControllerFragment
