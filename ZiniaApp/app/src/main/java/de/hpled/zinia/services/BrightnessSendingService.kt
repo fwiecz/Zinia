@@ -1,6 +1,6 @@
 package de.hpled.zinia.services
 
-import de.hpled.zinia.views.OnBrightnessWarmthChangedListener
+import de.hpled.zinia.colorpick.views.OnBrightnessWarmthChangedListener
 import java.net.URL
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.ScheduledThreadPoolExecutor

@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <de.hpled.zinia.views.ColorPickerView
+        <de.hpled.zinia.colorpick.views.ColorPickerView
             android:id="@+id/colorPickerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -27,7 +27,7 @@
             android:visibility="gone" />
     </FrameLayout>
 
-    <de.hpled.zinia.views.BrightnessWarmthView
+    <de.hpled.zinia.colorpick.views.BrightnessWarmthView
         android:id="@+id/brightnessWarmthView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

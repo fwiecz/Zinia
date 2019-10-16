@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/colorBackground"
-    tools:context=".PickMoodTaskActivity">
+    tools:context=".moods.PickMoodTaskActivity">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/pickMoodTaskTabs"

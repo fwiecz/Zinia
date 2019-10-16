@@ -21,7 +21,7 @@
 
             <fragment
                 android:id="@+id/colorSequencePreview"
-                class="de.hpled.zinia.fragments.PreviewControllerFragment"
+                class="de.hpled.zinia.colorsequence.fragments.PreviewControllerFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"

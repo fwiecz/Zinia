@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navigation_devices"
-        android:name="de.hpled.zinia.fragments.ListDevicesFragment"
+        android:name="de.hpled.zinia.devices.fragments.ListDevicesFragment"
         android:label="@string/navigation_devices_label"
         tools:layout="@layout/fragment_list_devices" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="de.hpled.zinia.fragments.MoodsFragment"
+        android:name="de.hpled.zinia.moods.fragments.MoodsFragment"
         android:label="@string/navigation_moods_label"
         tools:layout="@layout/fragment_moods" />
 

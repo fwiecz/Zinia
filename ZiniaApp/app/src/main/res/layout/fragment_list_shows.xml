@@ -27,7 +27,7 @@
             android:layout_marginTop="20dp"
             android:src="@drawable/material_add" />
 
-        <de.hpled.zinia.views.ChooseShowTypeView
+        <de.hpled.zinia.shows.views.ChooseShowTypeView
             android:id="@+id/chooseShowTypeView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

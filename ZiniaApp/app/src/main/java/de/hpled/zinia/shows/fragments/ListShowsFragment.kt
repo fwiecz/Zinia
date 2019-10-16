@@ -22,14 +22,14 @@ import de.hpled.zinia.R
 import de.hpled.zinia.colorsequence.ColorSequenceEditorActivity
 import de.hpled.zinia.entities.Device
 import de.hpled.zinia.fragments.DeleteDialogFragment
-import de.hpled.zinia.fragments.DevicePickDialogFragment
-import de.hpled.zinia.fragments.OnDevicePickListener
+import de.hpled.zinia.devices.fragments.DevicePickDialogFragment
+import de.hpled.zinia.devices.fragments.OnDevicePickListener
 import de.hpled.zinia.shows.adapters.ShowViewAdapter
 import de.hpled.zinia.shows.interfaces.OnShowViewListener
 import de.hpled.zinia.shows.interfaces.Show
 import de.hpled.zinia.shows.interfaces.ShowType
-import de.hpled.zinia.views.ChooseShowTypeView
-import de.hpled.zinia.views.OnChooseShowTypeListener
+import de.hpled.zinia.shows.views.ChooseShowTypeView
+import de.hpled.zinia.shows.views.OnChooseShowTypeListener
 import java.util.concurrent.ScheduledThreadPoolExecutor
 
 class ShowsViewModel : ViewModel() {
@@ -117,11 +117,13 @@ class ListShowsFragment : Fragment(), OnChooseShowTypeListener, OnShowViewListen
     override fun onClick(show: Show) {
         AsyncTask.execute {
             val devices = database.findAllDevices()
-            DevicePickDialogFragment(devices, object : OnDevicePickListener {
-                override fun onDevicePicked(device: Device) {
-                    viewModel.playShow(show, device)
-                }
-            }).show(childFragmentManager, null)
+            DevicePickDialogFragment(
+                devices,
+                object : OnDevicePickListener {
+                    override fun onDevicePicked(device: Device) {
+                        viewModel.playShow(show, device)
+                    }
+                }).show(childFragmentManager, null)
         }
     }
 

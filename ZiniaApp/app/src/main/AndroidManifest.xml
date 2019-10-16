@@ -31,20 +31,20 @@
                 android:value="de.hpled.zinia.MainActivity" />
         </activity>
         <activity
-            android:name=".DeviceActivity"
+            android:name=".devices.DeviceActivity"
             android:label=""
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme">
         </activity>
         <activity
-            android:name=".MoodEditorActivity"
+            android:name=".moods.MoodEditorActivity"
             android:label="@string/mood_editor_activity_label"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".PickMoodTaskActivity"
+        <activity android:name=".moods.PickMoodTaskActivity"
             android:label="@string/pick_moodtask_dialog_title"
-            android:parentActivityName=".MoodEditorActivity"
+            android:parentActivityName=".moods.MoodEditorActivity"
             android:theme="@style/AppTheme">
         </activity>
         <activity android:name=".colorsequence.ColorSequenceEditorActivity"

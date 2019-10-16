@@ -11,7 +11,7 @@
     android:orientation="vertical"
     android:layout_margin="5dp"
     android:padding="20dp"
-    tools:context=".fragments.ColorPickerFragment">
+    tools:context=".colorpick.fragments.ColorPickerFragment">
 
     <FrameLayout
         android:id="@+id/colorWheelFrame"
@@ -19,7 +19,7 @@
         android:layout_height="match_parent"
         android:clipChildren="false">
 
-        <de.hpled.zinia.views.ColorWheelView
+        <de.hpled.zinia.colorpick.views.ColorWheelView
             android:id="@+id/colorWheelView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

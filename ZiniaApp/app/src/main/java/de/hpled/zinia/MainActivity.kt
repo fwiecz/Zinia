@@ -1,22 +1,17 @@
 package de.hpled.zinia
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import de.hpled.zinia.fragments.ListDevicesFragment
-import de.hpled.zinia.newdevice.AddNewDeviceActivity
-import de.hpled.zinia.viewmodels.AppPropertiesViewModel
 
 class MainActivity : AppCompatActivity() {
 

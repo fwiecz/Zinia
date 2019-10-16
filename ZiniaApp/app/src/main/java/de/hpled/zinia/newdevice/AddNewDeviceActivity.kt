@@ -8,15 +8,21 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import de.hpled.zinia.R
 import de.hpled.zinia.entities.DeviceType
+import de.hpled.zinia.newdevice.adapter.NewDeviceMethodsPagerAdapter
+import de.hpled.zinia.newdevice.interfaces.NewDeviceListener
 
-class AddNewDeviceActivity : AppCompatActivity(), NewDeviceListener{
+class AddNewDeviceActivity : AppCompatActivity(),
+    NewDeviceListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_device)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val sectionsPagerAdapter = NewDeviceMethodsPagerAdapter(this, supportFragmentManager)
+        val sectionsPagerAdapter = NewDeviceMethodsPagerAdapter(
+            this,
+            supportFragmentManager
+        )
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = findViewById(R.id.tabs)

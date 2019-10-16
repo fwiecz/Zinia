@@ -19,11 +19,11 @@ import de.hpled.zinia.colorsequence.fragments.ColorSequenceEditorPrefsFragment
 import de.hpled.zinia.colorsequence.views.OnSegmentClickListener
 import de.hpled.zinia.colorsequence.views.StaticViewPager
 import de.hpled.zinia.entities.ColorSequence
-import de.hpled.zinia.fragments.ColorPickerFragment
-import de.hpled.zinia.fragments.OnPreviewControllerActionListener
-import de.hpled.zinia.fragments.PreviewControllerFragment
+import de.hpled.zinia.colorpick.fragments.ColorPickerFragment
+import de.hpled.zinia.colorsequence.fragments.OnPreviewControllerActionListener
+import de.hpled.zinia.colorsequence.fragments.PreviewControllerFragment
 import de.hpled.zinia.services.ColorSendingService
-import de.hpled.zinia.views.OnColorChangedListener
+import de.hpled.zinia.colorpick.views.OnColorChangedListener
 import java.util.concurrent.ScheduledThreadPoolExecutor
 
 class ColorSequenceEditorActivityViewModel : ViewModel() {
@@ -37,7 +37,8 @@ class ColorSequenceEditorActivityViewModel : ViewModel() {
     }
 }
 
-class ColorSequenceEditorActivity : AppCompatActivity(), OnPreviewControllerActionListener,
+class ColorSequenceEditorActivity : AppCompatActivity(),
+    OnPreviewControllerActionListener,
     OnSegmentClickListener, OnColorChangedListener {
 
     private val viewmodel by lazy {
