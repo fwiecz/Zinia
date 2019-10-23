@@ -181,7 +181,9 @@ void setSingleColor() {
     lastSingleColor[1] = server.arg(F("g")).toInt() * COLOR_DEPTH_MULTIPLY;
     lastSingleColor[2] = server.arg(F("b")).toInt() * COLOR_DEPTH_MULTIPLY;
 #ifdef IS_RGBW
-    lastSingleColor[3] = server.arg(F("w")).toInt() * COLOR_DEPTH_MULTIPLY;
+    if(server.hasArg(F("w"))) {
+      lastSingleColor[3] = server.arg(F("w")).toInt() * COLOR_DEPTH_MULTIPLY;
+    }
 #endif
     manager.setSingleColor(lastSingleColor[0], lastSingleColor[1], lastSingleColor[2], lastSingleColor[3]);
     sendColor();

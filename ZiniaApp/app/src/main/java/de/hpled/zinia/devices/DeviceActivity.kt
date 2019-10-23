@@ -49,6 +49,7 @@ class DeviceActivity : AppCompatActivity(),
         colorPicker.onColorChangedListener += viewmodel.colorSendingService
         viewmodel.deviceColor.observe(this, Observer { colorPicker.setThumbToColor(it) })
         viewmodel.getDeviceColor(device)
+        brWarmSlider.warmthIsEnabled = device.isRGBW
         brWarmSlider.listener += this
         brWarmSlider.listener += viewmodel.brightnessSendingService
         viewmodel.deviceBrightness.observe(this, Observer { brWarmSlider.setBrightness(it) })

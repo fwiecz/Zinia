@@ -79,6 +79,18 @@
                 android:ems="10"
                 android:hint="@string/new_device_num_leds_hint"
                 android:inputType="number" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="12dp" />
+
+            <Switch
+                android:id="@+id/newDeviceIsRgbwSwitch"
+                style="@style/DefaultTextViewStyle"
+                android:text="@string/is_device_rgbw_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
         </LinearLayout>
 
         <View
@@ -86,7 +98,7 @@
             android:layout_height="20dp" />
 
         <Button
-            android:id="@+id/add_device_manually_button"
+            android:id="@+id/newDeviceAddButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"

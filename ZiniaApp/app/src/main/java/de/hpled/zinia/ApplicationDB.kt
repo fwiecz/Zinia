@@ -37,22 +37,6 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
     val colorSequenceDao = database.colorSequenceDao()
 
     /**
-     * Stores the device in the database given by the intent.
-     */
-    fun saveNewDevice(intent: Intent) {
-        if (newDeviceIntentFeatures.all { intent.hasExtra(it) }) {
-            val ip = intent.getStringExtra(AddNewDeviceActivity.INTENT_IP)
-            val name = intent.getStringExtra(AddNewDeviceActivity.INTENT_NAME)
-            val numLeds = intent.getIntExtra(AddNewDeviceActivity.INTENT_NUM_LEDS, 0)
-            val type = intent.getSerializableExtra(AddNewDeviceActivity.INTENT_TYPE) as DeviceType
-            val device = Device.newInstance(ip, name, numLeds, type)
-            AsyncTask.execute {
-                deviceDao.insert(device)
-            }
-        }
-    }
-
-    /**
      * Asynchronously Deletes the given device from the database. It checks for every Mood, whether
      * the device is part of it and removes it if necessary.
      */
@@ -152,14 +136,5 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun close() {
         database.close()
-    }
-
-    companion object {
-        private val newDeviceIntentFeatures = listOf(
-            AddNewDeviceActivity.INTENT_IP,
-            AddNewDeviceActivity.INTENT_NAME,
-            AddNewDeviceActivity.INTENT_NUM_LEDS,
-            AddNewDeviceActivity.INTENT_TYPE
-        )
     }
 }

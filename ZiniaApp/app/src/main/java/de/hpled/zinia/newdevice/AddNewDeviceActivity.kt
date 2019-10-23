@@ -2,17 +2,25 @@ package de.hpled.zinia.newdevice
 
 import android.app.Activity
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import de.hpled.zinia.ApplicationDbViewModel
 import de.hpled.zinia.R
+import de.hpled.zinia.entities.Device
 import de.hpled.zinia.entities.DeviceType
 import de.hpled.zinia.newdevice.adapter.NewDeviceMethodsPagerAdapter
 import de.hpled.zinia.newdevice.interfaces.NewDeviceListener
 
 class AddNewDeviceActivity : AppCompatActivity(),
     NewDeviceListener {
+
+    private val database by lazy {
+        ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,21 +40,11 @@ class AddNewDeviceActivity : AppCompatActivity(),
         sectionsPagerAdapter.searchDevicesFragment.newDeviceListener += this
     }
 
-    override fun onNewDevice(ip: String, name: String, numLeds: Int, type: DeviceType) {
-        val intent = Intent().apply {
-            putExtra(INTENT_IP, ip)
-            putExtra(INTENT_NAME, name)
-            putExtra(INTENT_NUM_LEDS, numLeds)
-            putExtra(INTENT_TYPE, type)
+    override fun onNewDevice(ip: String, name: String, numLeds: Int, type: DeviceType, isRGBW: Boolean) {
+        AsyncTask.execute {
+            val device = Device.newInstance(ip, name, numLeds, type, isRGBW)
+            database.deviceDao.insert(device)
+            finish()
         }
-        setResult(Activity.RESULT_OK, intent)
-        finish()
-    }
-
-    companion object {
-        const val INTENT_IP = "INTENT_IP"
-        const val INTENT_NAME = "INTENT_NAME"
-        const val INTENT_NUM_LEDS = "INTENT_NUM_LEDS"
-        const val INTENT_TYPE = "INTENT_TYPE"
     }
 }

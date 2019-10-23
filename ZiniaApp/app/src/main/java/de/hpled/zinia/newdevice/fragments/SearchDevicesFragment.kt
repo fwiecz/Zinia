@@ -71,9 +71,10 @@ class SearchDevicesFragment : Fragment(),
         newDeviceListener.forEach { it.onNewDevice(
             dto.ip ?: "",
             name.trim(),
-            dto.numLeds ?: 0,
+            leds,
             if(leds == 1)DeviceType.SINGLE_LED else if(leds > 1)DeviceType.LED_CHAIN
-            else DeviceType.UNKNOWN
+            else DeviceType.UNKNOWN,
+            dto.isRGBW == 1
         ) }
     }
 
@@ -82,8 +83,7 @@ class SearchDevicesFragment : Fragment(),
             NewDeviceNameDialogFragment(
                 dto,
                 ::informNewDeviceListener
-            )
-                .show(this, null)
+            ).show(this, null)
         }
     }
 

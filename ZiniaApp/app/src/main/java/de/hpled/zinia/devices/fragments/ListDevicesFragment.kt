@@ -70,9 +70,7 @@ class ListDevicesFragment : Fragment() {
         swipeRefresh.setOnRefreshListener { testConnectionForAllDevices() }
         addDeviceButton.setOnClickListener {
             val intent = Intent(context, AddNewDeviceActivity::class.java)
-            startActivityForResult(intent,
-                NEW_DEVICE_REQUEST_CODE
-            )
+            startActivity(intent)
         }
     }
 
@@ -111,12 +109,6 @@ class ListDevicesFragment : Fragment() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
-            NEW_DEVICE_REQUEST_CODE -> { data?.run { database.saveNewDevice(this) } }
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         // Force a device list update whenever the fragment is showing.
@@ -129,9 +121,5 @@ class ListDevicesFragment : Fragment() {
     override fun onDestroy() {
         database.close()
         super.onDestroy()
-    }
-
-    companion object {
-        private const val NEW_DEVICE_REQUEST_CODE = 0
     }
 }

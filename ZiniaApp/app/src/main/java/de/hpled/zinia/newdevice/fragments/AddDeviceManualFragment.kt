@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Switch
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -24,11 +25,24 @@ class AddDeviceManualFragment : Fragment() {
     }
 
     private lateinit var root : View
-    private val ipEdit by lazy { root.findViewById<EditText>(R.id.newDeviceIpEditText) }
-    private val nameEdit by lazy { root.findViewById<EditText>(R.id.newDeviceNameEditText) }
-    private val numLedsEdit by lazy { root.findViewById<EditText>(R.id.newDeviceLedsEditText) }
-    private val ipStatus by lazy { root.findViewById<StatusIndicatorView>(R.id.newDeviceIpStatus) }
-    private val saveButton by lazy { root.findViewById<Button>(R.id.add_device_manually_button) }
+    private val ipEdit by lazy {
+        root.findViewById<EditText>(R.id.newDeviceIpEditText)
+    }
+    private val nameEdit by lazy {
+        root.findViewById<EditText>(R.id.newDeviceNameEditText)
+    }
+    private val numLedsEdit by lazy {
+        root.findViewById<EditText>(R.id.newDeviceLedsEditText)
+    }
+    private val ipStatus by lazy {
+        root.findViewById<StatusIndicatorView>(R.id.newDeviceIpStatus)
+    }
+    private val isRgbwSwitch by lazy {
+        root.findViewById<Switch>(R.id.newDeviceIsRgbwSwitch)
+    }
+    private val saveButton by lazy {
+        root.findViewById<Button>(R.id.newDeviceAddButton)
+    }
     val newDeviceListener = mutableListOf<NewDeviceListener>()
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -69,8 +83,9 @@ class AddDeviceManualFragment : Fragment() {
             numLeds > 1 -> DeviceType.LED_CHAIN
             else -> DeviceType.UNKNOWN
         }
+        val isRGBW = isRgbwSwitch.isChecked
         newDeviceListener.forEach {
-            it.onNewDevice(ip, name, numLeds, type)
+            it.onNewDevice(ip, name, numLeds, type, isRGBW)
         }
     }
 }

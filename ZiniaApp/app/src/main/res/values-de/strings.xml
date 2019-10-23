@@ -53,4 +53,5 @@
     <string name="percent_one_decimal_label">%1$d,%2$d%%</string>
     <string name="delete_show_label">Show löschen</string>
     <string name="choose_show_label">Show</string>
+    <string name="is_device_rgbw_label">Setzten sich Farben aus 4 Kanälen zusammen (RGBW)?</string>
 </resources>
