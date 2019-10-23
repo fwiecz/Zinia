@@ -34,11 +34,10 @@
 
         <TextView
             android:id="@+id/colorSeqEditorSpeedPercent"
-            style="@style/TitleTextViewStyle"
+            style="@style/TitleTextViewStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/percent_one_decimal_label"
-            android:textSize="18sp" />
+            android:text="@string/percent_one_decimal_label" />
 
     </LinearLayout>
 
@@ -80,11 +79,10 @@
 
         <TextView
             android:id="@+id/colorSeqEditorKeepTime"
-            style="@style/TitleTextViewStyle"
+            style="@style/TitleTextViewStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/time_in_seconds"
-            android:textSize="18sp" />
+            android:text="@string/time_in_seconds" />
     </LinearLayout>
 
     <LinearLayout

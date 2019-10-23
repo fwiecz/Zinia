@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
@@ -21,10 +22,13 @@ import de.hpled.zinia.services.BrightnessSendingService
 import de.hpled.zinia.services.ColorSendingService
 import de.hpled.zinia.colorpick.views.OnBrightnessWarmthChangedListener
 import de.hpled.zinia.colorpick.views.OnColorChangedListener
+import de.hpled.zinia.shows.fragments.OnShowPickListener
+import de.hpled.zinia.shows.interfaces.Show
 
 class PickMoodTaskActivity : AppCompatActivity(),
     OnColorChangedListener,
-    OnBrightnessWarmthChangedListener {
+    OnBrightnessWarmthChangedListener,
+    OnShowPickListener {
     private val handler = Handler()
     private val database by lazy {
         ViewModelProviders.of(this).get(ApplicationDbViewModel::class.java)
@@ -84,6 +88,14 @@ class PickMoodTaskActivity : AppCompatActivity(),
                 setBrightness(moodTask.brightness)
             }
         }
+        pagerAdapter.showPickFragment.apply {
+            onShowPickListener.clear()
+            onShowPickListener.add(this@PickMoodTaskActivity)
+            database.getShowsLiveData(this@PickMoodTaskActivity)
+                .observe(this@PickMoodTaskActivity, Observer {
+                    setShows(it)
+                })
+        }
     }
 
     private fun onClickDone() {
@@ -105,6 +117,10 @@ class PickMoodTaskActivity : AppCompatActivity(),
 
     override fun onWarmthChanged(value: Int, final: Boolean) {
 
+    }
+
+    override fun onShowPick(show: Show) {
+        // TODO integrate shows in moods
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

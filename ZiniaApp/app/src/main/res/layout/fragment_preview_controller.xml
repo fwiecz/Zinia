@@ -11,12 +11,11 @@
     tools:context=".colorsequence.fragments.PreviewControllerFragment">
 
     <TextView
-        style="@style/TitleTextViewStyle"
+        style="@style/TitleTextViewStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:text="@string/preview_label"
-        android:textSize="18sp" />
+        android:text="@string/preview_label" />
 
     <Spinner
         android:id="@+id/previewDeviceSpinner"

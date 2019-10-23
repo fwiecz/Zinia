@@ -3,7 +3,7 @@ package de.hpled.zinia
 import android.app.Application
 import android.content.Intent
 import android.os.AsyncTask
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.*
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -132,6 +132,18 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
                 ShowType.COLOR_SEQUENCE -> colorSequenceDao.deleteAll(show as ColorSequence)
             }
         }
+    }
+
+    /**
+     * A [MutableLiveData] object containing all [Show]s
+     */
+    fun getShowsLiveData(owner: LifecycleOwner) : MutableLiveData<List<Show>> {
+        val livedata = MutableLiveData<List<Show>>()
+        val observer = Observer<List<Show>> {
+            livedata.value = (livedata.value ?: listOf()) + it
+        }
+        colorSequenceDao.findAllLiveData().observe(owner, observer)
+        return livedata
     }
 
     /**
