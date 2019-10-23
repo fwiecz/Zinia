@@ -13,7 +13,7 @@ import de.hpled.zinia.shows.interfaces.Show
 import de.hpled.zinia.shows.interfaces.ShowType
 
 @Database(entities = arrayOf(Device::class, Mood::class, MoodTask::class, ColorSequence::class),
-    version = 8)
+    version = 9)
 abstract class ApplicationDB : RoomDatabase() {
     abstract fun deviceDao(): DeviceDao
     abstract fun moodDao(): MoodDao
@@ -28,6 +28,7 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
         .addMigrations(Migrations.FROM_5_TO_6)
         .addMigrations(Migrations.FROM_6_TO_7)
         .addMigrations(Migrations.FROM_7_TO_8)
+        .addMigrations(Migrations.FROM_8_TO_9)
         .build()
     val deviceDao = database.deviceDao()
     val devices = deviceDao.findAllLiveData()

@@ -36,14 +36,17 @@ data class Device (
     val numLeds: Int,
 
     @ColumnInfo(name = "type")
-    val type: DeviceType
+    val type: DeviceType,
+
+    @ColumnInfo(name = "isRGBW")
+    val isRGBW: Boolean = false
 
 ) : Serializable {
     companion object {
         @JvmStatic
         fun newInstance(
-            ip: String, name: String, numLeds: Int, type: DeviceType) : Device {
-            return Device(0, ip, name, numLeds, type)
+            ip: String, name: String, numLeds: Int, type: DeviceType, isRGBW: Boolean = false) : Device {
+            return Device(0, ip, name, numLeds, type, isRGBW)
         }
     }
 }
