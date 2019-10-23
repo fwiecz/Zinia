@@ -23,10 +23,15 @@ bool LedManager::setColorSequence(String *body) {
 void LedManager::nextSequenceColor() {
     if(_sequenceColorShouldChange == SEQUENCE_COLOR_SHOULD_CHANGE) {
         toBufferToFromBuffer();
-        uint16_t r = json["data"][_currentSequenceColor][0];
-        uint16_t g = json["data"][_currentSequenceColor][1];
-        uint16_t b = json["data"][_currentSequenceColor][2];
-        setColorToToBuffer(r, g, b);
+        uint16_t r = ((uint16_t)json["data"][_currentSequenceColor][0]) * COLOR_DEPTH_MULTIPLY;
+        uint16_t g = ((uint16_t)json["data"][_currentSequenceColor][1]) * COLOR_DEPTH_MULTIPLY;
+        uint16_t b = ((uint16_t)json["data"][_currentSequenceColor][2]) * COLOR_DEPTH_MULTIPLY;
+#ifdef IS_RGBW 
+        uint16_t w = ((uint16_t)json["data"][_currentSequenceColor][3]) * COLOR_DEPTH_MULTIPLY;
+        setColorToToBuffer(r, g, b, w);
+#else
+        setColorToToBuffer(r, g, b, 0);
+#endif
         _currentSequenceColor ++;
         _currentSequenceColor %= _numSequenceColors;
         _sequenceColorShouldChange = SEQUENCE_COLOR_JUST_CHANGED;

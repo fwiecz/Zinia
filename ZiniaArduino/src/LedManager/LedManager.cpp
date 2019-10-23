@@ -7,8 +7,14 @@ LedManager::LedManager(int numLeds, float singleColorSpeed)
     _to = new uint16_t*[numLeds];
     _singleColorSpeed = singleColorSpeed;
     for(int i=0; i<numLeds; i++) {
+#ifdef IS_RGBW
+        _from[i] = new uint16_t[4];
+        _to[i] = new uint16_t[4];
+#else
         _from[i] = new uint16_t[3];
         _to[i] = new uint16_t[3];
+#endif
+        
     }
     _timeStep = 0.0;
     _fromBrightness = 1.0;
@@ -49,6 +55,15 @@ uint16_t LedManager::getBlueRaw(int pos) {
     return lerp(_from[pos][2], _to[pos][2], _timeStep);
 }
 
+// white should not be influenced by rgb brightness
+uint16_t LedManager::getWhite(int pos) {
+    return (uint16_t)(getWhiteRaw(pos));
+}
+
+uint16_t LedManager::getWhiteRaw(int pos) {
+    return lerp(_from[pos][3], _to[pos][3], _timeStep);
+}
+
 void LedManager::setSpeed(float speed) {
     _speed = speed;
 }
@@ -58,6 +73,9 @@ void LedManager::currentStateToFromBuffer() {
         _from[i][0] = getRedRaw(i);
         _from[i][1] = getGreenRaw(i);
         _from[i][2] = getBlueRaw(i);
+#ifdef IS_RGBW
+        _from[i][3] = getWhiteRaw(i);
+#endif
     }
 }
 
@@ -66,6 +84,9 @@ void LedManager::currentStateToToBuffer() {
         _to[i][0] = getRedRaw(i);
         _to[i][1] = getGreenRaw(i);
         _to[i][2] = getBlueRaw(i);
+#ifdef IS_RGBW
+        _to[i][3] = getWhiteRaw(i);
+#endif
     }
 }
 
@@ -74,22 +95,37 @@ void LedManager::toBufferToFromBuffer() {
         _from[i][0] = _to[i][0];
         _from[i][1] = _to[i][1];
         _from[i][2] = _to[i][2];
+#ifdef IS_RGBW
+        _from[i][3] = _to[i][3];
+#endif
     }
 }
 
-void LedManager::setColorToToBuffer(uint16_t r, uint16_t g, uint16_t b) {
+void LedManager::setColorToToBuffer(uint16_t r, uint16_t g, uint16_t b, uint16_t w) {
     for(int i=0; i<_numLeds; i++) {
         _to[i][0] = r;
         _to[i][1] = g;
         _to[i][2] = b;
+#ifdef IS_RGBW
+        _to[i][3] = w;
+#endif
     }
 }
 
-void LedManager::setSingleColor(uint16_t r, uint16_t g, uint16_t b) {
+void LedManager::setSingleColor(uint16_t r, uint16_t g, uint16_t b, uint16_t w) {
     _mode = MODE_SINGLE_COLOR;
     currentStateToFromBuffer();
-    setColorToToBuffer(r, g, b);
+    setColorToToBuffer(r, g, b, w);
     _timeStep = 0;
+}
+
+float LedManager::convertSpeed(int raw) {
+    if(raw > 0 && raw <= 1000) {
+        return (float)raw * 0.000025;
+    }
+    else {
+        return 0.001;
+    }
 }
 
 void LedManager::computeBrightness() {

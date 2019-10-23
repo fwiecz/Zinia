@@ -3,6 +3,13 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 
+// Uncomment if you are using 4 channels (RGBW)
+// #define IS_RGBW
+
+// Multiplier for the color depth. The color depth received from the android app is 8 bit (256-steps).
+// If you use for example 12-bit (4096 steps) set the multiplier to 16 (256 * 16 = 4096).
+#define COLOR_DEPTH_MULTIPLY 1
+
 #define MODE_SINGLE_COLOR 1
 #define MODE_COLOR_SEQUENCE 2
 
@@ -29,6 +36,7 @@ class LedManager
         uint16_t getRedRaw(int pos);
         uint16_t getGreenRaw(int pos);
         uint16_t getBlueRaw(int pos);
+        uint16_t getWhiteRaw(int pos);
         void nextSequenceColor();
         void currentStateToFromBuffer();
         void currentStateToToBuffer();
@@ -41,18 +49,20 @@ class LedManager
         int _sequenceColorShouldChange;
         unsigned long _lastSequenceChangeMillis;
         StaticJsonDocument<JSON_SIZE> json;
-        void setColorToToBuffer(uint16_t r, uint16_t g, uint16_t b);
+        void setColorToToBuffer(uint16_t r, uint16_t g, uint16_t b, uint16_t w);
         void checkColorSequenceTime();
     public:
         LedManager(int numLeds, float singleColorSpeed);
         uint16_t getRed(int pos);
         uint16_t getGreen(int pos);
         uint16_t getBlue(int pos);
+        uint16_t getWhite(int pos);
         void update();
-        void setSingleColor(uint16_t r, uint16_t g, uint16_t b);
+        void setSingleColor(uint16_t r, uint16_t g, uint16_t b, uint16_t w);
         void setBrightness(float br);
         bool setColorSequence(String *body);
         void setSpeed(float speed);
+        float convertSpeed(int raw);
 };
 
 #endif

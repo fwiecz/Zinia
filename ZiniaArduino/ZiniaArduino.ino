@@ -1,3 +1,5 @@
+
+
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
@@ -67,11 +69,11 @@ int isOn = 1;
 // The current Mode of the device
 int mode = MODE_READY;
 
-// Positions: numLights: 12-15, isOn: 25
-char statusMsg[] = "{\"numLeds\":\"    \",\"isOn\": }";
+// Positions: numLights: 12-15, isOn: 25, isRGBW: 36
+char statusMsg[] = "{\"numLeds\":\"    \",\"isOn\": ,\"isRGBW\": }";
 
-// Positions: red: 6-9, green: 17-20, blue: 28-31
-char colorMsg[] = "{\"r\":\"    \",\"g\":\"    \",\"b\":\"    \"}";
+// Positions: red: 6-9, green: 17-20, blue: 28-31, white: 39-42
+char colorMsg[] = "{\"r\":\"    \",\"g\":\"    \",\"b\":\"    \",\"w\":\"    \"}";
 
 // Positions: brightness: 7-10
 char brightnessMsg[] = "{\"br\":\"    \"}";
@@ -98,6 +100,7 @@ void setup() {
 
   WiFi.mode(WIFI_STA);
   WiFi.setAutoReconnect(true);
+  ESP.wdtEnable(5000);
 
   // If no credentials given
   if(strcmp(ssid, empty) == 0 || strcmp(password, empty) == 0) {
@@ -114,20 +117,20 @@ void setup() {
 void sendStatus() {
   writeNumberTo(statusMsg, 12, 4, NUM_LEDS);
   statusMsg[25] = ascii(isOn);
+#ifdef IS_RGBW
+  statusMsg[36] = ascii(1);
+#else
+  statusMsg[36] = ascii(0);
+#endif
   server.send(200, applicationJson, statusMsg);
 }
 
 // Send the color if the device is in MODE_SINGLE_COLOR mode
 void sendColor() {
-  if(mode == MODE_SINGLE_COLOR) {
-    writeNumberTo(colorMsg, 6, 4, lastSingleColor[0]); // red
-    writeNumberTo(colorMsg, 17, 4, lastSingleColor[1]); // green
-    writeNumberTo(colorMsg, 28, 4, lastSingleColor[2]); // blue
-  } else {
-    writeNullTo(colorMsg, 6);
-    writeNullTo(colorMsg, 17);
-    writeNullTo(colorMsg, 28);
-  }
+  writeNumberTo(colorMsg, 6, 4, lastSingleColor[0] / COLOR_DEPTH_MULTIPLY); // red
+  writeNumberTo(colorMsg, 17, 4, lastSingleColor[1] / COLOR_DEPTH_MULTIPLY); // green
+  writeNumberTo(colorMsg, 28, 4, lastSingleColor[2] / COLOR_DEPTH_MULTIPLY); // blue
+  writeNumberTo(colorMsg, 39, 4, lastSingleColor[3] / COLOR_DEPTH_MULTIPLY); // white
   server.send(200, applicationJson, colorMsg);
 }
 
@@ -141,6 +144,7 @@ void sendBrighness() {
 void initializeServer() {
   server.on("/", sendStatus);
   server.on("/setSingleColor", setSingleColor);
+  server.on("/setWhite", setWhite);
   server.on("/setOn", setOn);
   server.on("/setOff", setOff);
   server.on("/getColor", sendColor);
@@ -156,7 +160,7 @@ void initializeServer() {
 // Sets isOn to 0 and turns the leds off (all channels to 0)
 void setOff() {
   isOn = 0;
-  manager.setSingleColor(0, 0, 0);
+  manager.setSingleColor(0, 0, 0, 0);
   sendEmptyResponse();
 }
 
@@ -164,7 +168,7 @@ void setOff() {
 void setOn() {
   isOn = 1;
   if(mode == MODE_SINGLE_COLOR) {
-    manager.setSingleColor(lastSingleColor[0], lastSingleColor[1], lastSingleColor[2]);
+    manager.setSingleColor(lastSingleColor[0], lastSingleColor[1], lastSingleColor[2], lastSingleColor[3]);
   }
   sendEmptyResponse();
 }
@@ -173,13 +177,28 @@ void setOn() {
 void setSingleColor() {
   if(isOn) {
     mode = MODE_SINGLE_COLOR;
-    lastSingleColor[0] = server.arg(F("r")).toInt();
-    lastSingleColor[1] = server.arg(F("g")).toInt();
-    lastSingleColor[2] = server.arg(F("b")).toInt();
-    manager.setSingleColor(lastSingleColor[0], lastSingleColor[1], lastSingleColor[2]);
+    lastSingleColor[0] = server.arg(F("r")).toInt() * COLOR_DEPTH_MULTIPLY;
+    lastSingleColor[1] = server.arg(F("g")).toInt() * COLOR_DEPTH_MULTIPLY;
+    lastSingleColor[2] = server.arg(F("b")).toInt() * COLOR_DEPTH_MULTIPLY;
+#ifdef IS_RGBW
+    lastSingleColor[3] = server.arg(F("w")).toInt() * COLOR_DEPTH_MULTIPLY;
+#endif
+    manager.setSingleColor(lastSingleColor[0], lastSingleColor[1], lastSingleColor[2], lastSingleColor[3]);
     sendColor();
     return;
   }
+  sendEmptyResponse();
+}
+
+void setWhite() {
+#ifdef IS_RGBW
+  if(isOn) {
+    lastSingleColor[3] = server.arg(F("w")).toInt() * COLOR_DEPTH_MULTIPLY;
+    manager.setSingleColor(lastSingleColor[0], lastSingleColor[1], lastSingleColor[2], lastSingleColor[3]);
+    sendColor();
+    return;
+  }
+#endif
   sendEmptyResponse();
 }
 
@@ -199,7 +218,8 @@ void setColorSequence() {
   if(isOn && server.hasArg(argBody)) {
     String body = server.arg(argBody);
     if(server.hasArg(argSpeed)) {
-      manager.setSpeed(server.arg(argSpeed).toFloat());
+      int speedRaw = server.arg(argSpeed).toInt();
+      manager.setSpeed(manager.convertSpeed(speedRaw));
     }
     bool success = manager.setColorSequence(&body);
     success ? sendEmptyResponse() : server.send(500, emptyJson);
@@ -277,6 +297,7 @@ void updatePixels() {
   for(int i=0; i<NUM_LEDS; i++) {
     pixel.setPixelColor(i, manager.getRed(i), manager.getGreen(i), manager.getBlue(i));
   }
+  yield();
   pixel.show();
 }
 
@@ -287,6 +308,7 @@ void loop() {
   else { // If connection established, handle requests
     digitalWrite(INFO_LED, HIGH);
     server.handleClient();
+    yield();
   }
 
   manager.update();
