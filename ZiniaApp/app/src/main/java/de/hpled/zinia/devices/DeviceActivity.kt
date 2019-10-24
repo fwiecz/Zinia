@@ -14,11 +14,9 @@ import de.hpled.zinia.devices.viewmodels.DeviceViewModel
 import de.hpled.zinia.entities.Device
 import de.hpled.zinia.colorpick.views.BrightnessWarmthView
 import de.hpled.zinia.colorpick.views.ColorPickerView
-import de.hpled.zinia.colorpick.views.OnBrightnessWarmthChangedListener
 import java.lang.IllegalStateException
 
-class DeviceActivity : AppCompatActivity(),
-    OnBrightnessWarmthChangedListener {
+class DeviceActivity : AppCompatActivity() {
     private lateinit var device: Device
     private lateinit var onOffSwitch: Switch
     private val database by lazy {
@@ -47,17 +45,16 @@ class DeviceActivity : AppCompatActivity(),
     override fun onStart() {
         super.onStart()
         colorPicker.onColorChangedListener += viewmodel.colorSendingService
-        viewmodel.deviceColor.observe(this, Observer { colorPicker.setThumbToColor(it) })
+        viewmodel.deviceColor.observe(this, Observer {
+            colorPicker.setThumbToColor(it)
+            println(it)
+            brWarmSlider.setWarmth(it.w ?: 0)
+        })
         viewmodel.getDeviceColor(device)
         brWarmSlider.warmthIsEnabled = device.isRGBW
-        brWarmSlider.listener += this
         brWarmSlider.listener += viewmodel.brightnessSendingService
         viewmodel.deviceBrightness.observe(this, Observer { brWarmSlider.setBrightness(it) })
         viewmodel.getDeviceBrightness(device)
-    }
-
-    override fun onWarmthChanged(value: Int, final: Boolean) {
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -105,9 +102,5 @@ class DeviceActivity : AppCompatActivity(),
 
     companion object {
         const val INTENT_DEVICE = "DEVICE"
-    }
-
-    override fun onBrightnessChanged(value: Int, final: Boolean) {
-        // Handled by BrightnessSendingService
     }
 }

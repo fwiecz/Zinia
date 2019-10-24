@@ -1,5 +1,6 @@
 package de.hpled.zinia.moods.viewmodels
 
+import android.graphics.Color
 import androidx.lifecycle.ViewModel
 import de.hpled.zinia.entities.Device
 import de.hpled.zinia.entities.MoodTask
@@ -19,6 +20,12 @@ class MoodsFragmentViewModel : ViewModel() {
                 if (it.color != null) {
                     val job = ColorSendingService.sendSingleColor(it.device!!.ipAddress, it.color!!)
                     executor.execute(job)
+                    if(it.device!!.isRGBW) {
+                        val jobW = BrightnessSendingService.sendSingleWarmth(
+                            it.device!!.ipAddress,
+                            Color.alpha(it.color!!))
+                        executor.execute(jobW)
+                    }
                 }
                 val br = BrightnessSendingService.sendSingleBrightness(
                     it.device!!.ipAddress,

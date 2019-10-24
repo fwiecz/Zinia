@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.graphics.alpha
+import androidx.core.graphics.red
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
@@ -73,6 +75,7 @@ class PickMoodTaskActivity : AppCompatActivity(),
         colorSendingService.targetIP = moodTask.device?.ipAddress ?: ""
         brightnessSendingService.targetIP = moodTask.device?.ipAddress ?: ""
         pagerAdapter.colorPickerFragment.apply {
+            warmthIsEnabled = moodTask.device?.isRGBW == true
             onColorChangedListener.apply {
                 clear()
                 add(colorSendingService)
@@ -86,6 +89,9 @@ class PickMoodTaskActivity : AppCompatActivity(),
             handler.post { // Wait for fragment to be initialized
                 setThumbToColor(ColorDTO.from(moodTask.color ?: Color.WHITE))
                 setBrightness(moodTask.brightness)
+                if(moodTask.device!!.isRGBW) {
+                    setWarmth(moodTask.color?.alpha ?: 0)
+                }
             }
         }
         pagerAdapter.showPickFragment.apply {
@@ -107,7 +113,9 @@ class PickMoodTaskActivity : AppCompatActivity(),
 
     override fun onColorChanged(color: Int, final: Boolean) {
         if (final) {
-            moodTask.color = color
+            moodTask.color = color.let {
+                Color.argb(moodTask.color?.alpha ?: 0, Color.red(it), Color.green(it),Color.blue(it))
+            }
         }
     }
 
@@ -116,7 +124,11 @@ class PickMoodTaskActivity : AppCompatActivity(),
     }
 
     override fun onWarmthChanged(value: Int, final: Boolean) {
-
+        if(final) {
+            moodTask.color = moodTask.color?.let {
+                Color.argb(value, Color.red(it), Color.green(it),Color.blue(it))
+            }
+        }
     }
 
     override fun onShowPick(show: Show) {

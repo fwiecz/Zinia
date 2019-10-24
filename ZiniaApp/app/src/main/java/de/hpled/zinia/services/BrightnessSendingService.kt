@@ -11,14 +11,15 @@ class BrightnessSendingService(private val sendingFrequency: Long) :
 
     private val executor = ScheduledThreadPoolExecutor(1)
     private var targetBrightness = 255
+    private var targetWarmth = 0
     private var isExecuting = false
     private var scheduledFuture: ScheduledFuture<*>? = null
     var targetIP: String = ""
 
-    fun startExecutor() {
+    fun startExecutor(runnable: Runnable) {
         isExecuting = true
         scheduledFuture = executor.scheduleWithFixedDelay(
-            executorRunnable,
+            runnable,
             sendingFrequency,
             sendingFrequency,
             TimeUnit.MILLISECONDS
@@ -30,8 +31,12 @@ class BrightnessSendingService(private val sendingFrequency: Long) :
         isExecuting = false
     }
 
-    private val executorRunnable = Runnable {
+    private val executorRunnableBrightness = Runnable {
         sendSingleBrightness(targetIP, targetBrightness).run()
+    }
+
+    private val executorRunnableWarmth = Runnable {
+        sendSingleWarmth(targetIP, targetWarmth).run()
     }
 
     override fun onBrightnessChanged(value: Int, final: Boolean) {
@@ -40,7 +45,17 @@ class BrightnessSendingService(private val sendingFrequency: Long) :
             stopExecutor()
             executor.execute(sendSingleBrightness(targetIP, value))
         } else if(!isExecuting) {
-            startExecutor()
+            startExecutor(executorRunnableBrightness)
+        }
+    }
+
+    override fun onWarmthChanged(value: Int, final: Boolean) {
+        targetWarmth = value
+        if(final) {
+            stopExecutor()
+            executor.execute(sendSingleWarmth(targetIP, value))
+        } else if(!isExecuting) {
+            startExecutor(executorRunnableWarmth)
         }
     }
 
@@ -49,9 +64,10 @@ class BrightnessSendingService(private val sendingFrequency: Long) :
             val url = URL("http://$ip/setBrightness?br=$value")
             return HttpRequestService.requestToRunnable<Any>(url, {}, {}, Any::class.java)
         }
-    }
 
-    override fun onWarmthChanged(value: Int, final: Boolean) {
-        // Warmth should be send via [ColorSendingService]
+        fun sendSingleWarmth(ip: String, value: Int) : Runnable{
+            val url = URL("http://$ip/setWhite?w=$value")
+            return HttpRequestService.requestToRunnable<Any>(url, {}, {}, Any::class.java)
+        }
     }
 }

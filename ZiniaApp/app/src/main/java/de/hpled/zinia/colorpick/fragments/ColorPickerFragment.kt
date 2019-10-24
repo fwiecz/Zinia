@@ -36,6 +36,11 @@ class ColorPickerFragment : Fragment(), OnColorChangedListener,
     }
     val onColorChangedListener = mutableSetOf<OnColorChangedListener>()
     val onBrightnessWarmthChangedListener = mutableSetOf<OnBrightnessWarmthChangedListener>()
+    var warmthIsEnabled = false
+        set(value) {
+            field = value
+            slider.warmthIsEnabled = value
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,9 +55,7 @@ class ColorPickerFragment : Fragment(), OnColorChangedListener,
     }
 
     fun setThumbToColor(color: Int) {
-        colorPicker.setThumbToColor(
-            ColorDTO(Color.red(color), Color.green(color), Color.blue(color))
-        )
+        colorPicker.setThumbToColor(ColorDTO.from(color))
     }
 
     fun setBrightness(value: Int) {

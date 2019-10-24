@@ -7,6 +7,9 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import de.hpled.zinia.R
 import de.hpled.zinia.entities.MoodTask
 
@@ -42,7 +45,8 @@ class MoodTaskView(c: Context, attr: AttributeSet? = null) : LinearLayout(c, att
 
         if (moodTask != null) {
             title.text = moodTask.device?.name ?: "-Error-"
-            colorView.drawable.setColorFilter(moodTask.color ?: Color.BLACK, PorterDuff.Mode.SRC)
+            val c = moodTask.color?.let { Color.rgb(it.red, it.green, it.blue) }
+            colorView.drawable.setColorFilter(c ?: Color.BLACK, PorterDuff.Mode.SRC)
             colorView.background.setTint(context.resources.getColor(R.color.colorMoodTaskCircleBackground))
         }
     }
