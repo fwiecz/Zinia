@@ -13,7 +13,7 @@ import de.hpled.zinia.shows.interfaces.Show
 import de.hpled.zinia.shows.interfaces.ShowType
 
 @Database(entities = arrayOf(Device::class, Mood::class, MoodTask::class, ColorSequence::class),
-    version = 10)
+    version = 11)
 abstract class ApplicationDB : RoomDatabase() {
     abstract fun deviceDao(): DeviceDao
     abstract fun moodDao(): MoodDao
@@ -46,9 +46,8 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
             val moods = moodDao.findAll().map { getMoodWithTasks(it.id) }
             moods.forEach { mood ->
                 val tasks = mood.tasks
-                var tasksToDelete = listOf<MoodTask>()
                 if(tasks != null) {
-                    tasksToDelete = tasks.filter { it.deviceId == device.id }
+                    val tasksToDelete = tasks.filter { it.deviceId == device.id }
                     tasksToDelete.forEach {
                         deleteMoodTask(it.id)
                     }

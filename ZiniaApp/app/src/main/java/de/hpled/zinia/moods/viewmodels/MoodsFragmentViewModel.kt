@@ -7,6 +7,7 @@ import de.hpled.zinia.entities.MoodTask
 import de.hpled.zinia.services.BrightnessSendingService
 import de.hpled.zinia.services.ColorSendingService
 import de.hpled.zinia.services.HttpRequestService
+import de.hpled.zinia.xcolor.XcolorSendingService
 import java.net.URL
 import java.util.concurrent.ScheduledThreadPoolExecutor
 
@@ -17,23 +18,9 @@ class MoodsFragmentViewModel : ViewModel() {
     fun playMoodTasks(moodTasks: List<MoodTask>) {
         moodTasks.forEach {
             val afterOn = Runnable {
-                if (it.color != null) {
-                    val job = ColorSendingService.sendSingleColor(it.device!!.ipAddress, it.color!!)
-                    executor.execute(job)
-                    if(it.device!!.isRGBW) {
-                        val jobW = BrightnessSendingService.sendSingleWarmth(
-                            it.device!!.ipAddress,
-                            Color.alpha(it.color!!))
-                        executor.execute(jobW)
-                    }
-                }
-                val br = BrightnessSendingService.sendSingleBrightness(
-                    it.device!!.ipAddress,
-                    it.brightness
-                )
-                executor.execute(br)
+                val job = XcolorSendingService.sendSingleXcolor(it.device!!.ipAddress, it.color)
+                executor.execute(job)
             }
-
             turnDeviceOn(it.device!!, afterOn)
         }
     }

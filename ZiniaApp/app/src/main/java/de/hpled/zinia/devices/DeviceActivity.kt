@@ -12,7 +12,7 @@ import de.hpled.zinia.R
 import de.hpled.zinia.devices.fragments.DeleteDeviceDialogFragment
 import de.hpled.zinia.devices.viewmodels.DeviceViewModel
 import de.hpled.zinia.entities.Device
-import de.hpled.zinia.colorpick.views.BrightnessWarmthView
+import de.hpled.zinia.colorpick.views.BrightnessWhiteView
 import de.hpled.zinia.colorpick.views.ColorPickerView
 import java.lang.IllegalStateException
 
@@ -29,7 +29,7 @@ class DeviceActivity : AppCompatActivity() {
         findViewById<ColorPickerView>(R.id.deviceColorPickerView)
     }
     private val brWarmSlider by lazy {
-        findViewById<BrightnessWarmthView>(R.id.deviceBrightnessWarmth)
+        findViewById<BrightnessWhiteView>(R.id.deviceBrightnessWarmth)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +51,7 @@ class DeviceActivity : AppCompatActivity() {
             brWarmSlider.setWarmth(it.w ?: 0)
         })
         viewmodel.getDeviceColor(device)
-        brWarmSlider.warmthIsEnabled = device.isRGBW
+        brWarmSlider.whiteIsEnabled = device.isRGBW
         brWarmSlider.listener += viewmodel.brightnessSendingService
         viewmodel.deviceBrightness.observe(this, Observer { brWarmSlider.setBrightness(it) })
         viewmodel.getDeviceBrightness(device)

@@ -19,13 +19,15 @@ import de.hpled.zinia.colorsequence.views.OnSegmentClickListener
 import de.hpled.zinia.colorsequence.views.StaticViewPager
 import de.hpled.zinia.entities.ColorSequence
 import de.hpled.zinia.colorpick.fragments.ColorPickerFragment
-import de.hpled.zinia.colorpick.views.OnBrightnessWarmthChangedListener
+import de.hpled.zinia.colorpick.fragments.OnXcolorChangeListener
+import de.hpled.zinia.colorpick.views.OnBrightnessWhiteChangedListener
 import de.hpled.zinia.colorsequence.fragments.OnPreviewControllerActionListener
 import de.hpled.zinia.colorsequence.fragments.PreviewControllerFragment
 import de.hpled.zinia.services.ColorSendingService
 import de.hpled.zinia.colorpick.views.OnColorChangedListener
 import de.hpled.zinia.services.BrightnessSendingService
 import de.hpled.zinia.xcolor.Xcolor
+import de.hpled.zinia.xcolor.XcolorSendingService
 import java.util.concurrent.ScheduledThreadPoolExecutor
 
 class ColorSequenceEditorActivityViewModel : ViewModel() {
@@ -34,6 +36,7 @@ class ColorSequenceEditorActivityViewModel : ViewModel() {
     val executor = ScheduledThreadPoolExecutor(1)
     val colorSendingService = ColorSendingService(SENDING_FREQ)
     val brightnessSendingService = BrightnessSendingService(SENDING_FREQ)
+    var device: Device? = null
 
     companion object {
         private const val SENDING_FREQ = 300L
@@ -42,7 +45,7 @@ class ColorSequenceEditorActivityViewModel : ViewModel() {
 
 class ColorSequenceEditorActivity : AppCompatActivity(),
     OnPreviewControllerActionListener,
-    OnSegmentClickListener, OnColorChangedListener, OnBrightnessWarmthChangedListener {
+    OnSegmentClickListener, OnXcolorChangeListener {
 
     private val viewmodel by lazy {
         ViewModelProviders.of(this).get(ColorSequenceEditorActivityViewModel::class.java)
@@ -111,13 +114,15 @@ class ColorSequenceEditorActivity : AppCompatActivity(),
             }
             colorPicker.onColorChangedListener.apply {
                 clear()
-                add(this@ColorSequenceEditorActivity)
                 add(viewmodel.colorSendingService)
             }
             colorPicker.onBrightnessWarmthChangedListener.apply {
                 clear()
-                add(this@ColorSequenceEditorActivity)
                 add(viewmodel.brightnessSendingService)
+            }
+            colorPicker.onXcolorChangeListener.apply {
+                clear()
+                add(this@ColorSequenceEditorActivity)
             }
         }
     }
@@ -130,6 +135,7 @@ class ColorSequenceEditorActivity : AppCompatActivity(),
     override fun onPreviewStop(device: Device) {}
 
     override fun onDeviceChanged(device: Device?) {
+        viewmodel.device = device
         device?.ipAddress?.apply {
             viewmodel.colorSendingService.targetIP = this
             viewmodel.brightnessSendingService.targetIP = this
@@ -145,21 +151,9 @@ class ColorSequenceEditorActivity : AppCompatActivity(),
         sequence.getColors()
     )
 
-    override fun onColorChanged(color: Int, final: Boolean) {
+    override fun onXcolorChange(xcolor: Xcolor, type: OnXcolorChangeListener.Type, final: Boolean) {
         if(final) {
-            viewmodel.editColor = viewmodel.editColor.copy().apply { setRgb(color) }
-        }
-    }
-
-    override fun onBrightnessChanged(value: Int, final: Boolean) {
-        if(final) {
-            viewmodel.editColor = viewmodel.editColor.copy().apply { brightness = value }
-        }
-    }
-
-    override fun onWarmthChanged(value: Int, final: Boolean) {
-        if(final) {
-            viewmodel.editColor = viewmodel.editColor.copy().apply { w = value }
+            viewmodel.editColor = xcolor
         }
     }
 
@@ -171,6 +165,11 @@ class ColorSequenceEditorActivity : AppCompatActivity(),
         colorPicker.setBrightness(color.brightness)
         handler.post {
             pager.currentItem = 1
+        }
+        AsyncTask.execute {
+            viewmodel.device?.let {
+                XcolorSendingService.sendSingleXcolor(it.ipAddress, color).run()
+            }
         }
     }
 

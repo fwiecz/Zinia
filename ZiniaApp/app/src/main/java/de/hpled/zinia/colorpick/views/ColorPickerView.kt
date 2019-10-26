@@ -6,6 +6,7 @@ import android.os.Handler
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import de.hpled.zinia.R
@@ -29,30 +30,30 @@ class ColorPickerView(c: Context, attr: AttributeSet) : RelativeLayout(c, attr) 
     private val thumb by lazy { findViewById<View>(R.id.colorWheelThumb) }
     private val wheel by lazy { findViewById<ColorWheelView>(R.id.colorWheelView) }
     private val mHandler = Handler()
-    private lateinit var center : Vector2D
+    private lateinit var center: Vector2D
     private val angleReference = Vector2D(0.0, 1.0)
     private var radius: Double = 0.0
     val onColorChangedListener = mutableListOf<OnColorChangedListener>()
 
     private val onTouchListener = OnTouchListener { view, event ->
-            when(event?.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    thumb.visibility = View.VISIBLE
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    val v = checkThumbsStaysInBounds(event.x.toDouble(), event.y.toDouble())
-                    thumb.x = v.x.toFloat() - (thumb.width / 2f)
-                    thumb.y = v.y.toFloat() - (thumb.height / 2f)
-                    informListener(v.x, v.y, false)
-                }
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    val v = checkThumbsStaysInBounds(event.x.toDouble(), event.y.toDouble())
-                    informListener(v.x, v.y, true)
-                }
-
+        when (event?.action) {
+            MotionEvent.ACTION_DOWN -> {
+                thumb.visibility = View.VISIBLE
             }
-            view?.performClick()
-            true
+            MotionEvent.ACTION_MOVE -> {
+                val v = checkThumbsStaysInBounds(event.x.toDouble(), event.y.toDouble())
+                thumb.x = v.x.toFloat() - (thumb.width / 2f)
+                thumb.y = v.y.toFloat() - (thumb.height / 2f)
+                informListener(v.x, v.y, false)
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                val v = checkThumbsStaysInBounds(event.x.toDouble(), event.y.toDouble())
+                informListener(v.x, v.y, true)
+            }
+
+        }
+        view?.performClick()
+        true
     }
 
     init {
@@ -63,21 +64,25 @@ class ColorPickerView(c: Context, attr: AttributeSet) : RelativeLayout(c, attr) 
         updateMetrics()
     }
 
+    fun getColor(x: Double, y: Double): Int {
+        val v = Vector2D(x, y).subtract(center)
+        val angleRaw = acos(v.dotProduct(angleReference) / (v.norm * angleReference.norm))
+        val angle = (Math.toDegrees(angleRaw) * -Math.signum(v.x)) + 180
+        val length = v.norm / radius
+        return Color.HSVToColor(floatArrayOf(angle.toFloat(), length.toFloat(), 1f))
+    }
+
+    fun getColor() : Int {
+        return getColor(thumb.x.toDouble() - (thumb.width / 2.0),
+            thumb.y.toDouble() - (thumb.height/ 2.0))
+    }
+
     fun updateMetrics() {
         mHandler.post {
             center = Vector2D(frame.width / 2.0, frame.height / 2.0)
             radius = min(frame.width / 2.0, frame.height / 2.0)
             wheel.updateMetrics()
             invalidate()
-        }
-    }
-
-    private fun checkThumbsStaysInBounds(x: Double, y: Double) : Vector2D {
-        val v = Vector2D(x, y).subtract(center)
-        if(v.norm > radius) {
-            return v.normalize().scalarMultiply(radius).add(center)
-        } else {
-            return Vector2D(x, y)
         }
     }
 
@@ -94,14 +99,27 @@ class ColorPickerView(c: Context, attr: AttributeSet) : RelativeLayout(c, attr) 
         }
     }
 
-    private fun informListener(x: Double, y: Double, final: Boolean) {
+    private fun checkThumbsStaysInBounds(x: Double, y: Double): Vector2D {
         val v = Vector2D(x, y).subtract(center)
-        val angleRaw = acos(v.dotProduct(angleReference) / (v.norm * angleReference.norm))
-        val angle = (Math.toDegrees(angleRaw) * -Math.signum(v.x)) + 180
-        val length = v.norm / radius
-        val color = Color.HSVToColor(floatArrayOf(angle.toFloat(), length.toFloat(), 1f))
+        if (v.norm > radius) {
+            return v.normalize().scalarMultiply(radius).add(center)
+        } else {
+            return Vector2D(x, y)
+        }
+    }
+
+    fun updateThumb() {
+        val v = checkThumbsStaysInBounds(
+            thumb.x.toDouble() - (thumb.width / 2.0),
+            thumb.y.toDouble() - (thumb.height / 2.0)
+        )
+        thumb.x = v.x.toFloat() - (thumb.width / 2f)
+        thumb.y = v.y.toFloat() - (thumb.height / 2f)
+    }
+
+    private fun informListener(x: Double, y: Double, final: Boolean) {
         onColorChangedListener.forEach {
-            it.onColorChanged(color, final)
+            it.onColorChanged(getColor(x, y), final)
         }
     }
 }

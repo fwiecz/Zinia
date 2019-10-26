@@ -7,29 +7,31 @@ import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import androidx.core.graphics.alpha
-import androidx.core.graphics.red
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import de.hpled.zinia.ApplicationDbViewModel
 import de.hpled.zinia.R
+import de.hpled.zinia.colorpick.fragments.OnXcolorChangeListener
 import de.hpled.zinia.dto.ColorDTO
 import de.hpled.zinia.entities.MoodTask
 import de.hpled.zinia.moods.adapter.PickMoodTaskPagerAdapter
 import de.hpled.zinia.services.BrightnessSendingService
 import de.hpled.zinia.services.ColorSendingService
-import de.hpled.zinia.colorpick.views.OnBrightnessWarmthChangedListener
+import de.hpled.zinia.colorpick.views.OnBrightnessWhiteChangedListener
 import de.hpled.zinia.colorpick.views.OnColorChangedListener
 import de.hpled.zinia.shows.fragments.OnShowPickListener
 import de.hpled.zinia.shows.interfaces.Show
+import de.hpled.zinia.xcolor.Xcolor
+import de.hpled.zinia.xcolor.XcolorSendingService
 
 class PickMoodTaskActivity : AppCompatActivity(),
-    OnColorChangedListener,
-    OnBrightnessWarmthChangedListener,
+    OnXcolorChangeListener,
     OnShowPickListener {
     private val handler = Handler()
     private val database by lazy {
@@ -57,6 +59,7 @@ class PickMoodTaskActivity : AppCompatActivity(),
         AsyncTask.execute {
             val device = database.deviceDao.findById(task.deviceId)
             moodTask = task.apply { this.device = device }
+            XcolorSendingService.sendSingleXcolor(device.ipAddress, moodTask.color).run()
             handler.post {
                 supportActionBar?.setTitle(
                     getString(
@@ -75,23 +78,23 @@ class PickMoodTaskActivity : AppCompatActivity(),
         colorSendingService.targetIP = moodTask.device?.ipAddress ?: ""
         brightnessSendingService.targetIP = moodTask.device?.ipAddress ?: ""
         pagerAdapter.colorPickerFragment.apply {
-            warmthIsEnabled = moodTask.device?.isRGBW == true
             onColorChangedListener.apply {
                 clear()
                 add(colorSendingService)
-                add(this@PickMoodTaskActivity)
             }
             onBrightnessWarmthChangedListener.apply {
                 clear()
                 add(brightnessSendingService)
+            }
+            onXcolorChangeListener.apply {
+                clear()
                 add(this@PickMoodTaskActivity)
             }
             handler.post { // Wait for fragment to be initialized
-                setThumbToColor(ColorDTO.from(moodTask.color ?: Color.WHITE))
-                setBrightness(moodTask.brightness)
-                if(moodTask.device!!.isRGBW) {
-                    setWarmth(moodTask.color?.alpha ?: 0)
-                }
+                warmthIsEnabled = moodTask.device?.isRGBW == true
+                setThumbToColor(moodTask.color.toRgb())
+                setBrightness(moodTask.color.brightness)
+                setWarmth(moodTask.color.w)
             }
         }
         pagerAdapter.showPickFragment.apply {
@@ -111,24 +114,8 @@ class PickMoodTaskActivity : AppCompatActivity(),
         finish()
     }
 
-    override fun onColorChanged(color: Int, final: Boolean) {
-        if (final) {
-            moodTask.color = color.let {
-                Color.argb(moodTask.color?.alpha ?: 0, Color.red(it), Color.green(it),Color.blue(it))
-            }
-        }
-    }
-
-    override fun onBrightnessChanged(value: Int, final: Boolean) {
-        moodTask.brightness = value
-    }
-
-    override fun onWarmthChanged(value: Int, final: Boolean) {
-        if(final) {
-            moodTask.color = moodTask.color?.let {
-                Color.argb(value, Color.red(it), Color.green(it),Color.blue(it))
-            }
-        }
+    override fun onXcolorChange(xcolor: Xcolor, type: OnXcolorChangeListener.Type, final: Boolean) {
+        moodTask.color = xcolor
     }
 
     override fun onShowPick(show: Show) {

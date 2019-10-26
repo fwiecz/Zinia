@@ -45,8 +45,8 @@ class MoodTaskView(c: Context, attr: AttributeSet? = null) : LinearLayout(c, att
 
         if (moodTask != null) {
             title.text = moodTask.device?.name ?: "-Error-"
-            val c = moodTask.color?.let { Color.rgb(it.red, it.green, it.blue) }
-            colorView.drawable.setColorFilter(c ?: Color.BLACK, PorterDuff.Mode.SRC)
+            val c = moodTask.color.toRgb()
+            colorView.drawable.setColorFilter(c, PorterDuff.Mode.SRC)
             colorView.background.setTint(context.resources.getColor(R.color.colorMoodTaskCircleBackground))
         }
     }

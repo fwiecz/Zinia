@@ -27,7 +27,7 @@
             android:visibility="gone" />
     </FrameLayout>
 
-    <de.hpled.zinia.colorpick.views.BrightnessWarmthView
+    <de.hpled.zinia.colorpick.views.BrightnessWhiteView
         android:id="@+id/brightnessWarmthView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

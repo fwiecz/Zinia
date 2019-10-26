@@ -2,18 +2,19 @@ package de.hpled.zinia.entities
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import de.hpled.zinia.xcolor.Xcolor
 import java.io.Serializable
 
 /**
  * Contains what the given devices should perform during its respective [Mood].
  */
+@TypeConverters(XcolorConverter::class)
 @Entity
 data class MoodTask (
     @PrimaryKey(autoGenerate = true)
     var id: Long,
     var deviceId: Long,
-    var color: Int?,
-    var brightness: Int
+    var color: Xcolor
 ) : Serializable {
     // When accessing MoodTask, also access the device and store it here
     @Ignore

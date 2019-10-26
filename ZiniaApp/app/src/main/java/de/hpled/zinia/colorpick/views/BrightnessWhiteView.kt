@@ -7,22 +7,22 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import de.hpled.zinia.R
 
-interface OnBrightnessWarmthChangedListener {
+interface OnBrightnessWhiteChangedListener {
     fun onBrightnessChanged(value: Int, final: Boolean)
-    fun onWarmthChanged(value: Int, final: Boolean)
+    fun onWhiteChanged(value: Int, final: Boolean)
 }
 
-class BrightnessWarmthView(c: Context, attr: AttributeSet?) : LinearLayout(c, attr) {
+class BrightnessWhiteView(c: Context, attr: AttributeSet?) : LinearLayout(c, attr) {
 
-    private val warmth by lazy { findViewById<LinearLayout>(R.id.warmthLayout) }
+    private val whiteLayout by lazy { findViewById<LinearLayout>(R.id.warmthLayout) }
     private val brSlider by lazy { findViewById<SeekBar>(R.id.brightnessSlider) }
-    private val warmSlider by lazy { findViewById<SeekBar>(R.id.warmthSlider) }
-    val listener : MutableSet<OnBrightnessWarmthChangedListener> = mutableSetOf()
+    private val whiteSlider by lazy { findViewById<SeekBar>(R.id.warmthSlider) }
+    val listener : MutableSet<OnBrightnessWhiteChangedListener> = mutableSetOf()
 
-    var warmthIsEnabled = false
+    var whiteIsEnabled = false
         set(value) {
             field = value
-            warmth.visibility = if(value)View.VISIBLE else View.GONE
+            whiteLayout.visibility = if(value)View.VISIBLE else View.GONE
         }
 
     private val brightnesSeekBarListener = object : SeekBar.OnSeekBarChangeListener {
@@ -41,20 +41,24 @@ class BrightnessWarmthView(c: Context, attr: AttributeSet?) : LinearLayout(c, at
         override fun onStartTrackingTouch(seekBar: SeekBar?) {}
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
             if(fromUser) {
-                listener.forEach { it.onWarmthChanged(progress, false) }
+                listener.forEach { it.onWhiteChanged(progress, false) }
             }
         }
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
-            listener.forEach { it.onWarmthChanged(warmSlider.progress, true) }
+            listener.forEach { it.onWhiteChanged(whiteSlider.progress, true) }
         }
     }
+
+    fun getWhite() = whiteSlider.progress
+
+    fun getBrightness() = brSlider.progress
 
     fun setBrightness(value: Int) {
         brSlider.progress = value
     }
 
     fun setWarmth(value: Int) {
-        warmSlider.progress = value
+        whiteSlider.progress = value
     }
 
     init {
@@ -64,7 +68,7 @@ class BrightnessWarmthView(c: Context, attr: AttributeSet?) : LinearLayout(c, at
             progress = max
             setOnSeekBarChangeListener(brightnesSeekBarListener)
         }
-        warmSlider.apply {
+        whiteSlider.apply {
             max = resources.getInteger(R.integer.maxWarmth)
             progress = 0
             setOnSeekBarChangeListener(warmthSeekBarListener)

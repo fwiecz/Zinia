@@ -25,6 +25,7 @@ import de.hpled.zinia.devices.fragments.OnDevicePickListener
 import de.hpled.zinia.moods.viewmodels.MoodEditorViewModel
 import de.hpled.zinia.moods.views.MoodTaskView
 import de.hpled.zinia.moods.views.MoodTaskViewAdapter
+import de.hpled.zinia.xcolor.Xcolor
 
 class MoodEditorActivity : AppCompatActivity(),
     OnDevicePickListener {
@@ -133,12 +134,7 @@ class MoodEditorActivity : AppCompatActivity(),
     }
 
     override fun onDevicePicked(device: Device) {
-        val moodTask = MoodTask(
-            0,
-            device.id,
-            Color.WHITE,
-            resources.getInteger(R.integer.maxBrightness)
-        ).apply { this.device = device }
+        val moodTask = MoodTask(0, device.id, Xcolor.random()).apply { this.device = device }
         viewmodel.moodTasks.value = (viewmodel.moodTasks.value ?: listOf()) + moodTask
         pickMoodTask(moodTask)
     }
@@ -148,6 +144,7 @@ class MoodEditorActivity : AppCompatActivity(),
             REQUEST_PICK_MOODTASK -> if (resultCode == Activity.RESULT_OK && data != null) {
                 val task =
                     data.getSerializableExtra(PickMoodTaskActivity.INTENT_MOODTASK) as MoodTask
+                println(task)
                 AsyncTask.execute {
                     task.device = database.deviceDao.findById(task.deviceId)
                     handler.post { onMoodTaskHasChanged(task) }

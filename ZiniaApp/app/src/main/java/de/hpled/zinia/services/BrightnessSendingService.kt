@@ -1,13 +1,13 @@
 package de.hpled.zinia.services
 
-import de.hpled.zinia.colorpick.views.OnBrightnessWarmthChangedListener
+import de.hpled.zinia.colorpick.views.OnBrightnessWhiteChangedListener
 import java.net.URL
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
 class BrightnessSendingService(private val sendingFrequency: Long) :
-    OnBrightnessWarmthChangedListener {
+    OnBrightnessWhiteChangedListener {
 
     private val executor = ScheduledThreadPoolExecutor(1)
     private var targetBrightness = 255
@@ -49,7 +49,7 @@ class BrightnessSendingService(private val sendingFrequency: Long) :
         }
     }
 
-    override fun onWarmthChanged(value: Int, final: Boolean) {
+    override fun onWhiteChanged(value: Int, final: Boolean) {
         targetWarmth = value
         if(final) {
             stopExecutor()
