@@ -1,6 +1,7 @@
 package de.hpled.zinia.dto
 
 import android.graphics.Color
+import de.hpled.zinia.xcolor.Xcolor
 
 data class ColorDTO (
     var r: Int?,
@@ -18,6 +19,10 @@ data class ColorDTO (
 
     fun toRGBW() : Int {
         return Color.argb(w ?: 0, r ?: 0, g ?: 0, b ?: 0)
+    }
+
+    fun toXcolor() : Xcolor {
+        return Xcolor(r ?: 0, g ?: 0, b ?: 0, w ?: 0)
     }
 
     /**

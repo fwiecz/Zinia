@@ -8,10 +8,11 @@ import de.hpled.zinia.dto.ColorSequenceDTO
 import de.hpled.zinia.services.HttpRequestService
 import de.hpled.zinia.shows.interfaces.Show
 import de.hpled.zinia.shows.interfaces.ShowType
+import de.hpled.zinia.xcolor.XcolorList
 import java.net.URL
 
 
-@TypeConverters(IntArrayConverter::class)
+@TypeConverters(IntArrayConverter::class, XcolorListConverter::class)
 @Entity(tableName = "color_sequence")
 data class ColorSequence(
     @PrimaryKey(autoGenerate = true)
@@ -19,12 +20,10 @@ data class ColorSequence(
     val name: String,
     var transitionSpeed: Int,
     var keepingTimeMillis: Int,
-    var colors: IntArray
+    var colors: XcolorList
 ) : Show {
     fun toDTO() : ColorSequenceDTO {
-        return ColorSequenceDTO(colors.size, keepingTimeMillis, colors.map {
-            intArrayOf(Color.red(it), Color.green(it), Color.blue(it), Color.alpha(it))
-        })
+        return ColorSequenceDTO(colors.size, keepingTimeMillis, colors.map { it.toIntArray() })
     }
 
     override fun getSendingJob(ip: String) : Runnable {
@@ -36,7 +35,7 @@ data class ColorSequence(
     override fun getShowName() = name
     override fun getShowIconRes() = R.drawable.material_palette
     override fun getShowType() = ShowType.COLOR_SEQUENCE
-    override fun getBackgroundGradientValues() = colors
+    override fun getBackgroundGradientValues() = colors.map { it.toRgb() }.toIntArray()
 }
 
 @Dao

@@ -15,6 +15,7 @@ import android.view.View
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import de.hpled.zinia.xcolor.Xcolor
 import kotlin.math.min
 
 class ColorSequenceSegmentView(c: Context, private val innerRadius: Float) : View(c) {
@@ -25,7 +26,7 @@ class ColorSequenceSegmentView(c: Context, private val innerRadius: Float) : Vie
     private val rippleRect = RectF()
     private val outerRect = RectF()
     private val innerRect = RectF()
-    private var color = Color.WHITE
+    private var color = Xcolor()
     private var lastangle = 0f
     private var targetStart: Float = 0f
 
@@ -51,14 +52,12 @@ class ColorSequenceSegmentView(c: Context, private val innerRadius: Float) : Vie
         ripple.state = intArrayOf()
     }
 
-    fun setColor(col: Int) {
+    fun setColor(col: Xcolor) {
         color = col
-        ValueAnimator.ofArgb(shape.paint.color, col).apply {
+        ValueAnimator.ofArgb(shape.paint.color, col.toRgb()).apply {
             duration = 300
             addUpdateListener {
-                shape.paint.color = (it.animatedValue as Int).let {
-                    Color.rgb(it.red, it.green, it.blue)
-                }
+                shape.paint.color = it.animatedValue as Int
                 invalidate()
             }
             start()

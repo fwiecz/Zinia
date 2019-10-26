@@ -1,6 +1,5 @@
 package de.hpled.zinia.colorsequence
 
-import android.graphics.Color
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,10 +7,6 @@ import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.core.graphics.alpha
-import androidx.core.graphics.blue
-import androidx.core.graphics.green
-import androidx.core.graphics.red
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import de.hpled.zinia.ApplicationDbViewModel
@@ -30,11 +25,12 @@ import de.hpled.zinia.colorsequence.fragments.PreviewControllerFragment
 import de.hpled.zinia.services.ColorSendingService
 import de.hpled.zinia.colorpick.views.OnColorChangedListener
 import de.hpled.zinia.services.BrightnessSendingService
+import de.hpled.zinia.xcolor.Xcolor
 import java.util.concurrent.ScheduledThreadPoolExecutor
 
 class ColorSequenceEditorActivityViewModel : ViewModel() {
     var editIndex: Int? = null
-    var editColor: Int = Color.WHITE
+    var editColor: Xcolor = Xcolor()
     val executor = ScheduledThreadPoolExecutor(1)
     val colorSendingService = ColorSendingService(SENDING_FREQ)
     val brightnessSendingService = BrightnessSendingService(SENDING_FREQ)
@@ -146,35 +142,33 @@ class ColorSequenceEditorActivity : AppCompatActivity(),
         editorPrefs.getName(),
         editorPrefs.getSpeed(),
         editorPrefs.getKeep(),
-        sequence.getColors().toIntArray()
+        sequence.getColors()
     )
 
     override fun onColorChanged(color: Int, final: Boolean) {
         if(final) {
-            viewmodel.editColor = viewmodel.editColor.let {
-                Color.argb(it.alpha, color.red, color.green, color.blue)
-            }
+            viewmodel.editColor = viewmodel.editColor.copy().apply { setRgb(color) }
         }
     }
 
     override fun onBrightnessChanged(value: Int, final: Boolean) {
-
+        if(final) {
+            viewmodel.editColor = viewmodel.editColor.copy().apply { brightness = value }
+        }
     }
 
     override fun onWarmthChanged(value: Int, final: Boolean) {
         if(final) {
-            println(value)
-            viewmodel.editColor = viewmodel.editColor.let {
-                Color.argb(value, it.red, it.green, it.blue)
-            }
+            viewmodel.editColor = viewmodel.editColor.copy().apply { w = value }
         }
     }
 
-    override fun onSegmentClick(index: Int, color: Int) {
+    override fun onSegmentClick(index: Int, color: Xcolor) {
         viewmodel.editIndex = index
         viewmodel.editColor = color
-        colorPicker.setThumbToColor(color)
-        colorPicker.setWarmth(color.alpha)
+        colorPicker.setThumbToColor(color.toRgb())
+        colorPicker.setWarmth(color.w)
+        colorPicker.setBrightness(color.brightness)
         handler.post {
             pager.currentItem = 1
         }

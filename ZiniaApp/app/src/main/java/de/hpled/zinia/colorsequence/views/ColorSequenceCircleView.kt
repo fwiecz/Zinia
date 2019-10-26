@@ -12,12 +12,14 @@ import androidx.core.graphics.green
 import androidx.core.graphics.red
 import androidx.core.view.children
 import de.hpled.zinia.R
+import de.hpled.zinia.xcolor.Xcolor
+import de.hpled.zinia.xcolor.XcolorList
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
 import kotlin.math.acos
 import kotlin.math.min
 
 interface OnSegmentClickListener {
-    fun onSegmentClick(index: Int, color: Int)
+    fun onSegmentClick(index: Int, color: Xcolor)
 }
 
 class ColorSequenceCircleView(c: Context, attr: AttributeSet? = null) : FrameLayout(c, attr),
@@ -43,7 +45,7 @@ class ColorSequenceCircleView(c: Context, attr: AttributeSet? = null) : FrameLay
         setOnTouchListener(this)
     }
 
-    fun setColorList(colors: List<Int>) {
+    fun setColorList(colors: XcolorList) {
         updateMetrics()
         while (colors.size < childCount) {
             val indexChild = children.filterIndexed { index, view ->
@@ -105,7 +107,7 @@ class ColorSequenceCircleView(c: Context, attr: AttributeSet? = null) : FrameLay
                 posToIndex(event.x, event.y)?.apply {
                     if (pressedSegment === getChildAt(this)) {
                         onSegmentClickListener.forEach {
-                            it.onSegmentClick(this, pressedSegment?.getColor() ?: Color.WHITE)
+                            it.onSegmentClick(this, pressedSegment?.getColor() ?: Xcolor())
                         }
                     }
                 }

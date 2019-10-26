@@ -111,7 +111,7 @@ class ListDevicesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // Force a device list update whenever the fragment is showing.
+        // Force brightness device list update whenever the fragment is showing.
         AsyncTask.execute {
             val devs = database.findAllDevices()
             handler.post { devicesAdapter.devices = devs}

@@ -21,10 +21,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hpled.zinia.R
 import de.hpled.zinia.colorsequence.views.ColorSequenceCircleView
 import de.hpled.zinia.colorsequence.views.OnSegmentClickListener
+import de.hpled.zinia.xcolor.Xcolor
+import de.hpled.zinia.xcolor.XcolorList
 import java.util.*
 
 class ColorSequenceEditorFragmentViewModel : ViewModel() {
-    val colors = MutableLiveData<List<Int>>(listOf())
+    val colors = MutableLiveData<XcolorList>(XcolorList())
     var deleteMode = MutableLiveData<Boolean>(false)
 }
 
@@ -43,11 +45,8 @@ class ColorSequenceEditorFragment : Fragment(), OnSegmentClickListener {
     private val circle by lazy {
         root.findViewById<ColorSequenceCircleView>(R.id.colorSequenceCircleView)
     }
-    private val rand = Random()
     val onSegmentClickListener = mutableSetOf<OnSegmentClickListener>()
-    var nextColor = Color.HSVToColor(
-        floatArrayOf(rand.nextFloat() * 360, 1f, 1f)
-    ).let { Color.argb(0, it.red, it.green, it.blue) }
+    var nextColor = Xcolor.random()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,10 +60,10 @@ class ColorSequenceEditorFragment : Fragment(), OnSegmentClickListener {
         return root
     }
 
-    override fun onSegmentClick(index: Int, color: Int) {
+    override fun onSegmentClick(index: Int, color: Xcolor) {
         if(viewmodel.deleteMode.value == true) {
             viewmodel.colors.value =
-                viewmodel.colors.value?.toMutableList()?.apply { removeAt(index) } ?: listOf()
+                viewmodel.colors.value?.apply { removeAt(index) } ?: XcolorList()
         }
         else {
             onSegmentClickListener.forEach { it.onSegmentClick(index, color) }
@@ -75,7 +74,7 @@ class ColorSequenceEditorFragment : Fragment(), OnSegmentClickListener {
         super.onStart()
         viewmodel.colors.value?.apply {
             if (isEmpty()) {
-                addRandomColor()
+                addColor()
             }
         }
         viewmodel.colors.value?.apply {
@@ -90,7 +89,7 @@ class ColorSequenceEditorFragment : Fragment(), OnSegmentClickListener {
             }
         })
 
-        addButton.setOnClickListener { addRandomColor() }
+        addButton.setOnClickListener { addColor() }
         deleteButton.setOnClickListener { toggleDeleteMode() }
         circle.onSegmentClickListener += this
 
@@ -105,21 +104,19 @@ class ColorSequenceEditorFragment : Fragment(), OnSegmentClickListener {
         })
     }
 
-    fun setColorAt(index: Int, color: Int) {
+    fun setColorAt(index: Int, color: Xcolor) {
         if(index < viewmodel.colors.value?.size ?: 0) {
-            viewmodel.colors.value =
-                viewmodel.colors.value?.toMutableList()?.apply { set(index, color) }?.toList()
-                    ?: listOf()
+            viewmodel.colors.value = viewmodel.colors.value?.apply { set(index, color) }
+                ?: XcolorList()
         }
     }
 
-    fun setColors(colors: IntArray) {
-        viewmodel.colors.value = colors.toList()
+    fun setColors(colors: XcolorList) {
+        viewmodel.colors.value = colors
     }
 
-    private fun addRandomColor() {
-        viewmodel.colors.value =
-            (viewmodel.colors.value ?: listOf()) + nextColor
+    private fun addColor() {
+        viewmodel.colors.value = viewmodel.colors.value?.apply { add(nextColor) }
     }
 
     private fun toggleDeleteMode() {
@@ -147,7 +144,7 @@ class ColorSequenceEditorFragment : Fragment(), OnSegmentClickListener {
         }
     }
 
-    fun getColors() = viewmodel.colors.value?.toList() ?: listOf()
+    fun getColors() = viewmodel.colors.value ?: XcolorList()
 
     companion object {
         private const val MAX_NUM_COLOR = 24

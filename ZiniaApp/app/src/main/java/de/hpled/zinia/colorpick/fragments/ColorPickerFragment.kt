@@ -19,7 +19,7 @@ import de.hpled.zinia.colorpick.views.OnColorChangedListener
 import de.hpled.zinia.dto.ColorDTO
 
 /**
- * The User can intuitively pick a targetColor.
+ * The User can intuitively pick brightness targetColor.
  */
 class ColorPickerFragment : Fragment(), OnColorChangedListener,
     OnBrightnessWarmthChangedListener {

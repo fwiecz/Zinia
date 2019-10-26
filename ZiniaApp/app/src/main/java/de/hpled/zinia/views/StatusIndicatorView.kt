@@ -9,7 +9,7 @@ import android.widget.ProgressBar
 import de.hpled.zinia.R
 
 /**
- * Represents a status of something with a little color_pick_thumb. Four states are available:
+ * Represents brightness status of something with brightness little color_pick_thumb. Four states are available:
  * unknown, loading, onSuccess and onError.
  */
 class StatusIndicatorView(c: Context, attr: AttributeSet?) : FrameLayout(c, attr) {

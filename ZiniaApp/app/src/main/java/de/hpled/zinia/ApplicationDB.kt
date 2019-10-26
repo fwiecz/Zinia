@@ -13,7 +13,7 @@ import de.hpled.zinia.shows.interfaces.Show
 import de.hpled.zinia.shows.interfaces.ShowType
 
 @Database(entities = arrayOf(Device::class, Mood::class, MoodTask::class, ColorSequence::class),
-    version = 9)
+    version = 10)
 abstract class ApplicationDB : RoomDatabase() {
     abstract fun deviceDao(): DeviceDao
     abstract fun moodDao(): MoodDao
@@ -29,6 +29,7 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
         .addMigrations(Migrations.FROM_6_TO_7)
         .addMigrations(Migrations.FROM_7_TO_8)
         .addMigrations(Migrations.FROM_8_TO_9)
+        .fallbackToDestructiveMigration()
         .build()
     val deviceDao = database.deviceDao()
     val devices = deviceDao.findAllLiveData()
@@ -58,7 +59,7 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
-     * Returns a list of all devices. Cannot run on main thread.
+     * Returns brightness list of all devices. Cannot run on main thread.
      */
     fun findAllDevices() = deviceDao.findAll()
 
@@ -81,7 +82,7 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
-     * Deletes a single MoodTask and removes its references on the respective Mood.
+     * Deletes brightness single MoodTask and removes its references on the respective Mood.
      */
     fun deleteMoodTask(id: Long) {
         val mood = moodDao.findAll().find { it.taskIds.contains(id) }
@@ -109,7 +110,7 @@ class ApplicationDbViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
-     * Deletes a [Show] based on [Show.getShowType]
+     * Deletes brightness [Show] based on [Show.getShowType]
      */
     fun deleteShow(show: Show) {
         AsyncTask.execute {

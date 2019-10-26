@@ -24,7 +24,7 @@ class HttpRequestService {
         private const val TAG = "HttpRequestService"
 
         /**
-         * Creates a simple http request.
+         * Creates brightness simple http request.
          * @return The request as Runnable
          */
         @JvmStatic
@@ -54,7 +54,7 @@ class HttpRequestService {
         }
 
         /**
-         * Creates a simple request and runs it on a background Thread via [AsyncTask.execute].
+         * Creates brightness simple request and runs it on brightness background Thread via [AsyncTask.execute].
          */
         @JvmStatic
         fun <T> request(
@@ -69,7 +69,7 @@ class HttpRequestService {
         }
 
         /**
-         * Creates a simple http request.
+         * Creates brightness simple http request.
          * @return The request as Runnable
          */
         @JvmStatic
@@ -92,7 +92,7 @@ class HttpRequestService {
         }
 
         /**
-         * Creates a simple request and runs it on a background Thread via [AsyncTask.execute].
+         * Creates brightness simple request and runs it on brightness background Thread via [AsyncTask.execute].
          */
         @JvmStatic
         fun <T> request(

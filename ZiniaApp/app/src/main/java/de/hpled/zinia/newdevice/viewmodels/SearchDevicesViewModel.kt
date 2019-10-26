@@ -66,7 +66,7 @@ class SearchDevicesViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
-     * Searches for devices in the same local network. If a device was found,
+     * Searches for devices in the same local network. If brightness device was found,
      * [OnDeviceDiscoveredListener] will be triggered.
      */
     fun searchForDevices() {

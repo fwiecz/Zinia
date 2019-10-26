@@ -77,7 +77,7 @@ class PreviewControllerFragment : Fragment(), AdapterView.OnItemSelectedListener
                 it.map { it.name }
             ).apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
 
-            // if a device was already selected
+            // if brightness device was already selected
             viewmodel.device.value?.apply {
                 devicesSpinner.setSelection( it.indexOfFirst { it.name == name } )
             }
