@@ -39,9 +39,6 @@ const char* password = "";
 // When the LEDs are set to a single color.
 const float singleColorSpeed = 0.001;
 
-// The Brightness value will not be send as float so a maximum value for int conversion has to be set.
-const int maxBrightnessAsInt = 255;
-
 // The NeoPixel object is used to communicate with the LEDs.
 Adafruit_NeoPixel pixel = Adafruit_NeoPixel(NUM_LEDS, LED_DATA, NEO_GRB + NEO_KHZ800);
 
@@ -79,7 +76,7 @@ char colorMsg[] = "{\"r\":\"    \",\"g\":\"    \",\"b\":\"    \",\"w\":\"    \"}
 char brightnessMsg[] = "{\"br\":\"    \"}";
 
 uint16_t lastSingleColor[4];
-int lastBrightness = maxBrightnessAsInt;
+int lastBrightness = MAX_BRIGHTNESS;
 
 #define NUM_WPS_DEBOUNCE 5
 bool inWpsMode = false;
@@ -208,8 +205,7 @@ void setWhite() {
 void setBrightness() {
   if(isOn) {
     lastBrightness = server.arg(F("br")).toInt();
-    float br = (float)lastBrightness / (float)maxBrightnessAsInt;
-    manager.setBrightness(br);
+    manager.setBrightness(lastBrightness);
     sendBrighness();
     return;
   }

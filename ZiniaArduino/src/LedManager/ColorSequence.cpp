@@ -32,6 +32,8 @@ void LedManager::nextSequenceColor() {
 #else
         setColorToToBuffer(r, g, b, 0);
 #endif
+        int br = (int)json["data"][_currentSequenceColor][4];
+        setBrightness(br, _speed);
         _currentSequenceColor ++;
         _currentSequenceColor %= _numSequenceColors;
         _sequenceColorShouldChange = SEQUENCE_COLOR_JUST_CHANGED;

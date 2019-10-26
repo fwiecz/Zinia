@@ -14,7 +14,6 @@ LedManager::LedManager(int numLeds, float singleColorSpeed)
         _from[i] = new uint16_t[3];
         _to[i] = new uint16_t[3];
 #endif
-        
     }
     _timeStep = 0.0;
     _fromBrightness = 1.0;
@@ -130,7 +129,7 @@ float LedManager::convertSpeed(int raw) {
 
 void LedManager::computeBrightness() {
     if(_fromBrightness != _toBrightness) {
-        _brTimeStep += _singleColorSpeed / _timeAdjust;
+        _brTimeStep += _speed / _timeAdjust;
         _brTimeStep = min(1, _brTimeStep);
         _brightness = lerp(_fromBrightness, _toBrightness, _brTimeStep);   
         if(_brTimeStep >= 1) {
@@ -139,10 +138,15 @@ void LedManager::computeBrightness() {
     }
 }
 
-void LedManager::setBrightness(float br) {
+void LedManager::setBrightness(int br, float speed) {
+    _speed = speed;
     _fromBrightness = _brightness;
-    _toBrightness = br;
+    _toBrightness = (float)br / MAX_BRIGHTNESS;
     _brTimeStep = 0;
+}
+
+void LedManager::setBrightness(int br) {
+    setBrightness(br, _singleColorSpeed);
 }
 
 // Returns true if timeStep >= 1
@@ -166,11 +170,8 @@ bool LedManager::compute(float step) {
 }
 
 void LedManager::update() {
-    // colors should always change in same speed
-    float step = _mode == MODE_SINGLE_COLOR ? _singleColorSpeed : _speed;
 
-    bool newRowRequired = compute(step);
-
+    bool newRowRequired = compute(_speed);
     switch (_mode) {
         case MODE_SINGLE_COLOR : {
             if(newRowRequired) { // The target color was reached

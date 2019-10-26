@@ -10,6 +10,9 @@
 // If you use for example 12-bit (4096 steps) set the multiplier to 16 (256 * 16 = 4096).
 #define COLOR_DEPTH_MULTIPLY 1
 
+// The Brightness value will not be send as float so a maximum value for int conversion has to be set.
+#define MAX_BRIGHTNESS 255;
+
 #define MODE_SINGLE_COLOR 1
 #define MODE_COLOR_SEQUENCE 2
 
@@ -51,6 +54,7 @@ class LedManager
         StaticJsonDocument<JSON_SIZE> json;
         void setColorToToBuffer(uint16_t r, uint16_t g, uint16_t b, uint16_t w);
         void checkColorSequenceTime();
+        void setBrightness(int br, float speed);
     public:
         LedManager(int numLeds, float singleColorSpeed);
         uint16_t getRed(int pos);
@@ -59,7 +63,7 @@ class LedManager
         uint16_t getWhite(int pos);
         void update();
         void setSingleColor(uint16_t r, uint16_t g, uint16_t b, uint16_t w);
-        void setBrightness(float br);
+        void setBrightness(int br);
         bool setColorSequence(String *body);
         void setSpeed(float speed);
         float convertSpeed(int raw);
