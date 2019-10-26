@@ -12,6 +12,9 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.PathShape
 import android.renderscript.Sampler
 import android.view.View
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import kotlin.math.min
 
 class ColorSequenceSegmentView(c: Context, private val innerRadius: Float) : View(c) {
@@ -52,7 +55,12 @@ class ColorSequenceSegmentView(c: Context, private val innerRadius: Float) : Vie
         color = col
         ValueAnimator.ofArgb(shape.paint.color, col).apply {
             duration = 300
-            addUpdateListener { shape.paint.color = it.animatedValue as Int; invalidate() }
+            addUpdateListener {
+                shape.paint.color = (it.animatedValue as Int).let {
+                    Color.rgb(it.red, it.green, it.blue)
+                }
+                invalidate()
+            }
             start()
         }
     }

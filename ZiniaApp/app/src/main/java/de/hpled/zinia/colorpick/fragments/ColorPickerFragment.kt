@@ -40,6 +40,7 @@ class ColorPickerFragment : Fragment(), OnColorChangedListener,
         set(value) {
             field = value
             slider.warmthIsEnabled = value
+            colorPicker.updateMetrics()
         }
 
     override fun onCreateView(

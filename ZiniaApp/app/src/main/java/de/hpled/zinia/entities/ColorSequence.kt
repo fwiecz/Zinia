@@ -23,7 +23,7 @@ data class ColorSequence(
 ) : Show {
     fun toDTO() : ColorSequenceDTO {
         return ColorSequenceDTO(colors.size, keepingTimeMillis, colors.map {
-            intArrayOf(Color.red(it), Color.green(it), Color.blue(it))
+            intArrayOf(Color.red(it), Color.green(it), Color.blue(it), Color.alpha(it))
         })
     }
 

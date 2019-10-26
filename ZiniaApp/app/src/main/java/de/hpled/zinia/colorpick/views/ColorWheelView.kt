@@ -11,31 +11,38 @@ class ColorWheelView(c: Context, attr: AttributeSet?) : View(c, attr) {
 
     private val paintColor = Paint(Paint.ANTI_ALIAS_FLAG)
     private val paintWhite = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val colorGradient by lazy {
-        SweepGradient(width / 2f, height / 2f,
-            sweepColors, null)
-    }
-    private val whiteGradient by lazy {
-        RadialGradient(width / 2f, height / 2f, max(radius, 100f),
-            radialColors, null, Shader.TileMode.CLAMP)
-    }
-    private val radius by lazy {
-        min(width / 2f, height / 2f)
-    }
 
     init {
+        updateMetrics()
+    }
+
+    fun updateMetrics() {
         post {
-            paintColor.shader = colorGradient
-            paintWhite.shader = whiteGradient
+            paintColor.shader = getColorGradient()
+            paintWhite.shader = getWhiteGradient()
+            println("W: $width, H: $height")
             invalidate()
         }
     }
 
+    private fun getColorGradient() : SweepGradient {
+        return SweepGradient(width / 2f, height / 2f, sweepColors, null)
+    }
+
+    private fun getWhiteGradient() : RadialGradient {
+        return RadialGradient(width / 2f, height / 2f, max(radius(), 100f),
+            radialColors, null, Shader.TileMode.CLAMP)
+    }
+
+    private fun radius () : Float {
+        return min(width / 2f, height / 2f)
+    }
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        canvas?.drawCircle(width / 2f, height / 2f, radius, paintColor)
-        canvas?.drawCircle(width / 2f, height / 2f, radius, paintWhite)
-        canvas?.drawCircle(width / 2f, height / 2f, radius, paintWhite)
+        canvas?.drawCircle(width / 2f, height / 2f, radius(), paintColor)
+        canvas?.drawCircle(width / 2f, height / 2f, radius(), paintWhite)
+        canvas?.drawCircle(width / 2f, height / 2f, radius(), paintWhite)
     }
 
     companion object {

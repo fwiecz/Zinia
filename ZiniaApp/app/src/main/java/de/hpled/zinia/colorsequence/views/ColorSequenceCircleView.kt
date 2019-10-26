@@ -7,6 +7,9 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import androidx.core.view.children
 import de.hpled.zinia.R
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D

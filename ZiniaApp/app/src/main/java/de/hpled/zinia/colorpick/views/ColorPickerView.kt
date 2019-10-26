@@ -60,13 +60,15 @@ class ColorPickerView(c: Context, attr: AttributeSet) : RelativeLayout(c, attr) 
         frame.setOnTouchListener(onTouchListener)
         thumb.visibility = View.INVISIBLE
         setWillNotDraw(false)
-        initMetrics()
+        updateMetrics()
     }
 
-    private fun initMetrics() {
+    fun updateMetrics() {
         mHandler.post {
             center = Vector2D(frame.width / 2.0, frame.height / 2.0)
             radius = min(frame.width / 2.0, frame.height / 2.0)
+            wheel.updateMetrics()
+            invalidate()
         }
     }
 

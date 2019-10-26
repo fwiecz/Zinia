@@ -8,6 +8,10 @@ import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.graphics.alpha
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import de.hpled.zinia.ApplicationDbViewModel
@@ -20,10 +24,12 @@ import de.hpled.zinia.colorsequence.views.OnSegmentClickListener
 import de.hpled.zinia.colorsequence.views.StaticViewPager
 import de.hpled.zinia.entities.ColorSequence
 import de.hpled.zinia.colorpick.fragments.ColorPickerFragment
+import de.hpled.zinia.colorpick.views.OnBrightnessWarmthChangedListener
 import de.hpled.zinia.colorsequence.fragments.OnPreviewControllerActionListener
 import de.hpled.zinia.colorsequence.fragments.PreviewControllerFragment
 import de.hpled.zinia.services.ColorSendingService
 import de.hpled.zinia.colorpick.views.OnColorChangedListener
+import de.hpled.zinia.services.BrightnessSendingService
 import java.util.concurrent.ScheduledThreadPoolExecutor
 
 class ColorSequenceEditorActivityViewModel : ViewModel() {
@@ -31,6 +37,7 @@ class ColorSequenceEditorActivityViewModel : ViewModel() {
     var editColor: Int = Color.WHITE
     val executor = ScheduledThreadPoolExecutor(1)
     val colorSendingService = ColorSendingService(SENDING_FREQ)
+    val brightnessSendingService = BrightnessSendingService(SENDING_FREQ)
 
     companion object {
         private const val SENDING_FREQ = 300L
@@ -39,7 +46,7 @@ class ColorSequenceEditorActivityViewModel : ViewModel() {
 
 class ColorSequenceEditorActivity : AppCompatActivity(),
     OnPreviewControllerActionListener,
-    OnSegmentClickListener, OnColorChangedListener {
+    OnSegmentClickListener, OnColorChangedListener, OnBrightnessWarmthChangedListener {
 
     private val viewmodel by lazy {
         ViewModelProviders.of(this).get(ColorSequenceEditorActivityViewModel::class.java)
@@ -101,13 +108,20 @@ class ColorSequenceEditorActivity : AppCompatActivity(),
             previewController.onPreviewControllerActionListener += this
             colorPicker.setOnDoneListener {
                 pager.currentItem = 0
-                viewmodel.editIndex?.apply { sequence.setColorAt(this, viewmodel.editColor) }
+                viewmodel.editIndex?.apply {
+                    sequence.setColorAt(this, viewmodel.editColor)
+                }
                 sequence.nextColor = viewmodel.editColor
             }
             colorPicker.onColorChangedListener.apply {
                 clear()
                 add(this@ColorSequenceEditorActivity)
                 add(viewmodel.colorSendingService)
+            }
+            colorPicker.onBrightnessWarmthChangedListener.apply {
+                clear()
+                add(this@ColorSequenceEditorActivity)
+                add(viewmodel.brightnessSendingService)
             }
         }
     }
@@ -120,7 +134,11 @@ class ColorSequenceEditorActivity : AppCompatActivity(),
     override fun onPreviewStop(device: Device) {}
 
     override fun onDeviceChanged(device: Device?) {
-        viewmodel.colorSendingService.targetIP = device?.ipAddress ?: ""
+        device?.ipAddress?.apply {
+            viewmodel.colorSendingService.targetIP = this
+            viewmodel.brightnessSendingService.targetIP = this
+        }
+        colorPicker.warmthIsEnabled = device?.isRGBW ?: false
     }
 
     private fun buildColorSequence() = ColorSequence(
@@ -133,7 +151,22 @@ class ColorSequenceEditorActivity : AppCompatActivity(),
 
     override fun onColorChanged(color: Int, final: Boolean) {
         if(final) {
-            viewmodel.editColor = color
+            viewmodel.editColor = viewmodel.editColor.let {
+                Color.argb(it.alpha, color.red, color.green, color.blue)
+            }
+        }
+    }
+
+    override fun onBrightnessChanged(value: Int, final: Boolean) {
+
+    }
+
+    override fun onWarmthChanged(value: Int, final: Boolean) {
+        if(final) {
+            println(value)
+            viewmodel.editColor = viewmodel.editColor.let {
+                Color.argb(value, it.red, it.green, it.blue)
+            }
         }
     }
 
@@ -141,6 +174,7 @@ class ColorSequenceEditorActivity : AppCompatActivity(),
         viewmodel.editIndex = index
         viewmodel.editColor = color
         colorPicker.setThumbToColor(color)
+        colorPicker.setWarmth(color.alpha)
         handler.post {
             pager.currentItem = 1
         }

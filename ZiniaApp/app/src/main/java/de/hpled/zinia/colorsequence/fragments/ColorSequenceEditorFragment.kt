@@ -9,6 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -44,7 +47,7 @@ class ColorSequenceEditorFragment : Fragment(), OnSegmentClickListener {
     val onSegmentClickListener = mutableSetOf<OnSegmentClickListener>()
     var nextColor = Color.HSVToColor(
         floatArrayOf(rand.nextFloat() * 360, 1f, 1f)
-    )
+    ).let { Color.argb(0, it.red, it.green, it.blue) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -116,7 +119,7 @@ class ColorSequenceEditorFragment : Fragment(), OnSegmentClickListener {
 
     private fun addRandomColor() {
         viewmodel.colors.value =
-            (viewmodel.colors.value ?: listOf()) + listOf(nextColor)
+            (viewmodel.colors.value ?: listOf()) + nextColor
     }
 
     private fun toggleDeleteMode() {

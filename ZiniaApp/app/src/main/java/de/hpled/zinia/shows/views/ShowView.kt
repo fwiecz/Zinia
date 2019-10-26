@@ -1,6 +1,7 @@
 package de.hpled.zinia.shows.views
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.MenuItem
@@ -9,6 +10,9 @@ import android.widget.*
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import de.hpled.zinia.R
 import de.hpled.zinia.shows.interfaces.OnShowViewListener
 import de.hpled.zinia.shows.interfaces.Show
@@ -33,7 +37,7 @@ class ShowView(c: Context, attr: AttributeSet? = null) : FrameLayout(c, attr) {
         gradient.apply {
             setBackgroundResource(R.drawable.card_background_large_corners)
             val shape = (background as GradientDrawable).let { it.mutate() as GradientDrawable }
-            shape.colors = colors
+            shape.colors = colors.map { Color.rgb(it.red, it.green, it.blue) }.toIntArray()
             shape.orientation = GradientDrawable.Orientation.LEFT_RIGHT
         }
     }
